@@ -1,0 +1,2 @@
+sudo a2ensite nng.com
+sudo service apache2 reload

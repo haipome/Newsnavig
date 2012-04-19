@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8" />
+	<title>{% block title %}NNG 新闻导航：每个人都是新闻编辑{% endblock %}</title>
+</head>
+
+<body>
+	{% block menu %}<a href="/">主页</a> | 
+	<a href="/login/">登录</a> |
+	<a href="/logout/">登出<a/>{% endblock %}
+	<hr />
+	{% block content %}{% endblock %}
+	<hr />
+	{% if sql_queries %}
+		<p>数据库查询</p>
+		<!-- debug: show the sql excute in this request -->
+		{% for query in sql_queries %}
+		<p><code>{{ query.sql }}</code></p>
+		<p>执行时间: {{ query.time|floatformat:6}} s</p>
+		{% endfor %}<!-- debug ends here -->
+	{% endif %}
+<body>
+
+</html>
