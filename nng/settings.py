@@ -117,6 +117,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'avatars',
+    'accounts',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -153,4 +155,16 @@ INTERNAL_IPS = ('127.0.0.1',)
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
-AVATARS_DIR = '/avatars'
+AVATARS_DIR = 'avatars'
+
+AVATAR_SMALL_SIZE = 24
+AVATAR_SMALL_NAME = 's'
+AVATAR_MEDIUM_SIZE = 48
+AVATAR_MEDIUM_NAME = 'm'
+AVATAR_LARGE_SIZE = 96
+AVATAR_LARGE_NAME = 'l'
+
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+ANONYMOUS_ID = -1
+ACCOUNT_ACTIVATED = 'activated'
+ACCOUNT_ACTIV_DAYS = 7
