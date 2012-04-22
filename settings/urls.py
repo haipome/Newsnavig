@@ -8,5 +8,5 @@ urlpatterns = patterns('',
 	
 	# avatar change
 	url(r'^avatar/change/$', views.avatar_change, name='avatar_change'),
-	
+	url(r'^name/change/$', views.name_change, name='name_change'),
 )

@@ -45,21 +45,21 @@ class AccountManager(UserManager):
 		'''
 		'''
 		try:
-			user = User.objects.get(username=username)
+			user = User.objects.filter(username__iexact=username)
 		except:
 			user = None
 		if user:
 			return False
 			
 		try:
-			user = User.objects.filter(email=email)
+			user = User.objects.filter(email__iexact=email)
 		except:
 			user = None
 		if user:
 			return False
 		
 		try:
-			user = UserProfile.objects.filter(email_unconfirmed = email)
+			user = UserProfile.objects.filter(email_unconfirmed__iexact = email)
 		except:
 			user = None
 		if user:
@@ -75,6 +75,7 @@ class AccountManager(UserManager):
 		          confirm_key_creat_time = now(), \
 		          email_unconfirmed = email, \
 		          last_active = now())
+		account.send_confirm_email()
 		
 		profile = UserProfile(user=new_user)
 		try:
@@ -85,7 +86,14 @@ class AccountManager(UserManager):
 		profile.save()
 		
 		# print 'send create_user_done signal'
-		create_user_done.send(sender='UserAccount', user=new_user)
+		# create_user_done.send(sender='UserAccount', user=new_user)
+		filename = get_gravatar(account.email_unconfirmed)
+		if filename:
+			avatar = Avatar()
+			avatar.avatar_save(filename)
+			remove(filename)
+			profile.avatar = avatar
+			profile.save()
 		
 		return new_user
 	
@@ -99,7 +107,7 @@ class AccountManager(UserManager):
 			except self.model.DoesNotExist:
 				return False
 			if not account.is_confirm_key_expire():
-				account.activkey = ACCOUNT_CONFIRMED
+				account.confirm_key = ACCOUNT_CONFIRMED
 				user = account.user
 				if account.email_unconfirmed:
 					user.email = account.email_unconfirmed
@@ -132,19 +140,3 @@ class AccountManager(UserManager):
 				user.delete() # while also delete the OneToOneField
 		return deleted_users
 
-@receiver(create_user_done, \
-          sender = 'UserAccount', \
-          dispatch_uid="get gravatar and send conirm email")
-def create_user_done_handler(sender, user, **kwargs):
-	'''
-	'''
-	# print 'works'
-	filename = get_gravatar(user.useraccount.email_unconfirmed)
-	if filename:
-		avatar = Avatar()
-		avatar.avatar_save(filename)
-		remove(filename)
-		user.userprofile.avatar = avatar
-		user.userprofile.save()
-	
-	user.useraccount.send_confirm_email()

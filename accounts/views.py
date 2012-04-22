@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
+from accounts.models import UserAccount
 from django.shortcuts import render_to_response, redirect
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -79,9 +80,14 @@ def activate(request, username, confirm_key):
 	user = UserAccount.objects.confirm_email(username, confirm_key)
 	if user:
 		messages.success(request, u'你的帐号已经激活，请完善你的个人资料')
+		user.backend = 'django.contrib.auth.backends.ModelBackend'
+		login(request, user)
 		return HttpResponseRedirect(reverse('edit_profile'))
 	else:
-		return direct_to_template(request, 'accounts/activate_fail.html')
+		if user.is_authenticated():
+			return HttpResponseRedirect(reverse('homepage'))
+		else:
+			return HttpResponseRedirect(reverse('login'))
 
 @login_required
 def email_change(request):
@@ -110,5 +116,45 @@ def email_confirm(request, username, confirm_key):
 	if user:
 		messages.success(request, u'你的邮箱已更改')
 		return HttpResponseRedirect(reverse('edit_account'))
-	return direct_to_template(request, 'accounts/email_confirm_fail.html')
+	else:
+		if user.is_authenticated():
+			return HttpResponseRedirect(reverse('homepage'))
+		else:
+			return HttpResponseRedirect(reverse('login'))
+
+
+def regist(request):
+	'''
+	'''
+	data = None
+	if request.user.is_authenticated():
+		logout(request)
+	if request.method == "POST":
+		form = RegistForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+			if User.objects.filter(username__iexact=data['username']):
+				messages.error(request, u'这个用户名已经注册了')
+			elif User.objects.filter(email__iexact=data['email']) or \
+			UserAccount.objects.filter(email_unconfirmed__iexact=data['email']):
+				messages.error(request, u'这个邮箱已经注册过了')
+			elif data['password1'] != data['password2']:
+				messages.error(request, u'两次密码输入不一致')
+			else:
+				username, email, password = (data['username'],
+				                             data['email'],
+				                             data['password1'])
+				new_user = UserAccount.objects.create_user(username, email, password)
+				messages.success(request, u'注册成功')
+				return render_to_response('accounts/regist_complete.html',
+	                          context_instance=RequestContext(request))
+	
+	if data:
+		form = RegistForm(initial={'username': data['username'],
+		                           'email': data['email']})
+	else:
+		form = RegistForm()
+	return render_to_response('accounts/regist_form.html', {'form': form},
+	                          context_instance=RequestContext(request))
+
 

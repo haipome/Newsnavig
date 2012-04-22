@@ -1,17 +1,6 @@
-{% extends 'userena/base_userena.html' %}
-{% load i18n %}
-
-{% block title %}{% trans "Signup almost done!" %}{% endblock %}
-
-{% block content_title %}<h2>{% trans "Signup" %}</h2>{% endblock %}
-
+{% extends "base.html" %}
+{% block title %}NNG: 注册{% endblock %}
+{% block content_title %}<h3>注册成功 NNG</h3>{% endblock %}
 {% block content %}
-<p>{% trans "Thank you for signing up with us!" %}</p>
-
-{% if userena_activation_required %}
-<p>{% blocktrans %}You have been sent an e-mail with an activation link to the supplied email.{% endblocktrans %}</p>
-<p>{% blocktrans %}We will store your signup information for {{ userena_activation_days }} days on our server. {% endblocktrans %}</p>
-{% else  %}
-<p>{% blocktrans %}You can now use the supplied credentials to signin.{% endblocktrans %}</p>
-{% endif %}
+<p>已发送一封确认邮件到你的电子邮箱，请查收邮件并点击里面的确认链接以完成注册</p>
 {% endblock %}

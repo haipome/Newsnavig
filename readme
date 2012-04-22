@@ -1,3 +1,5 @@
+设置 media 文件夹为所有用户和读写
+
 sudo a2ensite nng.com
 sudo service apache2 reload
 

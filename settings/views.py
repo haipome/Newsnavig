@@ -72,7 +72,7 @@ def name_change(request):
 			else:
 				messages.error(request, u'名号修改失败')
 			return HttpResponseRedirect(reverse('edit_profile'))
-	return render_to_response('accounts/name_change_form.html',
+	return render_to_response('settings/name_change_form.html',
 	                         {'form': form},
 	                           context_instance=RequestContext(request))
 

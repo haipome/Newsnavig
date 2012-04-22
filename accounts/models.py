@@ -86,9 +86,9 @@ class UserAccount(models.Model):
 				          [self.email_unconfirmed], \
 				          fail_silently=False)
 			except:
-				self.is_activkey_send = False
+				self.is_confirm_key_send  = False
 			else:
-				self.is_activkey_send = True
+				self.is_confirm_key_send  = True
 		else:
 			subject = render_to_string( \
 				'accounts/emails/activ_email_subject.txt', \
@@ -104,11 +104,11 @@ class UserAccount(models.Model):
 				          [self.email_unconfirmed], \
 				          fail_silently=False)
 			except:
-				self.is_activkey_send = False
+				self.is_confirm_key_send = False
 			else:
-				self.is_activkey_send = True
+				self.is_confirm_key_send = True
 		self.save()
-		if self.is_activkey_send:
+		if self.is_confirm_key_send:
 			return True
 		else:
 			return False
