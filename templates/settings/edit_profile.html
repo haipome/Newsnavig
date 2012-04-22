@@ -1,0 +1,27 @@
+{% extends "settings/base.html" %}
+
+{% block content_title %}
+<h3>个人资料设置</h3>
+<hr />
+{% endblock %}
+{% block content %}
+<p>你的用户名是：{{ user.username }}</p>
+<p>注册时间是：{{ user.date_joined|date:"Y 年 n 月 j 日 H:i:s" }}</p>
+{% with name=user.userprofile.name name_change=accounts.views.name_change %}
+<P>你的名号：{% if not name %}尚未设置！<a href="{% url name_change %}">现在设置</a>，设置后将会显示在你的个人主页上。
+{% else %}
+{{ name }} {% if user.userprofile.is_can_change_name %}<a href="{% url name_change %}">修改</a></p>{% endif %}（名号 {{ time_limit }} 天内只能修改一次！你上次修改的时间为：{{ user.userprofile.name_change_time|date:"Y 年 n 月 j 日 H:i:s"}}）
+{% endif %}
+{% endwith %}
+
+<p>头像:<img src="{{ user.userprofile.avatar.get_large_url }}" alt="大头像" />
+        <img src="{{ user.userprofile.avatar.get_medium_url }}" alt="中等头像" />
+        <img src="{{ user.userprofile.avatar.get_small_url }}" alt="小头像" />
+<a href="{% url settings.views.avatar_change %}"> 更新</a></p>
+
+<form action="" method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="更新个人资料" />
+
+{% endblock %}

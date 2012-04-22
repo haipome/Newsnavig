@@ -1,0 +1,8 @@
+
+	# activate
+	url(r'^activate/(?P<username>[\.\w]+)/(?P<activation_key>\w+)/$',
+	    views.activate,
+	    name='activate'),
+	
+	
+	'''

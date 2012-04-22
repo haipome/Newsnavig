@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block page_menu %}
+<p><a href="{% url settings.views.edit_profile %}">资料设置</a> |
+   <a href="{% url settings.views.edit_account %}">账户设置</a></p>
+{% endblock %}

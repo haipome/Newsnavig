@@ -1,0 +1,14 @@
+{% extends 'settings/base.html' %}
+{% load i18n %}
+
+{% block title %}修改头像{% endblock %}
+
+{% block content %}
+<h3>添加或更改你的大头像</h3>
+<img src="{{ user.userprofile.avatar.get_large_url }}"
+<p>从电脑中选择你喜欢的照片：你可以上传JPG、JPEG、GIF、PNG或BMP文件。</p>
+<form enctype="multipart/form-data" method = "post" action="." id = "avatar_upload">
+{% csrf_token %}
+<p><label for="id_img"></label> <input type="file" name="img" id="id_img" /></p>
+<input type = "submit" value="上传并保存" /></form>
+{% endblock %}

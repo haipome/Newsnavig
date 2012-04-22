@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # Django settings for nng project.
 
 DEBUG = True
@@ -43,7 +46,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/home/haipo/nng/media'
+MEDIA_ROOT = '/home/haipo/nng/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -54,7 +57,7 @@ MEDIA_URL = 'http://media.nng.com/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/home/haipo/nng/static'
+STATIC_ROOT = '/home/haipo/nng/static/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -119,6 +122,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'avatars',
     'accounts',
+    'profiles',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,7 +160,6 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
 AVATARS_DIR = 'avatars'
-
 AVATAR_SMALL_SIZE = 24
 AVATAR_SMALL_NAME = 's'
 AVATAR_MEDIUM_SIZE = 48
@@ -166,5 +169,20 @@ AVATAR_LARGE_NAME = 'l'
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 ANONYMOUS_ID = -1
-ACCOUNT_ACTIVATED = 'activated'
-ACCOUNT_ACTIV_DAYS = 7
+ANONYMOUS_USERNAME = 'anonymous'
+ANONYMOUS_PASSWORD = 'anonymous'
+ANONYMOUS_NAME = u'匿名用户'
+ACCOUNT_CONFIRMED = 'confirmed'
+ACCOUNT_CONFIRM_DAYS = 7
+ACCOUNT_CONFIRM_FROM_EMAIL = 'nng@nng.com'
+
+PROFILE_NAME_CHANGE_DAYS = 30
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = 'haipo'
+EMAIL_HOST_PASSWORD = 'shit'
+
+PASSWORD_LEN_LIMIT = 6
+
+REMEMBER_ME_WEEKS = 2

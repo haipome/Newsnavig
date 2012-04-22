@@ -1,0 +1,7 @@
+你好 {{ user.userprofile.get_name }}:
+
+你在 newsnavig.com 设置了新的登录邮箱，请在 {{ effective_days }} 天内点击下面的链接来验证你的邮箱。
+
+http://www.nng.com{% url accounts.views.email_confirm username=user.username confirm_key=user.useraccount.confirm_key %}
+
+如果无法点击上面的链接，你可以复制该地址，并粘帖在浏览器的地址栏中访问。

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}NNG: 登录{% endblock %}
+{% block content_title %}<h3>登录 NNG</h3>{% endblock %}
+{% block content %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="登录" />
+</form>
+<p><a href="/accounts/password/reset">忘记了密码？</a></p>
+{% endblock %}

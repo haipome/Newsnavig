@@ -1,0 +1,9 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}修改邮箱确认失败{% endblock %}
+{% block content_title %}<h2>修改邮箱确认失败</h2>{% endblock %}
+
+{% block content %}
+<p>你的邮箱不能通过验证！</p>
+<p>你可以在<a href="{% url accounts.views.email_change %}">这里</a>重新设置</p>
+{% endblock %}

@@ -2,6 +2,6 @@
 {% block content %}
 <p>欢迎来到 NNG 新闻导航：每个人都是新闻编辑！</p>
 {% if user.is_authenticated %}
-<p>欢迎回来：{{ user.username }}</p>
+<p>欢迎回来：{{ user.userprofile.get_name }}</p>
 {% endif %}
 {% endblock %}

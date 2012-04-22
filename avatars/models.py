@@ -6,10 +6,7 @@ from time import time
 from random import random
 from utils import get_avatar
 from nng.utils import generate_sha1
-
 from nng.settings import *
-
-# Create your models here.
 
 class Avatar(models.Model):
 	'''
@@ -84,7 +81,7 @@ class Avatar(models.Model):
 		else:
 			return False
 		if size:
-			filename = get_avatar(f, size)
+			filename = get_avatar(MEDIA_ROOT + self._get_path('origin'), size)
 			storage.save(self._get_path(t), File(open(filename)))
 			remove(filename)
 		if not size:
@@ -99,19 +96,23 @@ class Avatar(models.Model):
 		while True:
 			if self.is_img_exist:
 				self.avatar_delete()
-			if self.path_prefix:
-				break
-			sha_hash = generate_sha1(str(time()) + str(random()))
-			test_prefix = r"%s/%s/%s" % (sha_hash[0:2], sha_hash[2:4], sha_hash[4:15], )
-			test_path = r"%s/%s_%s.jpg" % (AVATARS_DIR, test_prefix, str(AVATAR_LARGE_NAME))
+			# change the url to reload the cache in user browser
+			# if self.path_prefix:
+			# 	break
+			sha_hash = generate_sha1()
+			test_prefix = r"%s/%s/%s" % \
+			              (sha_hash[0:2], sha_hash[2:4], sha_hash[4:15], )
+			test_path = r"%s/%s_%s.jpg" % (AVATARS_DIR, test_prefix, \
+			                               str(AVATAR_LARGE_NAME))
 			if test_path == storage.get_available_name(test_path):
 				self.path_prefix = test_prefix
 				self.is_img_exist = True
 				break
+		self._avatar_save(upload, 'origin')
 		self._avatar_save(upload, 'large')
 		self._avatar_save(upload, 'medium')
 		self._avatar_save(upload, 'small')
-		self._avatar_save(upload, 'origin')
+		self.is_img_exist = True
 		
 		self.save()
 	

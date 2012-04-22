@@ -3,15 +3,14 @@ from django.conf.urls import patterns, include, url
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
-from django.contrib.auth.views import login, logout
-from django.views.decorators.csrf import csrf_protect
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'nng.views.index', name='index'),
-    url(r'^login/$', csrf_protect(login), {'template_name': 'accounts/login.html'}),
-    url(r'^logout/$', csrf_protect(logout), {'template_name': 'accounts/logout.html'}),
-    url(r'^accounts/', include('accounts.urls')),
+    url(r'^$', 'nng.views.index', name='homepage'),
+    url(r'^login/$', 'accounts.views.user_login', name = 'login'),
+    url(r'^logout/$', 'accounts.views.user_logout', name = 'logout'),
+    url(r'^accounts/', include('accounts.urls'), name='accounts'),
+    url(r'^settings/', include('settings.urls'), name='settings'),
     # url(r'^nng/', include('nng.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

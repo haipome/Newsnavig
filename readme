@@ -1,2 +1,4 @@
 sudo a2ensite nng.com
 sudo service apache2 reload
+
+sudo pip install pytz

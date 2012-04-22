@@ -1,0 +1,16 @@
+{% extends 'settings/base.html' %}
+
+{% block title %}修改签名和个人说明{% endblock %}
+
+{% block content_title %}<h2>修改签名和个人说明</h2>{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+  <fieldset>
+    <legend>修改签名和个人说明</legend>
+    {% csrf_token %}
+    {{ form.as_p }}
+  </fieldset>
+  <input type="submit" value="确认修改" />
+</form>
+{% endblock %}

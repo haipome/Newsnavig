@@ -1,0 +1,16 @@
+{% extends 'settings/base.html' %}
+
+{% block title %}修改名号{% endblock %}
+
+{% block content_title %}<h2>修改名号</h2>{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+  <fieldset>
+    <legend>修改名号</legend>
+    {% csrf_token %}
+    {{ form.as_p }}
+  </fieldset>
+  <input type="submit" value="修改我的名号" />
+</form>
+{% endblock %}

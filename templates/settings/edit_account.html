@@ -1,0 +1,11 @@
+{% extends "settings/base.html" %}
+
+{% block title %}账户设置{% endblock %}
+{% block content_title %}
+<h3>账户设置</h3><hr />
+{% endblock %}
+
+{% block content %}
+<p>邮箱: {{ user.email }} <a href=" {% url accounts.views.email_change %}"> 修改</a></p>
+<p>密码  <a href="{% url accounts.views.password_change %}">修改</a>
+{% endblock %}

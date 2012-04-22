@@ -5,6 +5,9 @@ from django.core.mail import send_mail
 from managers import AccountManager
 from nng.utils import generate_sha1
 from nng.settings import *
+from django.utils.timezone import now
+from django.dispatch import receiver
+from signals import change_email
 
 import datetime
 	
@@ -35,13 +38,15 @@ class UserAccount(models.Model):
 		
 		if self.confirm_key == ACCOUNT_CONFIRMED:
 			return True
-		if timezone.now() > expiration_date:
+		if now() > expiration_date:
 			return True
 		return False
 	
 	def send_confirm_email(self):
 		'''
 		'''
+		if self.is_confirm_key_send == True:
+			return True
 		context = {'user' : self.user,
 		           'email' : self.email_unconfirmed,
 		           'confirm_key' : self.confirm_key,
@@ -49,6 +54,7 @@ class UserAccount(models.Model):
 		}
 		
 		if self.user.is_active:
+			'''
 			subject_old = render_to_string( \
 				'accounts/emails/confirm_email_subject_old.txt', \
 				context)
@@ -56,6 +62,7 @@ class UserAccount(models.Model):
 			message_old = render_to_string( \
 				'accounts/emails/confirm_email_message_old.txt', \
 				context)
+				
 			try:
 				send_mail(subject_old, \
 				          message_old, \
@@ -64,7 +71,7 @@ class UserAccount(models.Model):
 				          fail_silently=False)
 			except:
 				pass
-			
+			'''
 			subject_new = render_to_string( \
 				'accounts/emails/confirm_email_subject_new.txt', \
 				context)
@@ -111,7 +118,8 @@ class UserAccount(models.Model):
 		'''
 		self.email_unconfirmed = email
 		self.confirm_key = generate_sha1()
-		self.confirm_key_creat_time = timezone.now()
+		self.confirm_key_creat_time = now()
 		self.is_confirm_key_send = False
+		self.save()
 		
 		self.send_confirm_email()

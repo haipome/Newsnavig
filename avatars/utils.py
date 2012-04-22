@@ -9,7 +9,10 @@ from django.core.files import File
 def get_avatar(f, l=96):
 	if isinstance(f, File):
 		f = f.file
-	im = Image.open(f)
+	try:
+		im = Image.open(f)
+	except:
+		return None
 	x, y = im.size
 	if x < y:
 		s = (y - x) / 2
@@ -36,5 +39,6 @@ def get_gravatar(email, size=192, default='404'):
 	temp = mktemp() + ".jpg"
 	f = open(temp, 'w+')
 	f.write(img_data)
+	f.close
 	
 	return temp

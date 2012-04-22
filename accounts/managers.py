@@ -4,7 +4,6 @@
 from django.db import models
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
 from profiles.models import UserProfile
 from nng.utils import generate_sha1
 from nng.settings import *
@@ -14,6 +13,7 @@ from django.dispatch import receiver
 from avatars.utils import get_gravatar
 from avatars.models import Avatar
 from os import remove
+from django.utils.timezone import now
 
 import re
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
@@ -26,39 +26,62 @@ class AccountManager(UserManager):
 		'''
 		anonymous = User(id=ANONYMOUS_ID, \
 		                 username=ANONYMOUS_USERNAME, \
-		                 password=ANONYMOUS_PASSWORD)
+		                 password=ANONYMOUS_PASSWORD) # this password will 
+		                                              # never be used!
 		anonymous.save()
 		avatar = Avatar()
 		avatar.avatar_save(MEDIA_ROOT + ANONYMOUS_USERNAME + '.jpg')
-	
+		
 		profile = UserProfile(user=anonymous)
 		profile.avatar=avatar
 		profile.name = ANONYMOUS_NAME
 		profile.save()
-	
+		
+		# there while add some other thing
+		
 		return anonymous
 	
 	def create_user(self, username, email, password):
 		'''
 		'''
-		new_user = User(username=username, password=password)
+		try:
+			user = User.objects.get(username=username)
+		except:
+			user = None
+		if user:
+			return False
+			
+		try:
+			user = User.objects.filter(email=email)
+		except:
+			user = None
+		if user:
+			return False
+		
+		try:
+			user = UserProfile.objects.filter(email_unconfirmed = email)
+		except:
+			user = None
+		if user:
+			return False
+		
+		new_user = User.objects.create_user(username=username, password=password)
 		new_user.is_active = False
 		new_user.save()
 		
 		confirm_key = generate_sha1()
 		account = self.create(user=new_user, \
 		          confirm_key=confirm_key, \
-		          confirm_key_creat_time = timezone.now(), \
+		          confirm_key_creat_time = now(), \
 		          email_unconfirmed = email, \
-		          last_active = timezone.now())
-		# account.send_confirm_email()
+		          last_active = now())
 		
+		profile = UserProfile(user=new_user)
 		try:
 			anonymous = User.objects.get(pk=ANONYMOUS_ID)
 		except:
 			anonymous = self.create_anonymous()
-		profile = UserProfile(user=new_user, \
-		          avatar = anonymous.userprofile.avatar)
+		profile.avatar = anonymous.userprofile.avatar
 		profile.save()
 		
 		# print 'send create_user_done signal'
@@ -71,7 +94,7 @@ class AccountManager(UserManager):
 		'''
 		if SHA1_RE.search(confirm_key):
 			try:
-				account = self.get(user__username=username, \
+				account = self.get(user__username=username,
 				                   confirm_key=confirm_key)
 			except self.model.DoesNotExist:
 				return False
@@ -87,10 +110,15 @@ class AccountManager(UserManager):
 					will do some other thing here
 					'''
 				user.save()
-				account.last_active = timezone.now()
+				account.last_active = now()
 				account.save()
 				
 				return user
+			else:
+				account.email_unconfirmed = ''
+				account.save()
+				
+				return False
 		
 		return False
 	
@@ -118,11 +146,5 @@ def create_user_done_handler(sender, user, **kwargs):
 		remove(filename)
 		user.userprofile.avatar = avatar
 		user.userprofile.save()
-	else:
-		try:
-			anonymous = User.objects.get(pk=ANONYMOUS_ID)
-		except:
-			anonymous = user.useraccount.objects.create_anonymous()
-		user.userprofile.avata = anonymous.userprfile.avatar
 	
 	user.useraccount.send_confirm_email()
