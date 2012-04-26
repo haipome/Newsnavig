@@ -1,4 +1,14 @@
-{% extends "base.html" %}
-{% block content_title %}
+{% extends "base-no-sidebar.html" %}
+{% block notice %}
+{% if messages %}
+  <div class="alert alert-info">
+     <a class="close" data-dismiss="alert">&times;</a>
+       <ul>
+         {% for message in messages %}
+           <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+         {% endfor %}
+      </ul>
+  </div>
+{% endif %}
 {% endblock %}
 

@@ -1,12 +1,44 @@
-{% extends "base.html" %}
-{% block title %}NNG: 注册{% endblock %}
-{% block content_title %}<h3>注册 NNG</h3>{% endblock %}
+{% extends "accounts/base.html" %}
+{% block nav_regist %}active{% endblock %}
+{% block title %}注册 NNG{% endblock %}
+{% block content_title %}<h2>注册</h2>{% endblock %}
 {% block content %}
 
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="注册" />
+<form class="form-horizontal" action="" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend></legend>
+    <div class="control-group">
+      <label class="control-label" for="id_username">用户名</label>
+        <div class="controls">
+          <input id="id_username" name="username" type="text" maxlength="30" class="span4" {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+          <p class="help-block">字母或数字</p>
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_email">电子邮箱</label>
+        <div class="controls">
+          <input id="id_email" name="email" type="text" maxlength="75" class="span4" {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
+          <p class="help-block">用来登录和重置密码，我们绝不会发垃圾邮件</p>
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_password1">密码</label>
+        <div class="controls">
+          <input id="id_password1" name="password1" type="password" class="span4">
+          <p class="help-block">我们不会保存你的密码</p>
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_password2">重复密码</label>
+        <div class="controls">
+          <input id="id_password2" name="password2" type="password" class="span4">
+        </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">注册</button>
+      <span class="offset2"><a href="/login/">已经有帐号</a></span>
+    </div>
+  </fieldset>
 </form>
-<p>已经有帐号？<a href="{% url accounts.views.user_login %}">登录</a></p>
 {% endblock %}

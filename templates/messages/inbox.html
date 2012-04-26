@@ -1,0 +1,42 @@
+{% extends "base-no-sidebar.html" %}
+{% block title %}私信{% endblock %}
+{% block content_title %}
+<h3>我的私信（共 {{ contacts.count }} 条）</h3>
+{% endblock %}
+{% block content %}
+{% if contacts %}
+  {% for c in contacts  %}
+  {% with m=c.last_message t=c.last_contact n=c.n_messages u=c.un_read%}
+    <hr />
+    <div class="row">
+      <div class="span1">
+        <div class="pull-right">
+          <a href="{{ c.to_user.userprofile.get_absolute_url }}"><img src="{{ c.to_user.userprofile.avatar.get_medium_url }}" /></a>
+        </div>
+      </div>
+      <div class="span9">
+        <div class="row">
+          <div class="span9">
+            {% if m.sender == user %}
+              我发送给：<a href="{{ m.receiver.userprofile.get_absolute_url }}">{{ m.receiver.userprofile.get_name }}</a>
+            {% else %}
+              <a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a>
+            {% endif %}
+            {{ m.message|urlizetrunc:20|linebreaks }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="span9 ">
+              <small>{{ t|date:"Y-n-j H:i" }}</small>
+            <span class="pull-right">
+              {% if u %}<a href="{{ c.get_absolute_url }}">{{ u }} 条未读，</a>{% endif %}
+              <a href="{{ c.get_absolute_url }}">共 {{ n }} 条对话</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endwith %}
+  {% endfor %}
+{% endif %}
+{% endblock %}

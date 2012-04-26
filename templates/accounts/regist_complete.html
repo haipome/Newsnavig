@@ -1,6 +1,17 @@
-{% extends "base.html" %}
-{% block title %}NNG: 注册{% endblock %}
-{% block content_title %}<h3>注册成功 NNG</h3>{% endblock %}
+{% extends "base-no-sidebar.html" %}
+{% block nav_regist %}active{% endblock %}
+{% block title %}注册 NNG{% endblock %}
+{% block content_title %}<h2>注册成功</h2><hr />{% endblock %}
 {% block content %}
-<p>已发送一封确认邮件到你的电子邮箱，请查收邮件并点击里面的确认链接以完成注册</p>
+<p>已发送一封确认邮件到你的电子邮箱 {{ email }}，你需要点击邮件中的确认链接来完成注册。</p>
+<hr />
+  <h4>没有收到确认信怎么办？</h4>
+  <form action="{% url accounts.views.email_resend %}" method="post">
+  {% csrf_token %}
+  <input name="email" type="hidden" value="{{ email }}"/>
+  <ol>
+    <li>检查一下上面电子邮箱地址是否正确，错了就 <a href="/regist/">重新注册</a> 一次吧 :-)</li>
+    <li>看看是否在邮箱的垃圾箱里</li>
+    <li>稍等几分钟，若仍旧没收到确认信，那就 <button type="submit" class="btn btn-mini">重发一封</button>
+  </ol>
 {% endblock %}

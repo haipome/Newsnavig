@@ -1,16 +1,34 @@
-{% extends 'accounts/base.html' %}
-
-{% block title %}修改邮箱{% endblock %}
-
-{% block content_title %}<h2>修改邮箱</h2>{% endblock %}
-
+{% extends 'settings/base.html' %}
+{% block nav-email %}active{% endblock %}
+{% block content_title %}
+<h2>更改电子邮箱地址</h2>
+{% endblock %}
 {% block content %}
-<form action="" method="post">
+<form class="form-horizontal" action="" method="post">
+  {% csrf_token %}
   <fieldset>
-    <legend>修改邮箱</legend>
-    {% csrf_token %}
-    {{ form.as_p }}
+    <legend>该邮箱用来作为登录帐号和重置密码</legend>
+    <div class="control-group">
+      <label class="control-label" for="id_old_email">当前登录邮箱</label>
+        <div class="controls">
+          <input id="id_old_email" name="old_email" type="text" maxlength="75" class="span4" {% if form.old_email.value %}value="{{ form.old_email.value }}"{% endif %}>
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_password">登录密码</label>
+        <div class="controls">
+          <input id="id_password" name="password" type="password" class="span4">
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_new_email">新的登录邮箱</label>
+        <div class="controls">
+          <input id="id_new_email" name="new_email" type="text" maxlength="75" class="span4" {% if form.new_email.value %}value="{{ form.new_email.value }}"{% endif %}>
+        </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">确认更改邮箱</button>
+    </div>
   </fieldset>
-  <input type="submit" value="修改我的邮箱" />
 </form>
 {% endblock %}

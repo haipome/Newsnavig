@@ -1,11 +1,11 @@
-您好 {{ user.userprofile.get_name }}:
+您好：
 
-{{ email }} 在 NNG 申请注册，因此我们发送这封邮件进行确认。
+{{ email }} 在 Newsnavig.com 申请注册，因此我们发送这封邮件进行确认。
 
-请在{{ effective_days }} 天内点击下面的链接来验证你的邮箱。
+请在 {{ effective_days }} 天内点击下面的链接来验证你的邮箱。
 
 http://www.nng.com{% url accounts.views.activate username=user.username confirm_key=user.useraccount.confirm_key %}
 
 如果无法点击上面的链接，你可以复制该地址，并粘帖在浏览器的地址栏中访问。
 
-Just Test
+这是一封自动产生的邮件，请勿回复。如果不是你的操作，请忽略即可。

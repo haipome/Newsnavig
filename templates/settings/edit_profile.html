@@ -1,27 +1,52 @@
 {% extends "settings/base.html" %}
-
+{% block nav-profile %}active{% endblock %}
 {% block content_title %}
-<h3>个人资料设置</h3>
-<hr />
+  <h2>个人资料设置</h2>
 {% endblock %}
 {% block content %}
-<p>你的用户名是：{{ user.username }}</p>
-<p>注册时间是：{{ user.date_joined|date:"Y 年 n 月 j 日 H:i:s" }}</p>
-{% with name=user.userprofile.name name_change=accounts.views.name_change %}
-<P>你的名号：{% if not name %}尚未设置！<a href="{% url settings.views.name_change %}">现在设置</a>，设置后将会显示在你的个人主页上。
-{% else %}
-{{ name }} {% if user.userprofile.is_can_change_name %}<a href="{% url settings.views.name_change %}">修改</a></p>{% endif %}（名号 {{ time_limit }} 天内只能修改一次！你上次修改的时间为：{{ user.userprofile.name_change_time|date:"Y 年 n 月 j 日 H:i:s"}}）
-{% endif %}
-{% endwith %}
-
-<p>头像:<img src="{{ user.userprofile.avatar.get_large_url }}" alt="大头像" />
-        <img src="{{ user.userprofile.avatar.get_medium_url }}" alt="中等头像" />
-        <img src="{{ user.userprofile.avatar.get_small_url }}" alt="小头像" />
-<a href="{% url settings.views.avatar_change %}"> 更新</a></p>
-
-<form action="" method="post">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="更新个人资料" />
+      <form enctype="multipart/form-data" class="form-horizontal" method="post" action=".">
+       {% csrf_token %}
+        <fieldset>
+          <legend>设置{{ user.userprofile.get_name }}的名号，头像，签名和个人说明</legend>
+          <div class="control-group">
+            <label class="control-label" for="id_name">名号</label>
+            <div class="controls">
+              <input id="id_name" name="name" type="text" class="input-xlarge" maxlength="10" value="{{ name }}"{% if not user.userprofile.is_can_change_name %} disabled{% endif %}>
+              <p class="help-block">{{ time_limit }} 天内名号只能修改一次。</p>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="id_avatar">头像</label>
+            <div class="controls">
+              <img src="{{ user.userprofile.avatar.get_large_url }}" />
+              <input class="input-file" id="id_avatar" type="file" name="avatar" accept="image/*" />
+              <p class="help-block">支持 JPG、GIF、PNG 格式，不要超过 2MB。</p>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="id_website">个人主页</label>
+            <div class="controls">
+              <input id="id_website"  name="website" type="text" class="span6" placeholder="http://" value="{{ website }}"></textarea>
+              <p class="help-block">网络上能代表的你的链接</p>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="id_signature">一句话签名</label>
+            <div class="controls">
+              <textarea  class="span6" type="textarea" rows="2" id="id_signature" name="signature" maxlength="70" >{{ signature }}</textarea>
+              <p class="help-block">不超过70个字</p>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="id_detail">个人说明</label>
+            <div class="controls">
+              <textarea class="span6" id="textarea" rows="6" id="id_detail" name="detail">{{ detail }}</textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">更新个人资料</button>
+          </div>
+        </fieldset>
+      </form>
 
 {% endblock %}

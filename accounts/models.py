@@ -21,7 +21,7 @@ class UserAccount(models.Model):
 	confirm_key_creat_time = models.DateTimeField(blank=True, null=True)
 	is_confirm_key_send = models.BooleanField(default=False)
 	
-	email_unconfirmed = models.EmailField(blank=True)
+	email_unconfirmed = models.EmailField(blank=True, db_index=True)
 	need_change_password = models.BooleanField(default=False)
 	
 	objects = AccountManager()
@@ -45,8 +45,8 @@ class UserAccount(models.Model):
 	def send_confirm_email(self):
 		'''
 		'''
-		if self.is_confirm_key_send == True:
-			return True
+		if self.is_confirm_key_send and self.user.is_active:
+			return False
 		context = {'user' : self.user,
 		           'email' : self.email_unconfirmed,
 		           'confirm_key' : self.confirm_key,
@@ -116,6 +116,9 @@ class UserAccount(models.Model):
 	def change_email(self, email):
 		'''
 		'''
+		if UserAccount.objects.is_email_regist(email):
+			return False
+		
 		self.email_unconfirmed = email
 		self.confirm_key = generate_sha1()
 		self.confirm_key_creat_time = now()
@@ -123,3 +126,6 @@ class UserAccount(models.Model):
 		self.save()
 		
 		self.send_confirm_email()
+		
+		return True
+

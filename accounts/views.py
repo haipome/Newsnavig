@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -20,6 +20,7 @@ from django.views.generic.simple import direct_to_template
 def user_login(request):
 	'''
 	'''
+	form = UserLoginForm()
 	if request.user.is_authenticated():
 		return HttpResponseRedirect(reverse('homepage'))
 	error_messages = u'你输入的用户名或邮箱和密码不匹配'
@@ -32,10 +33,10 @@ def user_login(request):
 			                                         form.cleaned_data['remember_me'])
 			user = None
 			try:
-				user = User.objects.get(username=identification)
+				user = User.objects.get(username__iexact=identification)
 			except:
 				try:
-					user = User.objects.get(email=identification)
+					user = User.objects.filter(email__iexact=identification)[0]
 				except:
 					messages.error(request, error_messages)
 			if user:
@@ -49,7 +50,11 @@ def user_login(request):
 					else:
 						request.session.set_expiry(0)
 					return HttpResponseRedirect(reverse('homepage'))
-	form = UserLoginForm()
+				else:
+					messages.error(request, error_messages)
+		else:
+			messages.error(request, u'你的输入有误')
+	
 	return render_to_response('accounts/login_form.html', {'form': form},
 	                          context_instance=RequestContext(request))
 
@@ -70,7 +75,9 @@ def password_change(request):
 		if form.is_valid():
 			form.save()
 			messages.success(request, u'密码修改成功')
-			return HttpResponseRedirect(reverse('edit_account'))
+			return HttpResponseRedirect(reverse('edit_profile'))
+		else:
+			messages.error(request, u'密码修改失败，你的输入有误')
 	return render_to_response('accounts/password_change_form.html', {'form': form},
 	                          context_instance=RequestContext(request))
 
@@ -84,7 +91,7 @@ def activate(request, username, confirm_key):
 		login(request, user)
 		return HttpResponseRedirect(reverse('edit_profile'))
 	else:
-		if user.is_authenticated():
+		if request.user.is_authenticated():
 			return HttpResponseRedirect(reverse('homepage'))
 		else:
 			return HttpResponseRedirect(reverse('login'))
@@ -101,10 +108,17 @@ def email_change(request):
 			data = form.cleaned_data
 			if user.email == data['old_email'] and authenticate(
 			              username=user.username, password=data['password']):
-				user.useraccount.change_email(data['new_email'])
-				messages.success(request, 
-				u'一封确认邮件已发送到新的邮箱，请点击确认邮件中的链接完成修改。')
-				return HttpResponseRedirect(reverse('edit_account'))
+				
+				if user.useraccount.change_email(data['new_email']):
+					messages.success(request, 
+					u'一封确认邮件已发送到新的邮箱，请点击确认邮件中的链接完成修改。')
+					return HttpResponseRedirect(reverse('edit_profile'))
+				else:
+					messages.error(request, u'你输入的新的邮箱已经注册过了')
+			else:
+				messages.error(request, u'当前登录邮箱和密码输入错误')
+		else:
+			messages.error(request, u'更改邮箱地址失败，你的输入有误')
 	return render_to_response('accounts/email_change_form.html',
 	                         {'form': form},
 	                           context_instance=RequestContext(request))
@@ -115,9 +129,9 @@ def email_confirm(request, username, confirm_key):
 	user = UserAccount.objects.confirm_email(username, confirm_key)
 	if user:
 		messages.success(request, u'你的邮箱已更改')
-		return HttpResponseRedirect(reverse('edit_account'))
+		return HttpResponseRedirect(reverse('edit_profile'))
 	else:
-		if user.is_authenticated():
+		if request.user.is_authenticated():
 			return HttpResponseRedirect(reverse('homepage'))
 		else:
 			return HttpResponseRedirect(reverse('login'))
@@ -126,7 +140,7 @@ def email_confirm(request, username, confirm_key):
 def regist(request):
 	'''
 	'''
-	data = None
+	form = RegistForm()
 	if request.user.is_authenticated():
 		logout(request)
 	if request.method == "POST":
@@ -135,8 +149,7 @@ def regist(request):
 			data = form.cleaned_data
 			if User.objects.filter(username__iexact=data['username']):
 				messages.error(request, u'这个用户名已经注册了')
-			elif User.objects.filter(email__iexact=data['email']) or \
-			UserAccount.objects.filter(email_unconfirmed__iexact=data['email']):
+			elif UserAccount.objects.is_email_regist(data['email']):
 				messages.error(request, u'这个邮箱已经注册过了')
 			elif data['password1'] != data['password2']:
 				messages.error(request, u'两次密码输入不一致')
@@ -145,16 +158,27 @@ def regist(request):
 				                             data['email'],
 				                             data['password1'])
 				new_user = UserAccount.objects.create_user(username, email, password)
-				messages.success(request, u'注册成功')
 				return render_to_response('accounts/regist_complete.html',
+				                         {'email': data['email']},
 	                          context_instance=RequestContext(request))
+		else:
+			messages.error(request, u'你的输入不完整或有误')
 	
-	if data:
-		form = RegistForm(initial={'username': data['username'],
-		                           'email': data['email']})
-	else:
-		form = RegistForm()
 	return render_to_response('accounts/regist_form.html', {'form': form},
 	                          context_instance=RequestContext(request))
 
-
+def email_resend(request):
+	'''
+	'''
+	if request.method == "POST":
+		form = ResendActiveEmail(request.POST)
+		if form.is_valid():
+			data = data = form.cleaned_data
+			account = get_object_or_404(UserAccount, email_unconfirmed__iexact=data['email'])
+			if account.send_confirm_email():
+				messages.success(request, u'邮件已经重新发送，请注意查收')
+				return render_to_response('accounts/regist_complete.html',
+				                         {'email': data['email']},
+	                          context_instance=RequestContext(request))
+	return Http404()
+	

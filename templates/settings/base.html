@@ -1,5 +1,24 @@
-{% extends "base.html" %}
-{% block page_menu %}
-<p><a href="{% url settings.views.edit_profile %}">资料设置</a> |
-   <a href="{% url settings.views.edit_account %}">账户设置</a></p>
+{% extends "base-no-sidebar.html" %}
+{% block notice %}
+{% if messages %}
+  <div class="alert alert-info">
+     <a class="close" data-dismiss="alert">&times;</a>
+       <ul>
+         {% for message in messages %}
+           <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+         {% endfor %}
+      </ul>
+      
+  </div>
+{% endif %}
 {% endblock %}
+{% block title %}{{ user.userprofile.get_name }}的帐号{% endblock %}
+{% block page_nav %}
+<ul class="nav nav-tabs">
+  <li class="{% block nav-profile %}{% endblock %}"><a href="{% url settings.views.edit_profile %}">资料设置</a></li>
+{% load url from future %}
+  <li class="{% block nav-email %}{% endblock %}"><a href="/settings/email/">邮箱设置</a></li>
+  <li class="{% block nav-password %}{% endblock %}"><a href="/settings/password/">密码设置</a></li>
+</ul>
+{% endblock %}
+

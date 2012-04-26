@@ -11,7 +11,7 @@ import views
 urlpatterns = patterns('',
 	
 	# password change
-	url(r'^password/change/$', views.password_change, name='password_change'),
+	url(r'^password/$', views.password_change, name='password_change'),
 	
 	# password reset
 	url(r'^password/reset/$',
@@ -39,10 +39,11 @@ urlpatterns = patterns('',
 	    name='activate'),
 	
 	# change email
-	url(r'^email/change/$',
+	url(r'^email/$',
 	    views.email_change,
 	    name='email_change'),
 	url(r'^email/confirm/(?P<username>[\.\w]+)/(?P<confirm_key>\w+)/$',
 	    views.email_confirm,
 	    name='email_confirm'),
+	url(r'^email/resend/$', views.email_resend, name="activ_email_resend"),
 )

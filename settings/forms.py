@@ -11,9 +11,7 @@ from avatars.models import Avatar
 class NameChangeForm(forms.Form):
 	'''
 	'''
-	new_name = forms.CharField(widget=forms.TextInput(
-	                           attrs=dict(maxlength=30)),
-	                           label=u"你想更改的名字")
+	
 	
 class DetailChangeForm(forms.Form):
 	'''
@@ -52,3 +50,33 @@ class AvatarChangeForm(forms.Form):
 				avatar.avatar_save(img)
 				user.userprofile.avatar = avatar
 
+
+
+class ProfileForm(forms.Form):
+	'''
+	'''
+	name = forms.CharField(required=False)
+	avatar = forms.ImageField(required=False)
+	website = forms.CharField(required=False)
+	signature = forms.CharField(required=False)
+	detail = forms.CharField(required=False)
+	
+	def save(self, profile, data):
+		profile.change_name(data['name'])
+		
+		profile.website = data['website']
+		profile.signature = data['signature']
+		profile.detail = data['detail']
+		
+		if data['avatar']:
+			img = data['avatar']
+			anonymous = User.objects.get(pk=ANONYMOUS_ID)
+			if profile.avatar != anonymous.userprofile.avatar:
+				profile.avatar.avatar_delete()
+				profile.avatar.avatar_save(img)
+			else:
+				avatar = Avatar()
+				avatar.avatar_save(img)
+				profile.avatar = avatar
+		profile.save()
+		return profile

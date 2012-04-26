@@ -1,12 +1,9 @@
 from django.conf.urls import patterns, include, url
-
 import views
+
 
 urlpatterns = patterns('',
 	url(r'^profile/$', views.edit_profile, name='edit_profile'),
-	url(r'^account/$', views.edit_account, name='edit_account'),
-	
-	# avatar change
-	url(r'^avatar/change/$', views.avatar_change, name='avatar_change'),
-	url(r'^name/change/$', views.name_change, name='name_change'),
+	url(r'^email/$', 'accounts.views.email_change', name='edit_email'),
+	url(r'^password/$', 'accounts.views.password_change', name='edit_password'),
 )

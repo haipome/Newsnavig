@@ -35,7 +35,6 @@ class UserLoginForm(forms.Form):
                                      required=False,
                   label=u'在这台电脑上记住我')
 
-USERNAME_RE = r'^[a-z][a-z0-9]+$'
 class RegistForm(forms.Form):
 	'''
 	'''
@@ -51,4 +50,9 @@ class RegistForm(forms.Form):
 	                             label="密码")
 	password2 = forms.CharField(widget=forms.PasswordInput(render_value=False),
 	                            label=u"重复密码")
+	
+class ResendActiveEmail(forms.Form):
+	'''
+	'''
+	email = forms.EmailField()
 	

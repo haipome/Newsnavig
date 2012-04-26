@@ -14,6 +14,7 @@ from avatars.utils import get_gravatar
 from avatars.models import Avatar
 from os import remove
 from django.utils.timezone import now
+from data.models import UserData
 
 import re
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
@@ -102,18 +103,26 @@ class AccountManager(UserManager):
 		'''
 		if SHA1_RE.search(confirm_key):
 			try:
-				account = self.get(user__username=username,
-				                   confirm_key=confirm_key)
+				account = self.get(user__username=username)
 			except self.model.DoesNotExist:
 				return False
 			if not account.is_confirm_key_expire():
+				if account.confirm_key == ACCOUNT_CONFIRMED:
+					return False
+				if account.confirm_key != confirm_key:
+					return False
 				account.confirm_key = ACCOUNT_CONFIRMED
 				user = account.user
 				if account.email_unconfirmed:
+					if User.objects.filter(email__iexact=account.email_unconfirmed):
+						return False
 					user.email = account.email_unconfirmed
 					account.email_unconfirmed = ''
 				if not user.is_active:
 					user.is_active = True
+					
+					# create user data
+					UserData.objects.create(user=user)
 					'''
 					will do some other thing here
 					'''
@@ -139,4 +148,12 @@ class AccountManager(UserManager):
 				deleted_users.append(user)
 				user.delete() # while also delete the OneToOneField
 		return deleted_users
-
+	
+	def is_email_regist(self, email):
+		'''
+		'''
+		if self.filter(email_unconfirmed__iexact=email) or \
+		   User.objects.filter(email__iexact=email):
+			return True
+		else:
+			return False

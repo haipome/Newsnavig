@@ -1,1 +1,1 @@
-NNG: 更改你的登录邮箱 {{ user.userprofile.get_name }}
+更改{{ user.userprofile.get_name }}在 Newsnavig.com 的登录邮箱

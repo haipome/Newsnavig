@@ -4,6 +4,7 @@ from avatars.models import Avatar
 from datetime import timedelta
 from django.utils.timezone import now
 from nng.settings import *
+from django.core.urlresolvers import reverse
 
 class UserProfile(models.Model):
 	'''
@@ -12,12 +13,12 @@ class UserProfile(models.Model):
 	username_change_time = models.DateTimeField(blank=True, null=True)
 	avatar = models.ForeignKey(Avatar)
 	avatar_change_time = models.DateTimeField(blank=True, null=True)
-	name = models.CharField(max_length=30, blank=True)
+	name = models.CharField(max_length=NAME_MAX_LEN * 3, blank=True)
 	name_change_time = models.DateTimeField(blank=True, null=True)
 	
-	website = models.URLField(max_length=200, blank=True)
-	signature = models.CharField(max_length=210, blank=True)
-	detail = models.TextField(max_length=3000, blank=True)
+	website = models.URLField(blank=True)
+	signature = models.CharField(max_length=SIGNATURE_MAX_LEN * 3, blank=True)
+	detail = models.TextField(blank=True)
 	
 	
 	def get_name(self):
@@ -56,3 +57,6 @@ class UserProfile(models.Model):
 			self.detail = data['detail']
 		self.save()
 		return True
+	
+	def get_absolute_url(self):
+		return '/people/' + self.user.username + '/'

@@ -1,3 +1,7 @@
+# start apache2 gzip
+sudo a2enmod deflate
+
+
 设置 media 文件夹为所有用户和读写
 
 sudo a2ensite nng.com

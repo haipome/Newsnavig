@@ -1,7 +1,26 @@
-{% extends "base.html" %}
-{% block content %}
-<p>欢迎来到 NNG 新闻导航：每个人都是新闻编辑！</p>
-{% if user.is_authenticated %}
-<p>欢迎回来：{{ user.userprofile.get_name }}</p>
-{% endif %}
+{% extends "base-sidebar.html" %}
+{% block nav_home %}active{% endblock %}
+{% block notice %}
+<div class="alert alert-info">
+  <a class="close" data-dismiss="alert">&times;</a>
+  <i class="icon-volume-up"></i>{% if user.is_authenticated %} 欢迎回来：{{ user.userprofile.get_name }}，{% endif %} NNG 新闻导航：每个人都是新闻编辑！
+</div>
 {% endblock %}
+
+{% block page_nav %}
+<ul class="nav nav-tabs">
+  <li class="active">
+    <a href="#">动态</a>
+  </li>
+  <li><a href="#">讨论</a></li>
+</ul>
+{% endblock %}
+{% block content %}{% endblock %}
+
+{% block sidebar %}
+{% if user.is_authenticated %}
+<p><img src="{{ user.userprofile.avatar.get_small_url }}" /></p>
+<p><img src="{{ user.userprofile.avatar.get_medium_url }}" /></p>
+<p><img src="{{ user.userprofile.avatar.get_large_url }}" /></p>
+{% endif %}
+{% endblock  %}

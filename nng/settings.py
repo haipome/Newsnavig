@@ -124,6 +124,8 @@ INSTALLED_APPS = (
     'avatars',
     'accounts',
     'profiles',
+    'messages',
+    'data',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -167,6 +169,10 @@ AVATAR_MEDIUM_SIZE = 48
 AVATAR_MEDIUM_NAME = 'm'
 AVATAR_LARGE_SIZE = 96
 AVATAR_LARGE_NAME = 'l'
+
+USERNAME_RE = r'^[A-Za-z0-9]+$'
+NAME_MAX_LEN = 10
+SIGNATURE_MAX_LEN = 70
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 ANONYMOUS_ID = -1
