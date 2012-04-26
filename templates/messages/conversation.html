@@ -1,7 +1,7 @@
 {% extends "base-no-sidebar.html" %}
 {% block title %}私信{% endblock %}
 {% block content_title %}
-<h3>我与<a href="{{ contact.to_user.userprofile.get_absolute_url }}">{{ contact.to_user.userprofile.get_name }}</a>的对话</h3>
+<h3>我与<a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a>的对话</h3>
 <span class="pull-right"><a href="{% url messages.views.inbox %}"><< 返回私信首页</a></span>
 <hr />
 {% endblock %}
@@ -9,12 +9,12 @@
 
 <div class="row">
   <div class="span10">
-    <div><h4>发私信给{{ contact.to_user.userprofile.get_name }}</h4></div>
+    <div><h4>发私信给{{ to_user.userprofile.get_name }}</h4></div>
     <div>
       <form action="{% url messages.views.send %}" method="post">
         {% csrf_token %}
-        <input type="hidden" name="send_to" value="{{ contact.to_user.username }}">
-        <textarea type="textarea" class="span10" rows="4" name="message" placeholder="内容..."></textarea>
+        <input type="hidden" name="send_to" value="{{ to_user.username }}">
+        <textarea type="textarea" class="span10" rows="4" name="message" placeholder="想说的话..."></textarea>
         <div class="pull-right">
           <button type="submit" class="btn btn-primary">发送</button>
         </div>
@@ -29,16 +29,20 @@
     <div class="row">
       <div class="span1">
         <div class="pull-right">
-          <a href="{{ m.sender.userprofile.get_absolute_url }}"><img src="{{ m.sender.userprofile.avatar.get_medium_url }}" /></a>
+          {% if m.sender == user.id %}
+          <a href="{{ user.userprofile.get_absolute_url }}"><img src="{{ user.userprofile.avatar.get_medium_url }}" /></a>
+          {% else %}
+          <a href="{{ to_user.userprofile.get_absolute_url }}"><img src="{{ to_user.userprofile.avatar.get_medium_url }}" /></a>
+          {% endif %}
         </div>
       </div>
       <div class="span9">
         <div class="row">
           <div class="span9">
-            {% if m.sender == user %}
+            {% if m.sender == user.id %}
               我：
             {% else %}
-              <a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a>：
+              <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a>：
             {% endif %}
             <span>{{ m.message|urlizetrunc:20|linebreaks }}</span>
           </div>

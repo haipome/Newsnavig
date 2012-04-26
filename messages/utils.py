@@ -45,7 +45,8 @@ def _get_next_message(users):
 def _get_contact_messages(users):
 	'''
 	'''
-	return Message.objects.filter(sender__in=users).filter(receiver__in=users).all().prefetch_related('sender__userprofile', 'receiver__userprofile')
+	return Message.objects.filter(sender__in=users).filter(receiver__in=users).all().values('sender', 'receiver', 'send_time', 'message')
+	# .prefetch_related('sender__userprofile__avatar', 'receiver__userprofile__avatar')
 
 def delete_message(user, m):
 	'''
@@ -116,6 +117,9 @@ def get_conversation(user, to_user):
 	except:
 		return False
 	if c.un_read:
+		if user.userdata.un_read_messages != 0:
+			user.userdata.un_read_messages = 0
+			user.userdata.save()
 		c.un_read = 0
 		c.save()
 	

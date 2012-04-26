@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.models import User
@@ -17,24 +18,50 @@ from models import Contact
 def send(request):
 	'''
 	'''
-	if request.method == "POST":
+	form = MessageSendForm()
+	to_user = None
+	if request.method == 'GET':
+		if 'to' in request.GET and request.GET['to']:
+			username = request.GET['to']
+			try:
+				to_user = User.objects.get(username__iexact=username)
+			except:
+				pass
+			else:
+				try:
+					contact = from_user.contact_list.filter(to_user=to_user)[0]
+					return HttpResponseRedirect(reverse(conversation, 
+				               kwargs={'contact_id': contact.id}))
+				except:
+					pass
+	elif request.method == "POST":
 		form = MessageSendForm(request.POST)
 		if form.is_valid():
 			data = form.cleaned_data
 			from_user = request.user
-			to_user = get_object_or_404(User, username__iexact=data['send_to'])
-			message = data['message']
-			send_message(from_user, to_user, message)
-			
-			messages.success(request, u'发送成功')
+			try:
+				to_user = User.objects.get(username__iexact=data['send_to'])
+			except:
+				messages.error(request, u'用户不存在')
+			else:
+				message = data['message']
+				send_message(from_user, to_user, message)
+				contact = from_user.contact_list.filter(to_user=to_user)[0]
+				return HttpResponseRedirect(reverse(conversation, 
+				               kwargs={'contact_id': contact.id}))
 		else:
 			messages.error(request, u'发送失败')
-		try:
-			from_url = request.META['HTTP_REFERER']
-			return HttpResponseRedirect(from_url)
-		except KeyError:
-			pass
-	return Http404()
+			try:
+				from_url = request.META['HTTP_REFERER']
+				return HttpResponseRedirect(from_url)
+			except KeyError:
+				pass
+	else:
+		pass
+	return render_to_response('messages/send.html',
+	                         {'form': form,
+	                          'to_user': to_user,},
+	                          context_instance=RequestContext(request))
 
 @login_required
 def inbox(request):
@@ -61,6 +88,7 @@ def conversation(request, contact_id):
 		messages = get_conversation(contact.user, contact.to_user)
 		return render_to_response('messages/conversation.html',
 		                         {'contact': contact,
+		                          'to_user': contact.to_user,
 		                          'ms': messages,},
 		                           context_instance=RequestContext(request))
 	

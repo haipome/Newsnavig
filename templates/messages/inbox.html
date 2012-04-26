@@ -29,8 +29,8 @@
           <div class="span9 ">
               <small>{{ t|date:"Y-n-j H:i" }}</small>
             <span class="pull-right">
-              {% if u %}<a href="{{ c.get_absolute_url }}">{{ u }} 条未读，</a>{% endif %}
-              <a href="{{ c.get_absolute_url }}">共 {{ n }} 条对话</a>
+              {% if u %}<a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读，</a>{% endif %}
+              <a href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a>
             </span>
           </div>
         </div>

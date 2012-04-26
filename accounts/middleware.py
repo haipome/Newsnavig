@@ -3,23 +3,20 @@
 
 from django.utils.timezone import now
 from nng.settings import REMEMBER_ME_WEEKS
+from datetime import datetime
 
 class UserAccountsMiddleware(object):
-	def process_request(self, request):
+	def process_response(self, request, response):
 		user = request.user
 		if user.is_authenticated():
 			try:
+				if not request.session.get_expire_at_browser_close():
+					if user.useraccount.last_active.date() != \
+					   datetime.utcnow().date():
+						request.session.set_expiry(REMEMBER_ME_WEEKS * 7 * 86400)
 				user.useraccount.last_active = now()
 				user.useraccount.save()
 			except:
 				pass
-	
-	def process_response(self, request, response):
-		try:
-			if request.user.is_authenticated():
-				if not request.session.get_expire_at_browser_close():
-					request.session.set_expiry(REMEMBER_ME_WEEKS * 7 * 86400)
-		except:
-			pass
 		return response
 
