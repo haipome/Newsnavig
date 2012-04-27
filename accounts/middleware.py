@@ -7,7 +7,10 @@ from datetime import datetime
 
 class UserAccountsMiddleware(object):
 	def process_response(self, request, response):
-		user = request.user
+		try:
+			user = request.user
+		except:
+			return response
 		if user.is_authenticated():
 			try:
 				if not request.session.get_expire_at_browser_close():

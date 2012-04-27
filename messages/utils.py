@@ -1,4 +1,6 @@
 from models import Message, Contact
+from nng.settings import MESSAGES_PER_PAGE
+from django.db.models import Q
 
 def send_message(sender, receiver, words):
 	'''
@@ -37,15 +39,34 @@ def send_message(sender, receiver, words):
 		pass
 	return m
 
-def _get_next_message(users):
+def _get_next_message(user, users):
 	'''
 	'''
-	return Message.objects.filter(sender__in=users).filter(receiver__in=users)[1]
-
-def _get_contact_messages(users):
+	try:
+		m = Message.objects.filter(
+	        sender__in=users).filter(
+	        receiver__in=users).filter(
+	        (Q(sender__exact=user) & Q(sender_delete__exact=False)) | 
+	        (Q(receiver__exact=user) & Q(receiver_delete__exact=False)))[1]
+	except:
+		return False
+	else:
+		return m
+	
+def _get_contact_messages(user, users, p):
 	'''
 	'''
-	return Message.objects.filter(sender__in=users).filter(receiver__in=users).all().values('sender', 'receiver', 'send_time', 'message')
+	n = MESSAGES_PER_PAGE
+	
+	s = (p - 1) * n
+	e = s + n
+	return Message.objects.filter(
+	        sender__in=users).filter(
+	        receiver__in=users).filter(
+	        (Q(sender__exact=user) & Q(sender_delete__exact=False)) |
+	        (Q(receiver__exact=user) & Q(receiver_delete__exact=False))).all(
+	        )[s:e].values(
+	       'id', 'sender', 'receiver', 'send_time', 'message')
 	# .prefetch_related('sender__userprofile__avatar', 'receiver__userprofile__avatar')
 
 def delete_message(user, m):
@@ -54,28 +75,34 @@ def delete_message(user, m):
 	if user == m.sender:
 		if not m.sender_delete:
 			m.sender_delete = True
-			contact = user.contact_list.get(to_user=m.receiver)
+			contact = user.contact_list.filter(to_user=m.receiver)[0]
 			contact.n_messages -= 1
 			if contact.n_messages == 0:
 				contact.delete()
+			elif m == contact.last_message:
+				n = _get_next_message(user, [m.sender, m.receiver])
+				if n:
+					contact.last_message = n
+					contact.last_contact = n.send_time
+				contact.save()
 			else:
-				m = _get_next_message([m.sender, m.receiver])
-				contact.last_message = m
-				contact.last_contact = m.send_time
 				contact.save()
 		else:
 			return True
 	elif user == m.receiver:
 		if not m.receiver_delete:
 			m.receiver_delete = True
-			contact = user.contact_list.get(to_user=m.sender)
+			contact = user.contact_list.filter(to_user__exact=m.sender)[0]
 			contact.n_messages -= 1
 			if contact.n_messages == 0:
 				contact.delete()
+			elif m == contact.last_message:
+				n = _get_next_message(user, [m.sender, m.receiver])
+				if m:
+					contact.last_message = n
+					contact.last_contact = n.send_time
+				contact.save()
 			else:
-				m = _get_next_message([m.sender, m.receiver])
-				contact.last_message = m
-				contact.last_contact = m.send_time
 				contact.save()
 	else:
 		return False
@@ -89,12 +116,14 @@ def delete_contact(user, to_user):
 	'''
 	'''
 	try:
-		c = user.contact_list.filter(to_user=to_user)[0]
+		c = user.contact_list.filter(to_user__exact=to_user)[0]
 	except:
 		return False
 	c.delete()
 	
-	messages = _get_contact_messages([user, to_user])
+	users = [user, to_user]
+	messages = Message.objects.filter(
+	        sender__in=users, receiver__in=users).all()
 	n = messages.count()
 	for m in messages:
 		if user == m.sender:
@@ -109,11 +138,11 @@ def delete_contact(user, to_user):
 			m.save()
 	return n
 
-def get_conversation(user, to_user):
+def get_conversation(user, to_user, p):
 	'''
 	'''
 	try:
-		c = user.contact_list.filter(to_user=to_user)[0]
+		c = user.contact_list.filter(to_user__exact=to_user)[0]
 	except:
 		return False
 	if c.un_read:
@@ -123,6 +152,6 @@ def get_conversation(user, to_user):
 		c.un_read = 0
 		c.save()
 	
-	return _get_contact_messages([user, to_user])
+	return _get_contact_messages(user, [user, to_user], p)
 
 

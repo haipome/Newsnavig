@@ -1,7 +1,8 @@
 {% extends "base-no-sidebar.html" %}
 {% block title %}私信{% endblock %}
 {% block content_title %}
-<h3>我的私信（共 {{ contacts.count }} 条）</h3>
+<h3>我的私信（共 {{ n_contacts }} 条）</h3>
+<span class="pull-right"><a href="{% url messages.views.send %}">发送私信</a></span>
 {% endblock %}
 {% block content %}
 {% if contacts %}
@@ -18,19 +19,21 @@
         <div class="row">
           <div class="span9">
             {% if m.sender == user %}
-              我发送给：<a href="{{ m.receiver.userprofile.get_absolute_url }}">{{ m.receiver.userprofile.get_name }}</a>
+              我对 <a href="{{ m.receiver.userprofile.get_absolute_url }}">{{ m.receiver.userprofile.get_name }}</a> 说：
             {% else %}
-              <a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a>
+              <a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a> 对我说：
             {% endif %}
-            {{ m.message|urlizetrunc:20|linebreaks }}
+            <p>{{ m.message|urlizetrunc:20|truncatechars:100 }}</p>
           </div>
         </div>
         <div class="row">
           <div class="span9 ">
               <small>{{ t|date:"Y-n-j H:i" }}</small>
             <span class="pull-right">
-              {% if u %}<a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读，</a>{% endif %}
-              <a href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a>
+              {% if u %}<a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | {% endif %}
+              <a href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a> | 
+              <a href="{% url messages.views.conversation contact_id=c.id %}">回复</a> | 
+              <a href="{% url messages.views.delete %}?t=c&i={{ c.to_user }}">删除</a>
             </span>
           </div>
         </div>
@@ -39,4 +42,5 @@
   {% endwith %}
   {% endfor %}
 {% endif %}
+{% include "pager.html" %}
 {% endblock %}

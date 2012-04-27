@@ -16,6 +16,18 @@
         font-family: Verdana,"Helvetica Neue", Helvetica, Arial, sans-serif;
       }
   </style>
+  
+  <!-- javascript -->
+  <script src="/static/js/jquery-1.7.2.min.js"></script>
+  <script src="/static/js/bootstrap.2.02.min.js"></script>
+  <script src="/static/js/newsnavig.js"></script>
+  <script type="text/javascript">
+    function follow(node) {
+      var p = $(node).parent();
+      $(node).remove();
+      $(p).append("关注");
+    }
+  </script>
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -128,11 +140,6 @@
       </div>
     </div>
     {% endif %}
-    
-    <!-- javascript -->
-    <script src="/static/js/jquery-1.7.2.min.js"></script>
-    <script src="/static/js/bootstrap.2.02.min.js"></script>
-    <script src="/static/js/newsnavig.js"></script>
   </div>
 <body>
 

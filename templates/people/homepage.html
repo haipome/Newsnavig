@@ -35,25 +35,11 @@
     <div>
     </div>
     {% if user != people %}
+    <span class="pull-left">
+      <a onclick="follow(this)" href="#">关注</a>
+    </span>
     <span class="pull-right">
-      <a class="btn" data-toggle="modal" href="#send_message">发送私信</a>
-      <div class="modal hide fade" id="send_message">
-        <div class="modal-header">
-          <button class="close" data-dismiss="modal">×</button>
-          <h3>发送私信给{{ people.userprofile.get_name }}</h3>
-        </div>
-        <div class="modal-body">
-          <form action="{% url messages.views.send %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="send_to" value="{{ people.username }}">
-            <textarea type="textarea" rows="5" class="span6" id="id_message" name="message" placeholder="想说的话..."></textarea>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn" data-dismiss="modal">取消</a>
-            <button type="submit" class="btn btn-primary">发送</button>
-          </form>
-        </div>
-      </div>
+      <a href="{% url messages.views.send %}?to={{ people.username }}"><button class="btn">发送私信</button></a>
     </span>
     {% endif %}
   </div>

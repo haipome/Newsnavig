@@ -1,0 +1,13 @@
+<hr />
+<ul class="pager">
+  {% if pre %}
+  <li class="previous">
+    <a href="?p={{ pre }}">&larr; 上一页</a>
+  </li>
+  {% endif %}
+  {% if next %}
+  <li class="next">
+    <a href="?p={{ next }}">下一页 &rarr;</a>
+  </li>
+  {% endif %}
+</ul>

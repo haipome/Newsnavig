@@ -7,7 +7,7 @@
       <form enctype="multipart/form-data" class="form-horizontal" method="post" action=".">
        {% csrf_token %}
         <fieldset>
-          <legend>设置{{ user.userprofile.get_name }}的名号，头像，签名和个人说明</legend>
+          <legend>设置 {{ user.userprofile.get_name }} 的名号，头像，签名和个人说明</legend>
           <div class="control-group">
             <label class="control-label" for="id_name">名号</label>
             <div class="controls">

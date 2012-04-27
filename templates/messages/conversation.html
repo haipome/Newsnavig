@@ -1,7 +1,7 @@
 {% extends "base-no-sidebar.html" %}
 {% block title %}私信{% endblock %}
 {% block content_title %}
-<h3>我与<a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a>的对话</h3>
+<h3>我与 <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a> 的对话</h3>
 <span class="pull-right"><a href="{% url messages.views.inbox %}"><< 返回私信首页</a></span>
 <hr />
 {% endblock %}
@@ -50,12 +50,14 @@
         <div class="row">
           <div class="span9">
             <small>{{ m.send_time|date:"Y-n-j H:i" }}</small>
+            <span class="pull-right">
+              <a href="{% url messages.views.delete %}?t=m&i={{ m.id }}">删除</a>
           </div>
         </div>
       </div>
     </div>
   {% endfor %}
 {% endif %}
-
+{% include "pager.html" %}
 {% endblock %}
 

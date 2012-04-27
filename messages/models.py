@@ -38,5 +38,3 @@ class Contact(models.Model):
 		return self.to_user.username + " with " + str(self.n_messages) + \
 		       " messages: " + self.last_message.message
 	
-	def get_absolute_url(self):
-		return '/message/conversation/' + str(self.id) + '/'
