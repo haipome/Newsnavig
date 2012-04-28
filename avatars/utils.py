@@ -42,3 +42,5 @@ def get_gravatar(email, size=192, default='404'):
 	f.close
 	
 	return temp
+
+

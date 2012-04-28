@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-from domians.models import Domain, TagProfile
+from domains.models import Domain, TagProfile
 
 class Topic(TagProfile):
 	'''
 	'''
-	name = models.CharField(max_length=30, db_index=True)
+	n_discusses = models.IntegerField(default=0)
 	
 	users = models.ManyToManyField(User,
 	                               through='TopicUserShip',
@@ -13,28 +13,42 @@ class Topic(TagProfile):
 	domains = models.ManyToManyField(Domain,
 	                                 through='TopicDomainShip',
 	                                 related_name='domain_topics')
+	
+	def __unicode__(self):
+		return self.name
+	
+	def get_column(self):
+		try:
+			return self.columns.all()[0]
+		except:
+			return None
 
-
-
-class TopicUserShip(models.Model):
+class TopicBaseShip(models.Model):
 	'''
 	'''
 	topic = models.ForeignKey(Topic)
+	n_links = models.IntegerField(default=0)
+	n_comments = models.IntegerField(default=0)
+	votes = models.IntegerField(default=0)
+	
+	last_active_time = models.DateTimeField(auto_now=True)
+	
+	class Meta:
+		abstract=True
+
+class TopicUserShip(TopicBaseShip):
+	'''
+	'''
 	user = models.ForeignKey(User)
-	n_links = models.IntegerField(default=0)
-	last_active_time = models.DateTimeField(auto_now=True)
+	n_discusses = models.IntegerField(default=0)
 	
 	class Meta:
-		ordering=['-n_links']
+		ordering=['-votes']
 
-class TopicDomainShip(models.Model):
+class TopicDomainShip(TopicBaseShip):
 	'''
 	'''
-	topic = models.ForeignKey(Topic)
 	domain = models.ForeignKey(Domain)
-	n_links = models.IntegerField(default=0)
-	last_active_time = models.DateTimeField(auto_now=True)
-	
 	class Meta:
-		ordering=['-n_links']
+		ordering=['-votes']
 

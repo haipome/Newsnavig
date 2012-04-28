@@ -15,6 +15,7 @@ from avatars.models import Avatar
 from os import remove
 from django.utils.timezone import now
 from data.models import UserData
+from columns.models import Column
 
 import re
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
@@ -122,6 +123,7 @@ class AccountManager(UserManager):
 					user.is_active = True
 					
 					# create user data
+					Column.objects.create(content_object=user.userprofile)
 					UserData.objects.create(user=user)
 					'''
 					will do some other thing here

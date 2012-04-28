@@ -62,7 +62,8 @@ class ProfileForm(forms.Form):
 	detail = forms.CharField(required=False)
 	
 	def save(self, profile, data):
-		profile.change_name(data['name'])
+		if profile.name != data['name']:	
+			profile.change_name(data['name'])
 		
 		profile.website = data['website']
 		profile.signature = data['signature']

@@ -131,4 +131,13 @@ class Avatar(models.Model):
 		
 		self.is_img_exist = False
 		self.save()
-		
+
+
+def get_tag_avatar():
+	try:
+		tag_avatar = Avatar.objects.get(pk=TAG_AVATAR_ID)
+	except:
+		tag_avatar = Avatar(id=TAG_AVATAR_ID)
+		tag_avatar.avatar_save(MEDIA_ROOT + TAG_AVATAR_NAME)
+	
+	return tag_avatar

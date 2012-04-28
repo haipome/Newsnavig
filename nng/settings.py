@@ -96,6 +96,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
     'accounts.middleware.UserAccountsMiddleware',
 )
 
@@ -126,6 +127,18 @@ INSTALLED_APPS = (
     'profiles',
     'messages',
     'data',
+    'collect',
+    'columns',
+    'comments',
+    'discusses',
+    'domains',
+    'dynamic',
+    'globalvars',
+    'links',
+    'remind',
+    'shares',
+    'topics',
+    'votes',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -170,6 +183,9 @@ AVATAR_MEDIUM_NAME = 'm'
 AVATAR_LARGE_SIZE = 96
 AVATAR_LARGE_NAME = 'l'
 
+TAG_AVATAR_ID = -1
+TAG_AVATAR_NAME = 'tag.jpg'
+
 USERNAME_RE = r'^[A-Za-z0-9]+$'
 NAME_MAX_LEN = 10
 SIGNATURE_MAX_LEN = 70
@@ -196,3 +212,18 @@ REMEMBER_ME_WEEKS = 2
 
 MESSAGES_PER_PAGE = 10
 
+WAY_LINK_USER_POST      = 'a'
+WAY_LINK_TOPIC_POST     = 'b'
+WAY_LINK_DOMAIN_POST    = 'c'
+
+WAY_LINK_COMMENT        = 'd'
+WAY_LINK_SHARE          = 'e'
+
+WAY_DISCUSS_USER_POST   = 'f'
+WAY_DISCUSS_TOPIC_POST  = 'g'
+WAY_DISCUSS_COMMENT     = 'h'
+WAY_DISCUSS_SHARE       = 'i'
+
+
+REMIND_NEW_FOLLOWER = 'z'
+REMIND_NEW_COMMENT  = 'y'

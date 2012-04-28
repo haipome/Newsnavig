@@ -114,10 +114,10 @@
       {% endblock %}
       </div>
     </div>
-    
-    <div class="row">
+    <div class="row" id="footer">
       <div class="span12">
       {% block fotter %}
+        <hr />
       {% endblock %}
       </div>
     </div>
@@ -125,7 +125,6 @@
     {% if debug %}
     <div class="row">
       <div class="span12">
-      <hr />
       <hr />
       {% block debug %}
         {% if sql_queries %}

@@ -5,13 +5,18 @@ from datetime import timedelta
 from django.utils.timezone import now
 from nng.settings import *
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes import generic
+from columns.models import Column
 
 class UserProfile(models.Model):
 	'''
 	'''
 	user = models.OneToOneField(User)
+	
+	columns = generic.GenericRelation(Column)
+	
 	username_change_time = models.DateTimeField(blank=True, null=True)
-	avatar = models.ForeignKey(Avatar)
+	avatar = models.ForeignKey(Avatar, blank=True, null=True)
 	avatar_change_time = models.DateTimeField(blank=True, null=True)
 	name = models.CharField(max_length=NAME_MAX_LEN * 3, blank=True)
 	name_change_time = models.DateTimeField(blank=True, null=True)
@@ -60,3 +65,9 @@ class UserProfile(models.Model):
 	
 	def get_absolute_url(self):
 		return '/people/' + self.user.username + '/'
+	
+	def get_column(self):
+		try:
+			return self.columns.all()[0]
+		except:
+			return None
