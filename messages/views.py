@@ -30,6 +30,8 @@ def send(request):
 			except:
 				pass
 			else:
+				if to_user == from_user:
+					return HttpResponseRedirect(reverse('message_inbox'))
 				try:
 					contact = from_user.contact_list.filter(to_user=to_user)[0]
 					return HttpResponseRedirect(reverse(conversation, 
@@ -45,11 +47,15 @@ def send(request):
 			except:
 				messages.error(request, u'用户不存在')
 			else:
-				message = data['message']
-				send_message(from_user, to_user, message)
-				contact = from_user.contact_list.filter(to_user=to_user)[0]
-				return HttpResponseRedirect(reverse(conversation, 
-				               kwargs={'contact_id': contact.id}))
+				if to_user == from_user:
+					messages.error(request, u'不可以给自己发送私信')
+					to_user = None
+				else:
+					message = data['message']
+					send_message(from_user, to_user, message)
+					contact = from_user.contact_list.filter(to_user=to_user)[0]
+					return HttpResponseRedirect(reverse(conversation, 
+					               kwargs={'contact_id': contact.id}))
 		else:
 			messages.error(request, u'发送失败')
 			try:

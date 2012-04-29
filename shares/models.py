@@ -10,5 +10,8 @@ class Share(models.Model):
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 	
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User, related_name="user_shares")
 	time = models.DateTimeField(auto_now_add=True)
+	
+	class Meta:
+		ordering = ["-id"]

@@ -212,17 +212,20 @@ REMEMBER_ME_WEEKS = 2
 
 MESSAGES_PER_PAGE = 10
 
-WAY_LINK_USER_POST      = 'a'
-WAY_LINK_TOPIC_POST     = 'b'
-WAY_LINK_DOMAIN_POST    = 'c'
+WAY_LINK_USER_POST           = 'a'
+WAY_LINK_TOPIC_POST          = 'b'
+WAY_LINK_DOMAIN_POST         = 'c'
 
-WAY_LINK_COMMENT        = 'd'
-WAY_LINK_SHARE          = 'e'
+WAY_LINK_COMMENT             = 'd'
+WAY_LINK_SHARE               = 'e'
 
-WAY_DISCUSS_USER_POST   = 'f'
-WAY_DISCUSS_TOPIC_POST  = 'g'
-WAY_DISCUSS_COMMENT     = 'h'
-WAY_DISCUSS_SHARE       = 'i'
+WAY_DISCUSS_USER_POST        = 'f'
+WAY_DISCUSS_TOPIC_POST       = 'g'
+WAY_DISCUSS_COMMENT          = 'h'
+WAY_DISCUSS_SHARE            = 'i'
+
+WAY_LINK_COMMENT_SHARE       = 'j'
+WAY_DISCUSS_COMMENT_SHARE    = 'k'
 
 
 REMIND_NEW_FOLLOWER = 'z'

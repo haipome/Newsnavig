@@ -14,7 +14,9 @@ class Link(models.Model):
 	'''
 	id = models.IntegerField(primary_key=True)
 	
+	is_visible = models.BooleanField(default=True)
 	is_boutique = models.BooleanField(default=False)
+	is_can_comment = models.BooleanField(default=True)
 	
 	url = models.URLField(max_length=1000)
 	title = models.CharField(max_length=210)
@@ -43,6 +45,6 @@ class Link(models.Model):
 		ordering = ['-id']
 	
 	def __unicode__(self):
-		return self.title
+		return self.title + ' ' +  str(self.n_comments)
 	
 	

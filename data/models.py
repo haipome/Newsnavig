@@ -25,6 +25,13 @@ class UserData(models.Model):
 	n_support = models.IntegerField(default=0)
 	
 	
+	last_month_half_votes = models.IntegerField(default=0)
+	last_month_start_time = models.DateTimeField(null=True, blank=True)
+	
+	this_month_vote = models.IntegerField(default=0)
+	this_month_start_time = models.DateTimeField(null=True, blank=True)
+	
+	
 	def __unicode__(self):
 		return self.user.username + ' ' + str(self.honor)
 	

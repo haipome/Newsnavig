@@ -13,7 +13,9 @@ class Discuss(models.Model):
 	'''
 	id = models.IntegerField(primary_key=True)
 	
+	is_visible = models.BooleanField(default=True)
 	is_boutique = models.BooleanField(default=False)
+	is_can_comment = models.BooleanField(default=True)
 	
 	title = models.CharField(max_length=210)
 	detail = models.TextField(blank=True)
@@ -41,7 +43,7 @@ class Discuss(models.Model):
 		ordering = ["-last_active_time"]
 	
 	def __unicode__(self):
-		return self.title + ' ' + str(n_comments)
+		return self.title + ' ' + str(self.n_comments)
 	
 	
 	

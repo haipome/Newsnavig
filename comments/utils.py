@@ -16,6 +16,8 @@ def post_comment(user, content, link_or_discuss, reply_to=None):
 	
 	if reply_to and isinstance(reply_to, Comment):
 		comment.parent_comment = reply_to
+		reply_to.n_reply += 1
+		reply_to.save()
 	
 	topics = link_or_discuss.topics.all()
 	if isinstance(link_or_discuss, Link):
@@ -39,6 +41,9 @@ def post_comment(user, content, link_or_discuss, reply_to=None):
 		Dynamic.objects.create(column=user.userprofile.get_column(),
 		                       way=WAY_DISCUSS_COMMENT,
 		                       content_object=comment)
+	
+	link_or_discuss.n_comments += 1
+	link_or_discuss.save()
 	
 	return comment
 

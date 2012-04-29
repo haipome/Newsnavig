@@ -6,9 +6,9 @@
 <span class="pull-right"><a href="{{ to_user.userprofile.get_absolute_url }}"><< 返回{{ to_user.userprofile.get_name}}的主页</a></span>
 {% else %}
 <h3>发送私信</h3>
-{% endif %}
 <span class="pull-right"><a href="{% url messages.views.inbox %}"><< 返回私信主页</a></span>
 <hr />
+{% endif %}
 {% endblock %}
 {% block content %}
   <form action="{% url messages.views.send %}" method="post">

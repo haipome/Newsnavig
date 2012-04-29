@@ -1,4 +1,4 @@
-tar czf nng.tar.gz ./nng
+tar czf nng.tar.gz nng
 
 # start apache2 gzip
 sudo a2enmod deflate

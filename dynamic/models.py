@@ -6,6 +6,8 @@ from columns.models import Column
 class Dynamic(models.Model):
 	'''
 	'''
+	is_visible = models.BooleanField(default=True)
+	
 	column = models.ForeignKey(Column, related_name="column_dynamic")
 	time = models.DateTimeField(auto_now_add=True)
 	
