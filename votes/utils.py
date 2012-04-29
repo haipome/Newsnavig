@@ -6,14 +6,16 @@ from topics.utils import topic_ship_update
 from django.utils import timezone
 
 def is_this_month(now, time):
-	
+	if not time:
+		return False
 	if now.year  == time.year and now.month == time.month:
 		return True
 	else:
 		return False
 
 def is_last_month(now, time):
-	
+	if not time:
+		return False
 	if now.year == time.year and (now.month - time.month) == 1:
 		return True
 	if (now.year - time.year) == 1 and (time.month - now.month) == 11:
@@ -21,7 +23,8 @@ def is_last_month(now, time):
 	return False
 
 def is_last2_month(now, time):
-	
+	if not time:
+		return False
 	if now.year == time.year and (now.month - time.month) == 2:
 		return True
 	if (now.year - time.year) == 1 and (time.month - now.month) == 10:
@@ -44,10 +47,10 @@ def vote(user, obj):
 	data.honor += 1
 	
 	now = timezone.now()
-	if is_this_month(now, data.this_month_start_time.month):
+	if is_this_month(now, data.this_month_start_time):
 		data.this_month_vote += 1
 	elif is_last_month(now, data.this_month_start_time):
-		if not is_last2_month(now, data.last_month_half_votes):
+		if not is_last2_month(now, data.last_month_start_time):
 			data.last_month_half_votes = 0
 		data.this_month_vote = (data.this_month_vote - last_month_half_votes) / 2
 		data.last_month_half_votes = data.this_month_vote
