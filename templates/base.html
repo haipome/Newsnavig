@@ -15,17 +15,30 @@
         padding-bottom: 40px;
         font-family: Verdana,"Helvetica Neue", Helvetica, Arial, sans-serif;
       }
+      small {
+        color: gray;
+      }
   </style>
   
   <!-- javascript -->
   <script src="/static/js/jquery-1.7.2.min.js"></script>
   <script src="/static/js/bootstrap.2.02.min.js"></script>
-  <script src="/static/js/newsnavig.js"></script>
   <script type="text/javascript">
     function follow(node) {
-      var p = $(node).parent();
-      $(node).remove();
-      $(p).append("关注");
+        $.get("/follow/", { c: node.id }, function(data) {
+            if (data == 'success') {
+                if (node.innerHTML == "关注") {
+                    node.innerHTML = "取消关注";
+                    $(node).attr("class", "btn");
+                }
+                else if (node.innerHTML == "取消关注") {
+                    node.innerHTML = "关注";
+                    $(node).attr("class", "btn btn-primary");
+                }
+            }
+        });
+        
+        return false;
     }
   </script>
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -63,11 +76,11 @@
               {% block nav_people %}
               {% if user.is_authenticated %}
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.userprofile.get_name }} {% if user.userdata.un_read_messages %}<span class="badge">{{ user.userdata.un_read_messages }}</span>{% endif %}<b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.userprofile.get_name }} {% if user.userdata.un_read_messages or user.userdata.un_read_remind %}<span class="badge">{{ user.userdata.un_read_messages|add:user.userdata.un_read_remind }}</span>{% endif %}<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="{{ user.userprofile.get_absolute_url }}"><i class="icon-user"></i> 个人主页</a></li>
                   <li class="divider"></li>
-                  <li><a href="#"><i class="icon-comment"></i> 提醒</a></li>
+                  <li><a href="{% url remind.views.remind %}"><i class="icon-comment"></i> 提醒 {% if user.userdata.un_read_remind %}<span class="badge">{{ user.userdata.un_read_remind }}</span>{% endif %}</a></li>
                   <li><a href="{% url messages.views.inbox %}"><i class=" icon-envelope"></i> 私信 {% if user.userdata.un_read_messages %}<span class="badge">{{ user.userdata.un_read_messages }}</span>{% endif %}</a></li>
                   <li class="divider"></li>
                   <li><a href="{% url settings.views.edit_profile %}"><i class=" icon-cog"></i> 设置</a></li>

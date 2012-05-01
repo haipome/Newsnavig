@@ -5,7 +5,9 @@ from django.contrib.contenttypes import generic
 class Column(models.Model):
 	'''
 	'''
-	content_type=models.ForeignKey(ContentType, related_name="column_type")
+	secret_id = models.CharField(max_length=20, db_index=True)
+	
+	content_type = models.ForeignKey(ContentType, related_name="column_type")
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 	

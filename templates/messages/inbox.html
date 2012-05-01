@@ -5,10 +5,10 @@
 <span class="pull-right"><a href="{% url messages.views.send %}">发送私信</a></span>
 {% endblock %}
 {% block content %}
+<hr />
 {% if contacts %}
   {% for c in contacts  %}
   {% with m=c.last_message t=c.last_contact n=c.n_messages u=c.un_read%}
-    <hr />
     <div class="row">
       <div class="span1">
         <div class="pull-right">
@@ -39,6 +39,7 @@
         </div>
       </div>
     </div>
+    <hr />
   {% endwith %}
   {% endfor %}
 {% else %}

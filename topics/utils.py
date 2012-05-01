@@ -6,6 +6,7 @@ from avatars.models import get_tag_avatar
 from columns.models import Column
 from django.db.models import F
 from domains.models import Domain
+from columns.utils import create_column
 
 def _creat_topic(name, links=0, discusses=0):
 	'''
@@ -14,7 +15,7 @@ def _creat_topic(name, links=0, discusses=0):
 	                         avatar=get_tag_avatar(),
 	                         n_links=links,
 	                         n_discusses=discusses)
-	Column.objects.create(content_object=t)
+	create_column(t)
 	
 	return t
 	

@@ -14,7 +14,7 @@ class Dynamic(models.Model):
 	way = models.CharField(max_length=1)
 	
 	content_type=models.ForeignKey(ContentType, related_name='dynamic_type')
-	object_id = models.PositiveIntegerField()
+	object_id = models.PositiveIntegerField(db_index=True)
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 	
 	class Meta:

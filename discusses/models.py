@@ -6,18 +6,13 @@ from comments.models import Comment
 from votes.models import Vote
 from shares.models import Share
 from collect.models import Collect
+from nng.settings import TITLE_MAX_LEN
+from data.models import ContentBase
 
-
-class Discuss(models.Model):
+class Discuss(ContentBase):
 	'''
 	'''
-	id = models.IntegerField(primary_key=True)
-	
-	is_visible = models.BooleanField(default=True)
-	is_boutique = models.BooleanField(default=False)
-	is_can_comment = models.BooleanField(default=True)
-	
-	title = models.CharField(max_length=210)
+	title = models.CharField(max_length=TITLE_MAX_LEN)
 	detail = models.TextField(blank=True)
 	
 	start_user = models.ForeignKey(User)
@@ -26,18 +21,7 @@ class Discuss(models.Model):
 	
 	topics = models.ManyToManyField(Topic, related_name="topic_discuss")
 	
-	n_comments = models.IntegerField(default=0)
-	n_collecter = models.IntegerField(default=0)
-	n_supporter = models.IntegerField(default=1)
-	n_shares = models.IntegerField(default=1)
-	
 	comments = generic.GenericRelation(Comment)
-	
-	supporters = generic.GenericRelation(Vote)
-	
-	shares = generic.GenericRelation(Share)
-	
-	collecters = generic.GenericRelation(Collect)
 	
 	class Meta:
 		ordering = ["-last_active_time"]

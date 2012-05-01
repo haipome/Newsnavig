@@ -35,11 +35,9 @@
     <div>
     </div>
     {% if user != people %}
-    <span class="pull-left">
-      <a onclick="follow(this)" href="#">关注</a>
-    </span>
     <span class="pull-right">
-      <a href="{% url messages.views.send %}?to={{ people.username }}"><button class="btn">发送私信</button></a>
+      <span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if has_followed %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+      <span><a href="{% url messages.views.send %}?to={{ people.username }}" class="btn">发送私信</a></span>
     </span>
     {% endif %}
   </div>

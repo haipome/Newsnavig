@@ -26,7 +26,7 @@ class Avatar(models.Model):
 		a.avatar_delete() # delete the imgs in directory
 		a.delete()        # delete the instance in datebase
 	'''
-	path_prefix = models.CharField(max_length=20)
+	path_prefix = models.CharField(max_length=20, db_index=True)
 	is_img_exist = models.BooleanField(default=False)
 	
 	def __unicode__(self):

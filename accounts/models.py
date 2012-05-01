@@ -17,7 +17,7 @@ class UserAccount(models.Model):
 	user = models.OneToOneField(User)
 	last_active = models.DateTimeField(blank=True, null=True)
 	
-	confirm_key = models.CharField(max_length=40, blank=True)
+	confirm_key = models.CharField(max_length=CONFIRM_KEY_MAX_LEN, blank=True)
 	confirm_key_creat_time = models.DateTimeField(blank=True, null=True)
 	is_confirm_key_send = models.BooleanField(default=False)
 	

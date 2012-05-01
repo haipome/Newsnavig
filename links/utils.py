@@ -32,11 +32,12 @@ def post_link(user, url, title, topic_names):
 	
 	link.save()
 	
+	'''
 	for topic in link.topics.all():
 		Dynamic.objects.create(column=topic.get_column(),
 		                       way=WAY_LINK_TOPIC_POST,
 		                       content_object=link)
-	
+	'''
 	Dynamic.objects.create(column=domain.get_column(),
 	                       way=WAY_LINK_DOMAIN_POST,
 	                       content_object=link)

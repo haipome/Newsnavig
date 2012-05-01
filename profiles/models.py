@@ -18,11 +18,11 @@ class UserProfile(models.Model):
 	username_change_time = models.DateTimeField(blank=True, null=True)
 	avatar = models.ForeignKey(Avatar, blank=True, null=True)
 	avatar_change_time = models.DateTimeField(blank=True, null=True)
-	name = models.CharField(max_length=NAME_MAX_LEN * 3, blank=True)
+	name = models.CharField(max_length=NAME_MAX_LEN, blank=True)
 	name_change_time = models.DateTimeField(blank=True, null=True)
 	
 	website = models.URLField(blank=True)
-	signature = models.CharField(max_length=SIGNATURE_MAX_LEN * 3, blank=True)
+	signature = models.CharField(max_length=SIGNATURE_MAX_LEN, blank=True)
 	detail = models.TextField(blank=True)
 	
 	

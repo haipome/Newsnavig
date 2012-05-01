@@ -15,6 +15,8 @@ urlpatterns = patterns('',
     
     url(r'^people/', include('profiles.urls'), name='people'),
     url(r'^message/', include('messages.urls'), name='message'),
+    url(r'^remind/', include('remind.urls'), name='remind'),
+    url(r'^follow/', include('data.urls'), name='follow'),
     
     url(r'^admin/', include(admin.site.urls)),
 )

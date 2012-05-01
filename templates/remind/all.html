@@ -1,0 +1,25 @@
+{% extends "base-no-sidebar.html" %}
+{% block title %}所有提醒{% endblock %}
+{% block content_title %}
+<div>
+  <ul class="nav nav-tabs">
+    <li><a href="{% url remind.views.remind %}">未读提醒</a></li>
+    <li class="active"><a href="{% url remind.views.remind_all %}">所有提醒</a></li>
+  </ul>
+</div>
+{% endblock %}
+{% block content %}
+{% if reminds %}
+  {% for remind in reminds %}
+  {% with f=remind.from_user.userprofile w=remind.way c=remind.comment t=remind.time %}
+    {% if w == 'z' %}
+      {% include 'remind/new_follower.html' %}
+    
+    {% endif %}
+  {% endwith %}
+  {% endfor %}
+{% else %}
+<br><br><br><br>
+{% endif %}
+{% include "pager.html" %}
+{% endblock %}

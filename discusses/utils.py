@@ -18,12 +18,12 @@ def post_discuss(user, title, detail, topic_names):
 		discuss.topics.add(topic)
 	
 	discuss.save()
-	
+	'''
 	for topic in discuss.topics.all():
 		Dynamic.objects.create(column=topic.get_column(),
 		                       way=WAY_DISCUSS_TOPIC_POST,
 		                       content_object=discuss)
-	
+	'''
 	Dynamic.objects.create(column=user.userprofile.get_column(),
 	                       way=WAY_DISCUSS_USER_POST,
 	                       content_object=discuss)

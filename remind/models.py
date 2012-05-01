@@ -11,6 +11,7 @@ class Remind(models.Model):
 	time = models.DateTimeField(auto_now_add=True)
 	comment = models.ForeignKey(Comment, related_name="remind_comment",
 	                            blank=True, null=True)
+	is_read = models.BooleanField(default=False)
 	
 	class Meta:
 		ordering = ['-id']

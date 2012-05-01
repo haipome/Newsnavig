@@ -6,6 +6,11 @@ class Topic(TagProfile):
 	'''
 	'''
 	n_discusses = models.IntegerField(default=0)
+	n_discusses_boutiques = models.IntegerField(default=0)
+	
+	link_average_votes = models.FloatField(default=0.0)
+	discuss_average_votes = models.FloatField(default=0.0)
+	comments_average_votes = models.FloatField(default=0.0)
 	
 	users = models.ManyToManyField(User,
 	                               through='TopicUserShip',

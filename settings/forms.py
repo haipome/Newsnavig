@@ -79,5 +79,8 @@ class ProfileForm(forms.Form):
 				avatar = Avatar()
 				avatar.avatar_save(img)
 				profile.avatar = avatar
-		profile.save()
+		try:
+			profile.save()
+		except:
+			pass
 		return profile

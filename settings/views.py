@@ -25,10 +25,12 @@ def edit_profile(request):
 		form = ProfileForm(request.POST, request.FILES)
 		if form.is_valid():
 			data = form.cleaned_data
+			'''
 			if len(data['name']) > NAME_MAX_LEN * 3:
 				messages.warning(request, u'名号输入过长，被自动截断')
 			if len(data['signature']) > SIGNATURE_MAX_LEN * 3:
 				messages.warning(request, u'签名输入过长，被自动截断')
+			'''
 			form.save(user.userprofile, data)
 			messages.success(request, u'个人资料修改成功')
 		else:

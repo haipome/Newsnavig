@@ -4,13 +4,14 @@ from avatars.models import get_tag_avatar
 from django.db.models import F
 from urlparse import urlparse
 from links.models import Link
+from columns.utils import create_column
 
 def _create_domain(domain):
 	'''
 	'''
 	d = Domain.objects.create(domain=domain,
 	                          avatar=get_tag_avatar())
-	Column.objects.create(content_object=d)
+	create_column(d)
 	
 	return d
 

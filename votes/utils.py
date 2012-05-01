@@ -4,6 +4,8 @@ from discusses.models import Discuss
 from comments.models import Comment
 from topics.utils import topic_ship_update
 from django.utils import timezone
+from nng.settings import HOT_RATE, BOUTIQUE_RATE
+from dynamic.models import Dynamic
 
 def is_this_month(now, time):
 	if not time:
@@ -71,8 +73,47 @@ def vote(user, obj):
 			topic_ship_update(topic, to_user, is_vote=True)
 	
 	obj.n_supporter += 1
+	
+	if isinstance(obj, Link):
+		for topic in obj.topics:
+			column = topic.get_column()
+			if obj.n_supporter >= int(HOT_RATE * \
+			                          topic.link_average_votes) + 1:
+				if not Dynamic.objects.filter(
+				       column=column).filter(
+				       object_id=obj.id).count():
+					Dynamic.objects.create(column=column,
+					                       way=WAY_LINK_TOPIC_POST,
+					                       content_object=discuss)
+			if obj.n_supporter >= int(BOUTIQUE_RATE * \
+			                          topic.link_average_votes) + 1:
+				obj.is_boutique = True
+	
+	elif isinstance(obj, discuss):
+		for topic in obj.topics:
+			column = topic.get_column()
+			if obj.n_supporter >= int(HOT_RATE * \
+			                          topic.discuss_average_votes) + 1:
+				if not Dynamic.objects.filter(
+				       column=column).filter(
+				       object_id=obj.id).count():
+					Dynamic.objects.create(column=column,
+					                       way=WAY_LINK_TOPIC_POST,
+					                       content_object=discuss)
+			if obj.n_supporter >= int(BOUTIQUE_RATE * \
+			                          topic.discuss_average_votes) + 1:
+				obj.is_boutique = True
+	
+	
+	else:
+		if obj.n_supporter >= int(BOUTIQUE_RATE * \
+		                          topic.discuss_average_votes) + 1:
+			obj.is_boutique = True
+	
+	
 	obj.save()
 	vote = Vote.objects.create(user=user, content_object=obj)
+	
 	
 	return vote
 	
