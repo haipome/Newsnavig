@@ -14,6 +14,10 @@ class UserData(models.Model):
 	n_follows = models.IntegerField(default=0)
 	follows = models.ManyToManyField(Column, related_name="column_follower")
 	
+	n_follows_user   = models.IntegerField(default=0)
+	n_follows_topic  = models.IntegerField(default=0)
+	n_follows_domain = models.IntegerField(default=0)
+	
 	honor = models.IntegerField(default=1)
 	
 	un_read_messages = models.IntegerField(default=0)
@@ -32,7 +36,7 @@ class UserData(models.Model):
 	last_month_half_votes = models.IntegerField(default=0)
 	last_month_start_time = models.DateTimeField(null=True, blank=True)
 	
-	this_month_vote = models.IntegerField(default=0)
+	this_month_vote = models.IntegerField(default=0, db_index=True)
 	this_month_start_time = models.DateTimeField(null=True, blank=True)
 	
 	

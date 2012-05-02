@@ -10,7 +10,7 @@ from django.shortcuts import render_to_response, redirect
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from nng.settings import *
-from forms import DetailChangeForm, NameChangeForm, AvatarChangeForm, ProfileForm
+from forms import ProfileForm
 from accounts.models import UserAccount
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic.simple import direct_to_template

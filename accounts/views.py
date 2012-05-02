@@ -28,9 +28,9 @@ def user_login(request):
 		form = UserLoginForm(request.POST)
 		if form.is_valid():
 			data = form.cleaned_data
-			identification, password, remember_me = (form.cleaned_data['name_or_email'],
-			                                         form.cleaned_data['password'],
-			                                         form.cleaned_data['remember_me'])
+			identification, password, remember_me = (data['name_or_email'],
+			                                         data['password'],
+			                                         data['remember_me'])
 			user = None
 			try:
 				user = User.objects.get(username__iexact=identification)

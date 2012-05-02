@@ -87,7 +87,8 @@ def vote(user, obj):
 					                       content_object=discuss)
 			if obj.n_supporter >= int(BOUTIQUE_RATE * \
 			                          topic.link_average_votes) + 1:
-				obj.is_boutique = True
+				if topic.link_average_votes != 0:
+					obj.is_boutique = True
 	
 	elif isinstance(obj, discuss):
 		for topic in obj.topics:
@@ -102,13 +103,15 @@ def vote(user, obj):
 					                       content_object=discuss)
 			if obj.n_supporter >= int(BOUTIQUE_RATE * \
 			                          topic.discuss_average_votes) + 1:
-				obj.is_boutique = True
+				if topic.discuss_average_votes != 0:
+					obj.is_boutique = True
 	
 	
 	else:
 		if obj.n_supporter >= int(BOUTIQUE_RATE * \
-		                          topic.discuss_average_votes) + 1:
-			obj.is_boutique = True
+		                          topic.comment_average_votes) + 1:
+			if topic.comment_average_votes != 0:
+				obj.is_boutique = True
 	
 	
 	obj.save()

@@ -1,0 +1,89 @@
+{% extends "base-no-sidebar.html" %}
+{% block title %}发布{% endblock %}
+
+{% block content %}
+<div class="tabbable"> 
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">发布链接</a></li>
+    <li><a href="#tab2" data-toggle="tab">发起讨论</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+      
+<form class="form-horizontal" action="/link/post/" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="id_title_link">标题</label>
+      <div class="controls">
+        <textarea class="span6" rows="2" id="id_title_link" name="title"  maxlength="70"></textarea>
+        <p class="help-block"><small>不超过70个字</small></p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_url">网址</label>
+        <div class="controls">
+          <input id="id_url" name="url" type="text" class="span6" placeholder="http://">
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_topics_link">话题</label>
+        <div class="controls">
+          <input id="id_topics_link" name="topics" type="text" class="span3"> <small>（多个话题以空格分隔，最多不超过三个话题）</small>
+          {% if user_topics %}
+          <p class="help-block"><small>我的话题：</small><br>
+            {% for topic in user_topics %}
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a></span>
+            {% endfor %}
+          </p>
+          {% endif %}
+        </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">发布</button>
+    </div>
+  </fieldset>
+</form>
+      
+    </div>
+    <div class="tab-pane" id="tab2">
+
+<form class="form-horizontal" action="/discuss/post/" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="id_title_discuss">标题</label>
+      <div class="controls">
+        <textarea class="span6" rows="2" id="id_title_discuss" name="title"  maxlength="70"></textarea>
+        <p class="help-block"><small>不超过70个字</small></p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_detail">内容</label>
+        <div class="controls">
+          <textarea class="span6" rows="6" id="id_detail" name="detail" ></textarea>
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_topics_discuss">话题</label>
+        <div class="controls">
+          <input id="id_topics_discuss" name="topics" type="text" class="span3"> <small>（多个话题以空格分隔，最多不超过三个话题）</small>
+          {% if user_topics %}
+          <p class="help-block"><small>我的话题：</small><br>
+            {% for topic in user_topics %}
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a></span>
+            {% endfor %}
+          </p>
+          {% endif %}
+        </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">发布</button>
+    </div>
+  </fieldset>
+</form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -16,7 +16,7 @@ class Link(ContentBase):
 	'''
 	url = models.URLField(max_length=URL_MAX_LEN, db_index=True)
 	title = models.CharField(max_length=TITLE_MAX_LEN)
-	post_time = models.DateTimeField(auto_now_add=True)
+	post_time = models.DateTimeField(auto_now_add=True, db_index=True)
 	post_user = models.ForeignKey(User, related_name="user_links")
 	
 	domain = models.ForeignKey(Domain, related_name="domain_links")
@@ -30,4 +30,6 @@ class Link(ContentBase):
 	def __unicode__(self):
 		return self.title + ' ' +  str(self.n_comments)
 	
+	def get_absolute_url(self):
+		return '/%s/%s/' % ('link', str(self.id))
 	

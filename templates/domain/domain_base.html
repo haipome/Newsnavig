@@ -1,0 +1,51 @@
+{% extends "base-sidebar.html" %}
+{% block title %}站点 {{ domain.get_name }}{% endblock %}
+{% block content_title %}
+<div class="row">
+  <div class="domain_profile">
+    <div class="span2">
+      <div class="pull-right">
+        <a href="{{ domain.get_absolute_url }}"><img src="{{ domain.avatar.get_large_url }}" /></a>
+      </div>
+    </div>
+    <div class="span7">
+      {% if domain.name %}
+      <strong><a href="{{ domain.get_absolute_url }}">{{ domain.name }}</a></strong>
+      {% endif %}
+      <a href="{{ domain.get_domain_url }}" target="_blank">{{ domain.domain }}</a><hr />
+      <span>{{ domain.detail|urlizetrunc:20 }}</span>
+      <a data-toggle="modal" href="#domain_edit"><i class="icon-edit"></i><small>编辑</small></a>
+      <hr />
+    </div>
+  </div>
+</div>
+
+<div class="modal hide fade" id="domain_edit">
+  <div class="modal-header">
+    <button class="close" data-dismiss="modal">×</button>
+   <h3>编辑站点 {{ domain.domain }}</h3>
+  </div>
+  <div class="modal-body">
+    <form enctype="multipart/form-data" class="well" action="{% url domains.views.edit domain_name=domain.domain %}" method="post">
+    {% csrf_token %}
+      <label for="id_name">站名</label>
+        <input type="text" class="span6" id="id_name" name="name" max_length="10" value="{{ domain.name }}" />
+        <p class="help-block"><small>不超过10个字</small></p>
+      <label for="id_avatar">图片</label>
+        <img src="{{ domain.avatar.get_medium_url }}" />
+        <input class="input-file" id="id_avatar" type="file" name="avatar" accept="image/*" />
+        <p class="help-block"><small>支持 JPG、GIF、PNG 格式，不要超过 2MB</small></p>
+      <label for="id_avatar">对 {{ domain.domain }} 的描述</label>
+        <textarea class="span6" rows="6" id="id_detail" name="detail">{{ domain.detail }}</textarea>
+  </div>
+  <div class="modal-footer">
+     <button class="btn" data-dismiss="modal">取消</button>
+     <button type="submit" class="btn btn-primary">保存</button>
+  </div>
+  </form>
+</div>
+{% endblock %}
+{% block sidebar-title %}
+<br>
+<span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if has_followed %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+{% endblock %}

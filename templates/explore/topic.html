@@ -1,0 +1,17 @@
+{% extends 'explore/base.html' %}
+{% block title %}探索 :: 话题{% endblock %}
+{% block exp_nav_topic %}active{% endblock %}
+{% block content %}
+<div class="row">
+<div class="pull-right">
+  {% if t == 'hot' %}热门话题 /{% else %}<a href="{% url explore.views.topic %}">热门话题</a> /{% endif %}
+  {% if t == 'new' %}最新话题{% else %}<a href="{% url explore.views.topic %}new/">最新话题</a>{% endif %}
+</div>
+</div>
+<hr />
+
+{% for topic in topics %}
+<span><a href="{{ topic.get_absolute_url }}" rel="tooltip" {% if topic.detail %}title="{{ topic.detail|truncatechars:70 }}" {% else %}title="{{ topic.name }}"{% endif %}><strong>{{ topic.name }}</strong></a></span>&nbsp; &nbsp;
+{% endfor %}
+
+{% endblock %}

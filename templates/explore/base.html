@@ -1,0 +1,13 @@
+{% extends 'base-no-sidebar.html' %}
+{% block nav_explore %}active{% endblock %}
+{% block page_nav %}
+<ul class="nav nav-tabs">
+  <li class="{% block exp_nav_link %}{% endblock %}"><a href="{% url explore.views.link %}">网址</a></li>
+  <li class="{% block exp_nav_discuss %}{% endblock %}"><a href="{% url explore.views.discuss %}">讨论</a></li>
+  <li class="{% block exp_nav_comment %}{% endblock %}"><a href="{% url explore.views.comment %}">回复</a></li>
+  <li class="{% block exp_nav_user %}{% endblock %}"><a href="{% url explore.views.user %}">用户</a></li>
+  <li class="{% block exp_nav_topic %}{% endblock %}"><a href="{% url explore.views.topic %}">话题</a></li>
+  <li class="{% block exp_nav_domain %}{% endblock %}"><a href="{% url explore.views.domain %}">站点</a></li>
+</ul>
+{% endblock %}
+

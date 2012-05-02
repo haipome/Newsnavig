@@ -27,6 +27,9 @@ class Topic(TagProfile):
 			return self.columns.all()[0]
 		except:
 			return None
+	
+	def get_absolute_url(self):
+		return '/%s/%s/' % ('topic', self.name)
 
 class TopicBaseShip(models.Model):
 	'''
@@ -36,7 +39,7 @@ class TopicBaseShip(models.Model):
 	n_comments = models.IntegerField(default=0)
 	votes = models.IntegerField(default=0)
 	
-	last_active_time = models.DateTimeField(auto_now=True)
+	last_active_time = models.DateTimeField(auto_now_add=True)
 	
 	class Meta:
 		abstract=True

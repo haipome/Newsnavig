@@ -15,7 +15,7 @@ class TagProfile(models.Model):
 	detail = models.TextField(blank=True)
 	create_time = models.DateTimeField(auto_now_add=True)
 	
-	n_links = models.IntegerField(default=0)
+	n_links = models.IntegerField(default=0, db_index=True)
 	n_links_boutiques = models.IntegerField(default=0)
 	
 	class Meta:
@@ -36,7 +36,7 @@ class Domain(TagProfile):
 		else:
 			return self.domain
 	
-	def get_absolute_url(self):
+	def get_domain_url(self):
 		return r'http://' + self.domain
 	
 	def get_column(self):
@@ -45,4 +45,6 @@ class Domain(TagProfile):
 		except:
 			return None
 		
+	def get_absolute_url(self):
+		return '/%s/%s/' % ('domain', self.domain)
 	

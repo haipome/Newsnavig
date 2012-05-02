@@ -7,6 +7,7 @@ from columns.models import Column
 from django.db.models import F
 from domains.models import Domain
 from columns.utils import create_column
+from django.utils.timezone import now
 
 def _creat_topic(name, links=0, discusses=0):
 	'''
@@ -92,7 +93,7 @@ def topic_ship_update(topic, user,
 	if not is_vote:
 		if is_discuss:
 			if not TopicUserShip.objects.filter(user=user, topic=topic).update(
-		           n_discusses=F('n_discusses') + 1):
+		           n_discusses=F('n_discusses') + 1, last_active_time=now()):
 				_creat_user_ship(user=user, topic=topic, n_discusses=1)
 		elif is_comment:
 			if not TopicUserShip.objects.filter(user=user, topic=topic).update(
@@ -105,7 +106,7 @@ def topic_ship_update(topic, user,
 					errorn += 1
 		else:
 			if not TopicUserShip.objects.filter(user=user, topic=topic).update(
-			       n_links=F('n_links') + 1):
+			       n_links=F('n_links') + 1, last_active_time=now()):
 				_creat_user_ship(user=user, topic=topic, n_links=1)
 			if domain:
 				if not TopicDomainShip.objects.filter(

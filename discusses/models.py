@@ -29,6 +29,9 @@ class Discuss(ContentBase):
 	def __unicode__(self):
 		return self.title + ' ' + str(self.n_comments)
 	
+	def get_absolute_url(self):
+		return '/%s/%s/' % ('discuss', str(self.id))
+	
 	
 	
 	

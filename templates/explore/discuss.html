@@ -1,0 +1,38 @@
+{% extends 'explore/base.html' %}
+{% block title %}探索 :: 讨论{% endblock %}
+{% block exp_nav_discuss %}active{% endblock %}
+{% block content %}
+<div class="row">
+<div class="pull-right">
+  {% if t == 'hot' %}24小时内最热 /{% else %}<a href="{% url explore.views.discuss %}">24小时内最热</a> /{% endif %}
+  {% if t == 'super' %}精华 /{% else %}<a href="{% url explore.views.discuss %}super/">精华</a> /{% endif %}
+  {% if t == 'new' %}最新{% else %}<a href="{% url explore.views.discuss %}new/">最新</a>{% endif %}
+</div>
+</div>
+<hr />
+
+{% for d in discusses %}
+{% with p=d.start_user.userprofile %}
+<div>
+  <div class="row">
+    <div class="span9">
+      <span><a href="{{ d.get_absolute_url }}"><h4>{{ d.title }}</h4></a><br>
+      <span><a class="fake" href="{{ d.get_absolute_url }}">{{ d.start_time|date:"Y-n-j H:i" }}</a>
+      
+      {% if d.topics %}
+      <span><small>话题</small></span>
+      {% for topic in d.topics.all %}
+      <span><a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></span>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="span1">
+      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
+    </div>
+  </div>
+  <hr />
+</div>
+{% endwith %}
+{% endfor %}
+{% include "pager.html" %}
+{% endblock %}

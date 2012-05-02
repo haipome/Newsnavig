@@ -18,6 +18,18 @@
       small {
         color: gray;
       }
+      a.fake:link {
+        color: gray;
+      }
+      a.fake:visited {
+        color: gray;
+      }
+      a.fake:hover {
+        color: gray;
+      }
+      a.fake:active {
+        color: gray;
+      }
   </style>
   
   <!-- javascript -->
@@ -39,6 +51,17 @@
         });
         
         return false;
+    }
+    function addto_topics(node) {
+        d = $(node).parent().parent().parent();
+        p = $(d).find("input");
+        v = node.innerHTML;
+        $(p).val($(p).val() + v + ' ');
+        s = $(node).parent();
+        $(node).remove();
+        $(s).append(v + ' ');
+        
+        return false
     }
   </script>
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -71,7 +94,7 @@
           </div>
             <ul class="nav pull-right">
               <li class="{% block nav_home %}{% endblock %}"><a href="/">首页</a></li>
-              <li class="{% block nav_explore %}{% endblock %}"><a href="#">探索</a></li>
+              <li class="{% block nav_explore %}{% endblock %}"><a href="/explore/">探索</a></li>
               <li class="divider-vertical"></li>
               {% block nav_people %}
               {% if user.is_authenticated %}
@@ -119,7 +142,7 @@
       <div class="span12">
       {% block body %}
       
-      {% block page_menu %} {% endblock %}
+      {% block page_menu %}{% endblock %}
 	  {% block content_title %}{% endblock %}
 
       {% block content %}{% endblock %}

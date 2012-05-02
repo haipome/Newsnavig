@@ -18,6 +18,8 @@ class Comment(ContentBase):
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 	
+	way = models.CharField(max_length=1)
+	
 	comments = generic.GenericRelation('self')
 	
 	def __unicode__(self):
@@ -25,3 +27,6 @@ class Comment(ContentBase):
 	
 	class Meta:
 		ordering = ["-id"]
+	
+	def get_absolute_url(self):
+		return '/%s/%s/' % ('comment', str(self.id))

@@ -9,6 +9,8 @@ from columns.models import Column
 from remind.utils import creat_remind
 from profiles.models import UserProfile
 from nng.settings import REMIND_NEW_FOLLOWER
+from topics.models import Topic
+from domains.models import Domain
 
 def follow(request):
 	'''
@@ -37,10 +39,27 @@ def follow(request):
 						creat_remind(column.content_object.user,
 						             user,
 						             REMIND_NEW_FOLLOWER)
+						
+						data.n_follows_user += 1
+					elif isinstance(column.content_object, Topic):
+						data.n_follows_topic += 1
+					elif isinstance(column.content_object, Domain):
+						data.n_follows_domain += 1
+					else:
+						pass
+						
 				else:
 					data.n_follows -= 1
 					data.follows.remove(column)
 					column.n_followers -= 1
+					if isinstance(column.content_object, UserProfile):
+						data.n_follows_user -= 1
+					elif isinstance(column.content_object, Topic):
+						data.n_follows_topic -= 1
+					elif isinstance(column.content_object, Domain):
+						data.n_follows_domain -= 1
+					else:
+						pass
 				data.save()
 				column.save()
 				

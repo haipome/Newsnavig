@@ -1,0 +1,17 @@
+{% extends 'explore/base.html' %}
+{% block title %}探索 :: 站点{% endblock %}
+{% block exp_nav_domain %}active{% endblock %}
+{% block content %}
+<div class="row">
+<div class="pull-right">
+  {% if t == 'hot' %}热门站点 /{% else %}<a href="{% url explore.views.domain %}">热门站点</a> /{% endif %}
+  {% if t == 'new' %}最新站点{% else %}<a href="{% url explore.views.domain %}new/">最新站点</a>{% endif %}
+</div>
+</div>
+<hr />
+
+{% for d in domains %}
+<span><a href="{{ d.get_absolute_url }}" rel="tooltip" title="{{ d.domain|add:' '|add:d.detail|truncatechars:70 }}"><strong>{{ d.get_name }}</strong></a></span>&nbsp; &nbsp;
+{% endfor %}
+
+{% endblock %}
