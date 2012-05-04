@@ -1,0 +1,3 @@
+<span><span>{% if p.user == user %}<small>支持</small>{% else %}<a class="fake" onclick="return operate(this)" id="v-{{ t }}-{{ obj.id }}" href="#">支持</a>{% endif %}</span>{% if counter %}<small class="counter">({{ obj.n_supporter }})</small>{% endif %}</span>
+<span><span>{% if p.user == user %}<small>分享</small>{% else %}<a class="fake" onclick="return operate(this)" id="s-{{ t }}-{{ obj.id }}" href="#">分享</a>{% endif %}</span>{% if counter %}<small class="counter">({{ obj.n_shares }})</small>{% endif %}</span>
+<span><span><a class="fake" onclick="return operate(this)" id="c-{{ t }}-{{ obj.id }}" href="#">收藏</a></span>{% if counter %}<small class="counter">({{ obj.n_collecter }})</small>{% endif %}</span>

@@ -1,0 +1,17 @@
+  <div class="row" id="{{ c.id }}">
+    <div class="span1">
+      <span class="pull-right">
+        {% with p=c.user.userprofile %}
+        <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a>
+      </span>
+    </div>
+    <div class="span9">
+      {% include 'user.html' with p=p %}<p></p>
+      <span>{{ c.content|urlizetrunc:20|linebreaks }}</span>
+      <span><a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a>
+      {% include 'operater.html' with t='c' obj=c counter=0 %}
+      <span><a class="fake" href="{% if c.parent_comment %}{{ c.parent_comment.get_absolute_url }}{% else %}{{ c.content_object.get_absolute_url }}{% endif %}">上一级</a></span>
+      {% endwith %}
+    </div>
+  </div>
+  <hr />

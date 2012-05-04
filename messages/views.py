@@ -121,13 +121,13 @@ def conversation(request, contact_id):
 	except:
 		return HttpResponseRedirect(reverse('message_inbox'))
 	if request.user != contact.user:
-		return Http404()
+		raise Http404
 	page = 1
 	if request.method == 'GET':
 		if 'p' in request.GET and request.GET['p']:
 			page = atoi(request.GET['p'])
 	if (page - 1) * MESSAGES_PER_PAGE >= contact.n_messages:
-		return Http404()
+		raise Http404
 	if page != 0:
 		pre_page = page - 1
 	else:
@@ -179,4 +179,4 @@ def delete(request):
 		from_url = request.META['HTTP_REFERER']
 		return HttpResponseRedirect(from_url)
 	except KeyError:
-		return Http404()
+		raise Http404

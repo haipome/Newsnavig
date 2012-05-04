@@ -1,10 +1,16 @@
 {% extends "base-sidebar.html" %}
 {% block nav_home %}active{% endblock %}
 {% block notice %}
-<div class="alert alert-info">
-  <a class="close" data-dismiss="alert">&times;</a>
-  <i class="icon-volume-up"></i>{% if user.is_authenticated %} 欢迎回来：{{ user.userprofile.get_name }}，{% endif %} NNG 新闻导航：每个人都是新闻编辑！
-</div>
+{% if messages %}
+  <div class="alert alert-info">
+     <a class="close" data-dismiss="alert">&times;</a>
+       <ul>
+         {% for message in messages %}
+           <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+         {% endfor %}
+      </ul>
+  </div>
+{% endif %}
 {% endblock %}
 
 {% block page_nav %}
@@ -18,9 +24,97 @@
 {% block content %}{% endblock %}
 
 {% block sidebar %}
-{% if user.is_authenticated %}
-<p><img src="{{ user.userprofile.avatar.get_small_url }}" /></p>
-<p><img src="{{ user.userprofile.avatar.get_medium_url }}" /></p>
-<p><img src="{{ user.userprofile.avatar.get_large_url }}" /></p>
-{% endif %}
+<div class="row">
+  <div class="span3">
+    <p><span class="pull-right"><a href="/post/">>发布</a></span></p>
+  </div>
+</div>
+<div class="row">
+  <div class="span3">
+    <p><a class="btn" data-toggle="modal" href="#post">快速发布</a></p>
+  </div>
+</div>
+
+<div class="modal hide fade" id="post">
+  <div class="tabbable"> 
+  
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">×</button>
+      <br />
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#post_link" data-toggle="tab">发布网址</a></li>
+        <li><a href="#post_discuss" data-toggle="tab">发起讨论</a></li>
+      </ul>
+    </div>
+    
+    <div class="tab-content">
+    
+      <div class="tab-pane active" id="post_link">
+        <div class="modal-body">
+          <form class="well" action="/link/post/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="goback" value="True">
+            <div>
+              <label for="id_url">网址 * </label>
+              <input id="id_url" name="url" type="text" class="span6" placeholder="http://">
+            </div>
+            <div>
+              <label for="id_title_link">标题 * </label>
+              <textarea class="span6" rows="2" id="id_title_link" name="title" maxlength="140"></textarea>
+            </div>
+            <div>
+              <label for="id_topics_link">话题 &nbsp;&nbsp;<small>（多个话题以空格分隔，不超过三个）</small></label>
+              <span><input id="id_topics_link" name="topics" type="text" class="span6">
+              {% if user_topics %}
+              <p class="help-block"><small>我的话题：</small>
+              {% for topic in user_topics %}
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a></span>
+              {% endfor %}
+              </p></span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary">发布</button>
+          </div>
+        </form>
+      </div>
+      
+      <div  class="tab-pane" id="post_discuss">
+        <div class="modal-body">
+          <form class="well" action="/discuss/post/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="goback" value="True">
+            <div>
+              <label for="id_title_discuss">标题 * </label>
+              <textarea class="span6" rows="2" id="id_title_discuss" name="title" maxlength="140"></textarea>
+            </div>
+            <div>
+              <label for="id_detail">内容 * </label>
+              <textarea class="span6" rows="4" id="id_detail" name="detail"></textarea>
+            </div>
+            <div>
+              <label for="id_topics_discuss">话题 &nbsp;&nbsp;<small>（多个话题以空格分隔，不超过三个）</small></label>
+              <span><input id="id_topics_discuss" name="topics" type="text" class="span6">
+              {% if user_topics %}
+              <p class="help-block"><small>我的话题：</small>
+              {% for topic in user_topics %}
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a></span>
+              {% endfor %}
+              </p></span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary">发布</button>
+          </div>
+        </form>
+      </div>
+      
+    </div> <!-- end tab content -->
+    
+  </div>
+</div>
 {% endblock  %}

@@ -11,7 +11,7 @@
 <hr />
 
 {% for topic in topics %}
-<span><a href="{{ topic.get_absolute_url }}" rel="tooltip" {% if topic.detail %}title="{{ topic.detail|truncatechars:70 }}" {% else %}title="{{ topic.name }}"{% endif %}><strong>{{ topic.name }}</strong></a></span>&nbsp; &nbsp;
+<span style="font-size:16px;line-height:2em;"><a href="{{ topic.get_absolute_url }}" rel="tooltip" {% if topic.detail %}title="{{ topic.detail|truncatechars:70 }}" {% else %}title="{{ topic.name }}"{% endif %}><strong>{{ topic.name }}</strong></a></span>&nbsp; &nbsp;
 {% endfor %}
 
 {% endblock %}

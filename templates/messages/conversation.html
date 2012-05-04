@@ -44,12 +44,8 @@
             {% else %}
               <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a>：
             {% endif %}
-            <span>{{ m.message|urlizetrunc:20|linebreaks }}</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="span9">
-            <small>{{ m.send_time|date:"Y-n-j H:i" }}</small>
+            <span>{{ m.message|urlize|linebreaksbr }}</span><br><br>
+            <span><small>{{ m.send_time|date:"Y-n-j H:i" }}</small></span>
             <span class="pull-right">
               <a href="{% url messages.views.delete %}?t=m&i={{ m.id }}">删除</a>
           </div>

@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="span9{% if offset %} offset1{% endif %}">
+    <form action="/comment/post/" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="reply" value="{{ reply_type }}-{{ reply_id }}">
+      <input type="hidden" name="parent" value="{{ parent_id }}">
+      <textarea type="textarea" class="span9" rows="4" name="content"></textarea>
+      <button type="submit" class="btn">回复</button>
+    </form>
+  </div>
+</div>

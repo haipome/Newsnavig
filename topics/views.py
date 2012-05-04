@@ -40,5 +40,5 @@ def edit(request, topic_name):
 		from_url = request.META['HTTP_REFERER']
 		return HttpResponseRedirect(from_url)
 	except KeyError:
-		return Http404()
+		raise Http404
 	

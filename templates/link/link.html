@@ -1,0 +1,20 @@
+<div id="{{ link.id }}">
+  <div class="row">
+    <div class="span9">
+      {% with p=link.post_user.userprofile %}
+      <span><a href="{{ link.url }}" target="_blank"><h4>{{ link.title }}</a><small>&nbsp;(<a class="fake" href="{{ link.domain.get_absolute_url }}">{{ link.domain.domain }}</a>)</small></h4></span><br>
+      <span><a class="fake" href="{{ link.get_absolute_url }}">{{ link.post_time|date:"Y-n-j" }}</a>
+      {% include 'operater.html' with t='l' obj=link counter=1 p=p%}
+      {% if link.topics %}
+      <span><small>话题</small></span>
+      {% for topic in link.topics.all %}
+      <span><a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></span>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="span1">
+      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
+      {% endwith %}
+    </div>
+  </div>
+</div>

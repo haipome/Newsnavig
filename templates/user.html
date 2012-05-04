@@ -1,0 +1,1 @@
+<span><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong>{% if p.signature %} {{ p.signature|urlizetrunc:20|truncatechars:20 }}{% endif %}{% if p.website %} <a class="fake" href="{{ p.website }}" target="_blank">{{ p.website|truncatechars:20 }}</a>{% endif %}</span>

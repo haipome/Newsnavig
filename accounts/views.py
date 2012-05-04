@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -180,5 +180,5 @@ def email_resend(request):
 				return render_to_response('accounts/regist_complete.html',
 				                         {'email': data['email']},
 	                          context_instance=RequestContext(request))
-	return Http404()
+	raise Http404
 	

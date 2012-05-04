@@ -25,13 +25,12 @@
         color: gray;
       }
       a.fake:hover {
-        color: gray;
+        color: #049cdb;
       }
       a.fake:active {
         color: gray;
       }
   </style>
-  
   <!-- javascript -->
   <script src="/static/js/jquery-1.7.2.min.js"></script>
   <script src="/static/js/bootstrap.2.02.min.js"></script>
@@ -52,6 +51,25 @@
         
         return false;
     }
+    
+    function operate(node) {
+        $.get("/operate/", { c: node.id }, function(data) {
+            if (data == 'success') {
+                p = $(node).parent();
+                pp = $(node).parent().parent();
+                $(node).remove();
+                $(p).append('<small>已' + node.innerHTML + '</small>');
+                var num = $(pp).find('small.counter').eq(0).text();
+                num = num.slice(1,num.length-1);
+                num = parseInt(num);
+                num = num + 1;
+                $(pp).find('small.counter').eq(0).text("(" + num + ")");
+            }
+        });
+        
+        return false;
+    }
+    
     function addto_topics(node) {
         d = $(node).parent().parent().parent();
         p = $(d).find("input");
@@ -63,6 +81,28 @@
         
         return false
     }
+    $(document).ready(function() {
+        $('a.fake[href*=#]').click(function() {
+            if (location.pathname.replace(/^\//,'') 
+                    == this.pathname.replace(/^\//,'')
+                    && location.hostname == this.hostname) {
+                var $target = $(this.hash);
+                $target = $target.length && $target
+                    || $('[name=' + this.hash.slice(1) +']');
+                if ($target.length) {
+                    var targetOffset = $target.offset().top - 75;
+                    var obj = document.documentElement; 
+                    if (jQuery.browser.safari) 
+                        obj = document.body
+                    if (jQuery.browser.msie) 
+                        obj = 'html';
+                    $(obj).animate({scrollTop: targetOffset}, 500);
+                    
+                    return false;
+                }
+            }
+        });
+    });
   </script>
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -103,7 +143,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="{{ user.userprofile.get_absolute_url }}"><i class="icon-user"></i> 个人主页</a></li>
                   <li class="divider"></li>
-                  <li><a href="{% url remind.views.remind %}"><i class="icon-comment"></i> 提醒 {% if user.userdata.un_read_remind %}<span class="badge">{{ user.userdata.un_read_remind }}</span>{% endif %}</a></li>
+                  <li><a href="{% if user.userdata.un_read_remind %}{% url remind.views.remind %}{% else %}{% url remind.views.remind_all %}{% endif %}"><i class="icon-comment"></i> 提醒 {% if user.userdata.un_read_remind %}<span class="badge">{{ user.userdata.un_read_remind }}</span>{% endif %}</a></li>
                   <li><a href="{% url messages.views.inbox %}"><i class=" icon-envelope"></i> 私信 {% if user.userdata.un_read_messages %}<span class="badge">{{ user.userdata.un_read_messages }}</span>{% endif %}</a></li>
                   <li class="divider"></li>
                   <li><a href="{% url settings.views.edit_profile %}"><i class=" icon-cog"></i> 设置</a></li>

@@ -8,14 +8,24 @@ from nng.settings import *
 def post_share(user, obj):
 	'''
 	'''
+	v = Share.objects.filter(user=user, object_id=obj.id)
+	if v:
+		return v[0]
+	
 	d = Dynamic(column=user.userprofile.get_column(),
 	            content_object=obj)
 	
 	if isinstance(obj, Link):
 		d.way = WAY_LINK_SHARE
+		if user == obj.post_user:
+			return True
 	elif isinstance(obj, Discuss):
 		d.way = WAY_DISCUSS_SHARE
+		if user == obj.start_user:
+			return True
 	elif isinstance(obj, Comment):
+		if user == obj.user:
+			return True
 		if isinstance(obj.content_object, Link):
 			d.way = WAY_LINK_COMMENT_SHARE
 		elif isinstance(obj.content_object, Discuss):

@@ -13,14 +13,14 @@
 {% if users %}
 {% with follows=user.userdata.follows.all %}
 {% for d in users %}
-{% with p=d.user.userprofile c=d.user.userprofile.get_column %}
+{% with p=d.user.userprofile columns=d.user.userprofile.columns.all %}
 <div>
   <div class="row">
     <div class="span1">
       <span class="pull-right"><a href="{{p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
     </div>
     <div class="span7">
-      <span><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong><span>
+      <span><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong></span>
       {% if p.signature %}<span>, {{ p.signature|urlizetrunc:20 }}</span>{% endif %}
       {% if p.website %}<span>, <a href="{{ p.website }}" target="_blank">{{ p.website|truncatechars:20 }}</a></span>{% endif %}
       <br>
@@ -28,7 +28,9 @@
       
     </div>
     <div class="span2">
+      {% with c=columns.0 %}
       {% if user != d.user %}<span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if c in follows %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>{% endif %}
+      {% endwith %}
     </div>
   </div>
   <hr />

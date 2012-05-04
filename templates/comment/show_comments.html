@@ -1,0 +1,24 @@
+{% for comment in comments %}
+  {% with o=comment.0 l=comment.1 c=comment.2 %}
+  {% with p=c.user.userprofile %}
+<div id="{{ c.id }}">
+  <div class="row">
+    <div class="span1 {% if o %}offset{{ o }}{% endif %}">
+      <span class="pull-right">
+        <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a>
+      </span>
+    </div>
+    <div class="span{{ l }}">
+      <p>{% include 'user.html' with p=p %}</p>
+      <span>{{ c.content|urlizetrunc:20|linebreaks }}</span>
+      <span><a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a></span>
+      <span><a class="fake" href="{{ c.get_absolute_url }}">回复</a></span>
+      {% include 'operater.html' with t='c' obj=c counter=False %}
+      <span><a class="fake" href="#{% firstof c.parent_comment_id c.object_id %}">上一级</a></span>
+    </div>
+  </div>
+</div>
+  <hr />
+  {% endwith %}
+  {% endwith %}
+{% endfor %}

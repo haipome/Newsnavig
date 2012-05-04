@@ -7,16 +7,19 @@
     <li class="active"><a href="{% url remind.views.remind_all %}">所有提醒</a></li>
   </ul>
 </div>
+<br />
 {% endblock %}
 {% block content %}
 {% if reminds %}
   {% for remind in reminds %}
-  {% with f=remind.from_user.userprofile w=remind.way c=remind.comment t=remind.time %}
+  {% with p=remind.from_user.userprofile w=remind.way c=remind.comment t=remind.time %}
     {% if w == 'z' %}
       {% include 'remind/new_follower.html' %}
-    
+    {% elif w == 'y' %}
+      {% include 'remind/new_comment.html' %}
     {% endif %}
   {% endwith %}
+  <hr />
   {% endfor %}
 {% else %}
 <br><br><br><br>

@@ -1,0 +1,21 @@
+<div id="{{ d.id }}">
+  <div class="row">
+    <div class="span9">
+      {% with p=d.start_user.userprofile %}
+      <span><a href="{{ d.get_absolute_url }}"><h4>{{ d.title }}</h4></a><br>
+      <span>{{ d.detail|urlizetrunc:20|linebreaks }}</span>
+      <span><a class="fake" href="{{ d.get_absolute_url }}">{{ d.start_time|date:"Y-n-j" }}</a>
+      {% include 'operater.html' with t='d' obj=d counter=1 p=p %}
+      {% if d.topics %}
+      <span><small>话题</small></span>
+      {% for topic in d.topics.all %}
+      <span><a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></span>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="span1">
+      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
+      {% endwith %}
+    </div>
+  </div>
+</div>

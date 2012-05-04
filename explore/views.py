@@ -57,20 +57,20 @@ def link(request, t='hot'):
 		        post_time__gt=start_time).order_by(
 		        '-n_supporter', '-id').all(
 		        )[s:e].prefetch_related(
-		       'post_user__userprofile__avatar', 'topics')
+		       'post_user__userprofile__avatar', 'topics', 'domain')
 	elif t == 'super':
 		links = Link.objects.filter(
 		        is_visible=True).filter(
 		        is_boutique=True).all(
 		        )[s:e].prefetch_related(
-		       'post_user__userprofile__avatar', 'topics')
+		       'post_user__userprofile__avatar', 'topics', 'domain')
 	elif t == 'new':
 		links = Link.objects.filter(
 		        is_visible=True).all(
 		        )[s:e].prefetch_related(
-		       'post_user__userprofile__avatar', 'topics')
+		       'post_user__userprofile__avatar', 'topics', 'domain')
 	else:
-		return Http404()
+		raise Http404
 	
 	if len(links) < MESSAGES_PER_PAGE:
 		next_page = False
@@ -106,11 +106,12 @@ def discuss(request, t='hot'):
 		       'start_user__userprofile__avatar', 'topics')
 	elif t == 'new':
 		discusses = Discuss.objects.filter(
-		        is_visible=True).all(
+		        is_visible=True).order_by(
+		        '-id').all(
 		        )[s:e].prefetch_related(
 		       'start_user__userprofile__avatar', 'topics')
 	else:
-		return Http404()
+		raise Http404
 	
 	if len(discusses) < MESSAGES_PER_PAGE:
 		next_page = False
@@ -136,21 +137,21 @@ def comment(request, t='hot'):
 		        time__gt=start_time).order_by(
 		        '-n_supporter', '-id').all(
 		        )[s:e].prefetch_related(
-		       'user__userprofile__avatar', 'content_object')
+		       'user__userprofile__avatar', 'content_object', 'parent_comment')
 	elif t == 'super':
 		comments = Comment.objects.filter(
 		        is_visible=True).filter(
 		        is_boutique=True).order_by(
 		        '-id').all(
 		        )[s:e].prefetch_related(
-		       'user__userprofile__avatar', 'content_object')
+		       'user__userprofile__avatar', 'content_object', 'parent_comment')
 	elif t == 'new':
 		comments = Comment.objects.filter(
 		        is_visible=True).all(
 		        )[s:e].prefetch_related(
-		       'user__userprofile__avatar', 'content_object')
+		       'user__userprofile__avatar', 'content_object', 'parent_comment')
 	else:
-		return Http404()
+		raise Http404
 	
 	if len(comments) < MESSAGES_PER_PAGE:
 		next_page = False
@@ -168,14 +169,14 @@ def user(request, t='hot'):
 	'''
 	if t == 'hot':
 		users = UserData.objects.order_by(
-		        'this_month_vote', 'id').all(
+		        '-this_month_vote', 'id').all(
 		        )[:MESSAGES_PER_PAGE].prefetch_related(
-		        'user__userprofile__avatar')
+		        'user__userprofile__avatar', 'user__userprofile__columns')
 	elif t == 'new':
 		users = UserData.objects.order_by(
 		        '-id').all(
 		        )[:MESSAGES_PER_PAGE].prefetch_related(
-		        'user__userprofile__avatar')
+		        'user__userprofile__avatar', 'user__userprofile__columns')
 	
 	return render_to_response('explore/user.html',
 	                         {'users': users,
@@ -187,7 +188,7 @@ def topic(request, t='hot'):
 	'''
 	if t == 'hot':
 		topics = Topic.objects.order_by(
-		        'n_links', 'id').all(
+		        '-n_links', 'id').all(
 		        )[:MESSAGES_PER_PAGE * 10]
 	elif t == 'new':
 		topics = Topic.objects.order_by(
@@ -204,7 +205,7 @@ def domain(request, t='hot'):
 	'''
 	if t == 'hot':
 		domains = Domain.objects.order_by(
-		        'n_links', 'id').all(
+		        '-n_links', 'id').all(
 		        )[:MESSAGES_PER_PAGE * 10]
 	elif t == 'new':
 		domains = Domain.objects.order_by(

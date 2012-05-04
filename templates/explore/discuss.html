@@ -13,12 +13,13 @@
 
 {% for d in discusses %}
 {% with p=d.start_user.userprofile %}
-<div>
+<div id="{{ d.id }}">
   <div class="row">
     <div class="span9">
       <span><a href="{{ d.get_absolute_url }}"><h4>{{ d.title }}</h4></a><br>
-      <span><a class="fake" href="{{ d.get_absolute_url }}">{{ d.start_time|date:"Y-n-j H:i" }}</a>
-      
+      <span><a class="fake" href="{{ d.get_absolute_url }}">{{ d.start_time|date:"Y-n-j" }}</a>
+      <span><a class="fake" href="{{ d.get_absolute_url }}">{% firstof d.n_comments '' %} 回复</a>
+      {% include 'operater.html' with t='d' p=p obj=d counter=1 %}
       {% if d.topics %}
       <span><small>话题</small></span>
       {% for topic in d.topics.all %}

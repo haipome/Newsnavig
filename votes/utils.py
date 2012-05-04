@@ -6,6 +6,8 @@ from topics.utils import topic_ship_update
 from django.utils import timezone
 from nng.settings import HOT_RATE, BOUTIQUE_RATE
 from dynamic.models import Dynamic
+from nng.settings import WAY_LINK_TOPIC_POST, WAY_DISCUSS_TOPIC_POST
+from globalvars.utils import get_averages
 
 def is_this_month(now, time):
 	if not time:
@@ -33,9 +35,13 @@ def is_last2_month(now, time):
 		return True
 	return False
 
-def vote(user, obj):
+def vote_obj(user, obj):
 	'''
 	'''
+	v = Vote.objects.filter(user=user, object_id=obj.id)
+	if v:
+		return v[0]
+	
 	if isinstance(obj, Link):
 		to_user = obj.post_user
 	elif isinstance(obj, Discuss):
@@ -44,6 +50,9 @@ def vote(user, obj):
 		to_user = obj.user
 	else:
 		return False
+	
+	if to_user == user:
+		return True
 	
 	data = to_user.userdata
 	data.honor += 1
@@ -75,7 +84,10 @@ def vote(user, obj):
 	obj.n_supporter += 1
 	
 	if isinstance(obj, Link):
-		for topic in obj.topics:
+		
+		average_sum = 0
+		
+		for topic in obj.topics.all():
 			column = topic.get_column()
 			if obj.n_supporter >= int(HOT_RATE * \
 			                          topic.link_average_votes) + 1:
@@ -84,14 +96,26 @@ def vote(user, obj):
 				       object_id=obj.id).count():
 					Dynamic.objects.create(column=column,
 					                       way=WAY_LINK_TOPIC_POST,
-					                       content_object=discuss)
-			if obj.n_supporter >= int(BOUTIQUE_RATE * \
-			                          topic.link_average_votes) + 1:
-				if topic.link_average_votes != 0:
-					obj.is_boutique = True
+					                       content_object=obj)
+			
+			average_sum += topic.link_average_votes
+		
+		count = obj.topics.count()
+		if count:
+			average = average_sum * 1.0 / count
+		else:
+			average = get_averages().link_average_votes
+		
+		if obj.n_supporter >= int(BOUTIQUE_RATE * average) + 1:
+			if average != 0:
+				obj.is_boutique = True
 	
-	elif isinstance(obj, discuss):
-		for topic in obj.topics:
+	
+	elif isinstance(obj, Discuss):
+		
+		average_sum = 0
+		
+		for topic in obj.topics.all():
 			column = topic.get_column()
 			if obj.n_supporter >= int(HOT_RATE * \
 			                          topic.discuss_average_votes) + 1:
@@ -99,20 +123,39 @@ def vote(user, obj):
 				       column=column).filter(
 				       object_id=obj.id).count():
 					Dynamic.objects.create(column=column,
-					                       way=WAY_LINK_TOPIC_POST,
-					                       content_object=discuss)
-			if obj.n_supporter >= int(BOUTIQUE_RATE * \
-			                          topic.discuss_average_votes) + 1:
-				if topic.discuss_average_votes != 0:
-					obj.is_boutique = True
+					                       way=WAY_DISCUSS_TOPIC_POST,
+					                       content_object=obj)
+			
+			average_sum += topic.discuss_average_votes
+		
+		count = obj.topics.count()
+		if count:
+			average = average_sum * 1.0 / count
+		else:
+			average = get_averages().discuss_average_votes
+		
+		if obj.n_supporter >= int(BOUTIQUE_RATE * average) + 1:
+			if average != 0:
+				obj.is_boutique = True
 	
 	
 	else:
-		if obj.n_supporter >= int(BOUTIQUE_RATE * \
-		                          topic.comment_average_votes) + 1:
-			if topic.comment_average_votes != 0:
+		
+		average_sum = 0
+		
+		for topic in obj.content_object.topics.all():
+			
+			average_sum += topic.comments_average_votes
+		
+		count = obj.content_object.topics.count()
+		if count:
+			average = average_sum * 1.0 / count
+		else:
+			average = get_averages().comments_average_votes
+		
+		if obj.n_supporter >= int(BOUTIQUE_RATE * average) + 1:
+			if average != 0:
 				obj.is_boutique = True
-	
 	
 	obj.save()
 	vote = Vote.objects.create(user=user, content_object=obj)

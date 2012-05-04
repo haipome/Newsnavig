@@ -1,0 +1,24 @@
+{% extends 'base-no-sidebar.html' %}
+{% block title %}{{ ct.content|truncatechars:30 }} | newsnavig{% endblock %}
+{% block content %}
+<hr />
+{% if ct.way == 'l' %}
+{% include "link/link.html" with link=ct.content_object %}
+{% elif ct.way == 'd' %}
+{% include "discuss/discuss.html" with d=ct.content_object %}
+{% endif %}
+<hr />
+{% with pc=ct.parent_comment %}
+{% if pc %}
+{% include 'comment/comment.html' with c=pc %}
+{% endif %}
+{% endwith %}
+{% include 'comment/comment.html' with c=ct %}
+{% if ct.way == 'l' %}
+{% include "comment/comment_form.html" with reply_type='l' reply_id=ct.content_object.id parent_id=ct.id offset=1%}
+{% elif ct.way == 'd' %}
+{% include "comment/comment_form.html" with reply_type='d' reply_id=ct.content_object.id parent_id=ct.id offset=1%}
+{% endif %}
+<hr />
+{% include "comment/show_comments.html" with comments=comments %}
+{% endblock %}

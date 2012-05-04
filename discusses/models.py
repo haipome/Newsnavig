@@ -12,11 +12,11 @@ from data.models import ContentBase
 class Discuss(ContentBase):
 	'''
 	'''
+	user = models.ForeignKey(User, related_name="user_discusses")
+	
 	title = models.CharField(max_length=TITLE_MAX_LEN)
 	detail = models.TextField(blank=True)
 	
-	start_user = models.ForeignKey(User)
-	start_time = models.DateTimeField(auto_now_add=True)
 	last_active_time = models.DateTimeField(blank=True, null=True)
 	
 	topics = models.ManyToManyField(Topic, related_name="topic_discuss")

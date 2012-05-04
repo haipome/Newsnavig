@@ -54,10 +54,12 @@ class ContentBase(models.Model):
 	is_boutique = models.BooleanField(default=False, db_index=True)
 	is_can_comment = models.BooleanField(default=True)
 	
-	n_comments = models.IntegerField(default=0)
+	n_comment = models.IntegerField(default=0)
 	n_collecter = models.IntegerField(default=0)
 	n_supporter = models.IntegerField(default=1, db_index=True)
-	n_shares = models.IntegerField(default=1)
+	n_share = models.IntegerField(default=1)
+	
+	time = models.DateTimeField(auto_now_add=True)
 	
 	supporters = generic.GenericRelation(Vote)
 	

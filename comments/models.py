@@ -8,25 +8,27 @@ class Comment(ContentBase):
 	'''
 	'''
 	user = models.ForeignKey(User, related_name="user_comments")
-	time = models.DateTimeField(auto_now_add=True)
+	
 	content = models.TextField()
+	way = models.CharField(max_length=1) # 'l' or 'd'
 	
 	parent_comment = models.ForeignKey('self', null=True, blank=True,
-	                                   related_name='follow_comment')
+	                                   related_name='follow_comments')
 	
 	content_type=models.ForeignKey(ContentType, related_name='comments_type')
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 	
-	way = models.CharField(max_length=1)
-	
 	comments = generic.GenericRelation('self')
 	
 	def __unicode__(self):
-		return self.user.username + ' ' + str(self.n_reply)
+		return self.user.username + ' ' + str(self.n_supporter)
 	
 	class Meta:
 		ordering = ["-id"]
 	
 	def get_absolute_url(self):
 		return '/%s/%s/' % ('comment', str(self.id))
+	
+	def get_relative_url(self):
+		return '%s#%s' % (self.content_object.get_absolute_url(), self.id) 

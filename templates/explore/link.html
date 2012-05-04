@@ -13,12 +13,13 @@
 
 {% for link in links %}
 {% with p=link.post_user.userprofile %}
-<div>
+<div id="{{ link.id }}">
   <div class="row">
     <div class="span9">
-      <span><a href="{{ link.url }}" target="_blank"><h4>{{ link.title }} <small><a href="{{ link.domain.get_absolute_url }}">({{ link.domain.domain }})</a></small></h4></a><br>
-      <span><a class="fake" href="{{ link.get_absolute_url }}">{{ link.post_time|date:"Y-n-j H:i" }}</a>
-      
+      <span><a href="{{ link.url }}" target="_blank"><h4>{{ link.title }} <small>(<a class="fake" href="{{ link.domain.get_absolute_url }}">{{ link.domain.domain }}</a>)</small></h4></a><br>
+      <span><a class="fake" href="{{ link.get_absolute_url }}">{{ link.post_time|date:"Y-n-j" }}</a></span>
+      <span><a class="fake" href="{{ link.get_absolute_url }}">{% firstof link.n_comments '' %} 回复</a></span>
+      {% include 'operater.html' with t='l' obj=link counter=1 %}
       {% if link.topics %}
       <span><small>话题</small></span>
       {% for topic in link.topics.all %}

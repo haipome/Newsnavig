@@ -17,9 +17,11 @@ urlpatterns = patterns('',
     url(r'^message/', include('messages.urls'), name='message'),
     url(r'^remind/', include('remind.urls'), name='remind'),
     url(r'^follow/', include('data.urls'), name='follow'),
+    url(r'^operate/', include('votes.urls'), name='vote'),
     
     url(r'^link/', include('links.urls'), name='link'),
     url(r'^discuss/', include('discusses.urls'), name='discuss'),
+    url(r'^comment/', include('comments.urls'), name='comment'),
     
     url(r'^people/', include('profiles.urls'), name='people'),
     url(r'^topic/', include('topics.urls'), name='topic'),

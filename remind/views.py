@@ -4,6 +4,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from nng.settings import MESSAGES_PER_PAGE
 from models import Remind
@@ -57,7 +58,7 @@ def remind_all(request):
 			page = atoi(request.GET['p'])
 	
 	if page != 1 and ((page - 1) * MESSAGES_PER_PAGE) >= user.userdata.n_reminds:
-		return Http404()
+		raise Http404
 	
 	if page != 0:
 		pre_page = page - 1
