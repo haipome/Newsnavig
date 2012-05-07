@@ -6,6 +6,8 @@ from discusses.models import Discuss
 from dynamic.models import Dynamic
 from nng.settings import *
 from remind.utils import creat_remind
+from django.utils import timezone
+from discusses.models import DiscussIndex
 
 def post_comment(user, content, obj, parent=None):
 	'''
@@ -17,7 +19,7 @@ def post_comment(user, content, obj, parent=None):
 	
 	if parent and isinstance(parent, Comment):
 		comment.parent_comment = parent
-		parent.n_comments += 1
+		parent.n_comment += 1
 		parent.save()
 	
 	topics = obj.topics.all()
@@ -40,26 +42,36 @@ def post_comment(user, content, obj, parent=None):
 		if user != parent.user:
 			creat_remind(parent.user, user, REMIND_NEW_COMMENT, comment)
 	else:
-		if isinstance(obj, Link):
-			if user != obj.post_user:	
-				creat_remind(obj.post_user, user, REMIND_NEW_COMMENT, comment)
-		else:
-			if user != obj.start_user:
-				creat_remind(obj.start_user, user, REMIND_NEW_COMMENT, comment)
+		if user != obj.user:
+			creat_remind(obj.user, user, REMIND_NEW_COMMENT, comment)
 	
 	if isinstance(obj, Link):
 		Dynamic.objects.create(column=user.userprofile.get_column(),
 		                       way=WAY_LINK_COMMENT,
-		                       content_object=comment)
+		                       content_object=comment,
+		                       comment_object=obj)
 	
-	if isinstance(obj, Discuss):
+	elif isinstance(obj, Discuss):
 		Dynamic.objects.create(column=user.userprofile.get_column(),
 		                       way=WAY_DISCUSS_COMMENT,
-		                       content_object=comment)
+		                       content_object=comment,
+		                       comment_object=obj)
+		
+		DiscussIndex.objects.filter(discuss=obj).update(
+		                            last_active_time=timezone.now(),
+		                            last_active_user=user)
+		
+		obj.last_active_time = timezone.now()
+		obj.last_active_user = user
+		
+		if not user.userdata.discusses.filter(id=obj.id).count():
+			user.userdata.discusses.add(obj)
+		
+	else:
+		pass
 	
-	obj.n_comments += 1
+	obj.n_comment += 1
 	obj.save()
-	
 	
 	return comment
 
@@ -68,26 +80,31 @@ def obj_cmp(obj1, obj2):
 	if obj1.n_supporter != obj2.n_supporter:
 		return -cmp(obj1.n_supporter, obj2.n_supporter)
 	else:
-		return -cmp(obj1.id, obj2.id)
+		return cmp(obj1.id, obj2.id)
 
-
-def process(offset, length, l, all_l, add_to):
-	
+def get_offset(deep, length):
 	base = length - 4
-	o = offset % (2 * base)
-	if o >= base:
-		o = base - (o - base)
-		
+	offset = deep %(2 * base)
+	if offset >= base:
+		offset = base - (offset - base)
+	
+	return offset
+
+def process(deep, length, l, all_l, add_to):
+	
+	o = get_offset(deep, length)
+	
 	for i in l:
-		add_to.append((o, length - o, i))
-		if i.n_comments:
+		if i.is_visible == True:
+			add_to.append((o, length - o, i))
+		if i.n_comment:
 			temp_l = []
 			for j in all_l:
 				if j.parent_comment_id == i.id:
 					temp_l.append(j)
 			if temp_l:
 				temp_l.sort(obj_cmp)
-				process(offset + 1, length, temp_l, all_l, add_to)
+				process(deep + 1, length, temp_l, all_l, add_to)
 
 def comment_sort(comments, length):
 	'''

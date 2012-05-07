@@ -7,6 +7,7 @@ from nng.settings import *
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes import generic
 from columns.models import Column
+from columns.utils import create_column
 
 class UserProfile(models.Model):
 	'''
@@ -27,10 +28,7 @@ class UserProfile(models.Model):
 	
 	
 	def get_name(self):
-		if self.name:
-			return self.name
-		else:
-			return self.user.username
+		return self.name
 	
 	def __unicode__(self):
 		return self.get_name()
@@ -47,7 +45,7 @@ class UserProfile(models.Model):
 			return False
 	
 	def change_name(self, name):
-		if self.is_can_change_name():
+		if self.is_can_change_name() and name:
 			self.name = name
 			self.name_change_time = now()
 			self.save()
@@ -70,4 +68,4 @@ class UserProfile(models.Model):
 		try:
 			return self.columns.all()[0]
 		except:
-			return None
+			return create_column(self)

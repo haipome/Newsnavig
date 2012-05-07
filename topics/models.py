@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from domains.models import Domain, TagProfile
+from columns.utils import create_column
 
 class Topic(TagProfile):
 	'''
@@ -10,7 +11,7 @@ class Topic(TagProfile):
 	
 	link_average_votes = models.FloatField(default=0.0)
 	discuss_average_votes = models.FloatField(default=0.0)
-	comments_average_votes = models.FloatField(default=0.0)
+	comment_average_votes = models.FloatField(default=0.0)
 	
 	users = models.ManyToManyField(User,
 	                               through='TopicUserShip',
@@ -26,10 +27,13 @@ class Topic(TagProfile):
 		try:
 			return self.columns.all()[0]
 		except:
-			return None
+			return create_column(self)
 	
 	def get_absolute_url(self):
 		return '/%s/%s/' % ('topic', self.name)
+	
+	def get_name(self):
+		return self.name
 
 class TopicBaseShip(models.Model):
 	'''

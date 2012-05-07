@@ -18,12 +18,13 @@
       <div class="span9">
         <div class="row">
           <div class="span9">
+            <p>
             {% if m.sender == user %}
               我对 <a href="{{ m.receiver.userprofile.get_absolute_url }}">{{ m.receiver.userprofile.get_name }}</a> 说：
             {% else %}
               <a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a> 对我说：
             {% endif %}
-            <span>{{ m.message|urlize|truncatechars:100 }}</span><br><br>
+            {{ m.message|urlize|truncatechars:100 }}</p>
             <span><small>{{ t|date:"Y-n-j H:i" }}</small></span>
             <span class="pull-right">
               {% if u %}<a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | {% endif %}
@@ -39,7 +40,6 @@
   {% endwith %}
   {% endfor %}
 {% else %}
-<hr />
 <br><br><br><br>
 {% endif %}
 {% include "pager.html" %}

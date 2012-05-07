@@ -85,6 +85,7 @@ class AccountManager(UserManager):
 		except:
 			anonymous = self.create_anonymous()
 		profile.avatar = anonymous.userprofile.avatar
+		profile.name = username
 		profile.save()
 		
 		# print 'send create_user_done signal'

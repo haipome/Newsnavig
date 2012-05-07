@@ -9,8 +9,8 @@
       </div>
     </div>
     <div class="span7">
-      <h3><a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></h3><hr />
-        <span>{{ topic.detail|urlizetrunc:20 }}</span>
+      <h3>话题：<a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></h3><hr />
+        {{ topic.detail|urlizetrunc:20|linebreaksbr }}
         <a data-toggle="modal" href="#topic_edit"><i class="icon-edit"></i><small>编辑</small></a>
         <hr />
     </div>

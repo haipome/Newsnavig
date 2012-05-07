@@ -9,11 +9,12 @@
       </div>
     </div>
     <div class="span7">
+      <h3>站点：
       {% if domain.name %}
-      <strong><a href="{{ domain.get_absolute_url }}">{{ domain.name }}</a></strong>
+      <a href="{{ domain.get_absolute_url }}">{{ domain.name }}</a>&nbsp;
       {% endif %}
-      <a href="{{ domain.get_domain_url }}" target="_blank">{{ domain.domain }}</a><hr />
-      <span>{{ domain.detail|urlizetrunc:20 }}</span>
+      <a href="{{ domain.get_domain_url }}" target="_blank">{{ domain.domain }}</a></h3><hr />
+      {{ domain.detail|urlizetrunc:20|linebreaksbr }}
       <a data-toggle="modal" href="#domain_edit"><i class="icon-edit"></i><small>编辑</small></a>
       <hr />
     </div>

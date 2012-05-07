@@ -5,6 +5,7 @@ from topics.utils import add_link_topic
 from globalvars.utils import get_available_id
 from dynamic.models import Dynamic
 from nng.settings import *
+import googl
 
 def _get_complete_url(url):
 	o = urlparse(url)
@@ -17,10 +18,19 @@ def post_link(user, url, title, topic_names):
 	'''
 	'''
 	url = _get_complete_url(url)
-	
-	link = Link(id= get_available_id(), url=url, post_user=user, title=title)
-	
 	domain = add_link_domain(url)
+	
+	if len(url) > URL_MAX_LEN:
+		client = googl.Googl("AIzaSyDL2zRCt7DmDZV-1_QQY6HZnterAZ3Kv84")
+		try:
+			result = client.shorten(url)
+		except:
+			return False
+		else:
+			url = result['id']
+	
+	link = Link(id= get_available_id(), url=url, user=user, title=title)
+	
 	if domain:
 		link.domain = domain
 	else:
@@ -32,12 +42,6 @@ def post_link(user, url, title, topic_names):
 	
 	link.save()
 	
-	'''
-	for topic in link.topics.all():
-		Dynamic.objects.create(column=topic.get_column(),
-		                       way=WAY_LINK_TOPIC_POST,
-		                       content_object=link)
-	'''
 	Dynamic.objects.create(column=domain.get_column(),
 	                       way=WAY_LINK_DOMAIN_POST,
 	                       content_object=link)

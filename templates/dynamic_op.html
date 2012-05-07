@@ -1,0 +1,9 @@
+<small><a class="fake" href="{{ c.get_absolute_url }}">{% if time.date == today %}今天&nbsp;{{ time|time:"H:i" }}{% else %}{{ time|date:"n月j日" }}{% endif %}</a>&nbsp;&nbsp;</small>
+<small><a class="fake" href="{{ c.get_absolute_url }}">{% firstof c.n_comment '' %}回复</a>&nbsp;&nbsp;</small>
+{% if w in 'abcd' %}
+  {% include 'operater.html' with t='l' obj=c p=p %}
+{% elif w in 'efg' %}
+  {% include 'operater.html' with t='d' obj=c p=p %}
+{% elif w in 'hijk' %}
+  {% include 'operater.html' with t='c' obj=c p=p %}
+{% endif %}

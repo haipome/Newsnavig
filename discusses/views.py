@@ -20,7 +20,6 @@ from comments.models import Comment
 def post(request):
 	'''
 	'''
-	form = DiscussPostForm()
 	user = request.user
 	
 	if request.method == 'POST':
@@ -28,8 +27,9 @@ def post(request):
 		if form.is_valid():
 			data = form.cleaned_data
 			title, detail, topics_n = (data['title'], data['detail'],
-			        data['topics'].split(' ')[:MAX_TOPICS_NUMBER])
+			        data['topics'].split(' '))
 			
+			title = title[:TITLE_MAX_LEN]
 			topics = topics_get(topics_n)
 			
 			d = post_discuss(user, title, detail, topics)
@@ -61,3 +61,5 @@ def show_discuss(request, discuss_id):
 	                         {'d': discuss,
 	                          'comments': comments},
 	                         context_instance=RequestContext(request))
+	
+

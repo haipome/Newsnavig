@@ -52,16 +52,15 @@ def post(request):
 				parent = None
 			
 			
-			if post_comment(user, content, obj, parent):
-				pass
+			c = post_comment(user, content, obj, parent)
+			if not c:
+				try:
+					from_url = request.META['HTTP_REFERER']
+					return HttpResponseRedirect(from_url)
+				except KeyError:
+					pass
 	
-	try:
-		from_url = request.META['HTTP_REFERER']
-		return HttpResponseRedirect(from_url)
-	except KeyError:
-		pass
-	
-	return HttpResponseRedirect(reverse('homepage'))
+	return HttpResponseRedirect(reverse(show_comment, args=[c.id]))
 	
 
 def show_comment(request, comment_id):

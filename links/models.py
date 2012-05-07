@@ -8,16 +8,16 @@ from votes.models import Vote
 from shares.models import Share
 from collect.models import Collect
 from nng.settings import TITLE_MAX_LEN, URL_MAX_LEN
-from data.models import ContentBase
+from globalvars.models import ContentBase
 
 
 class Link(ContentBase):
 	'''
 	'''
+	user = models.ForeignKey(User, related_name="user_links")
+	
 	url = models.URLField(max_length=URL_MAX_LEN, db_index=True)
 	title = models.CharField(max_length=TITLE_MAX_LEN)
-	post_time = models.DateTimeField(auto_now_add=True, db_index=True)
-	post_user = models.ForeignKey(User, related_name="user_links")
 	
 	domain = models.ForeignKey(Domain, related_name="domain_links")
 	topics = models.ManyToManyField(Topic, related_name="topic_links")
@@ -28,7 +28,7 @@ class Link(ContentBase):
 		ordering = ['-id']
 	
 	def __unicode__(self):
-		return self.title + ' ' +  str(self.n_comments)
+		return self.title + ' ' +  str(self.n_comment)
 	
 	def get_absolute_url(self):
 		return '/%s/%s/' % ('link', str(self.id))

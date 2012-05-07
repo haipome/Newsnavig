@@ -12,7 +12,7 @@
             <label class="control-label" for="id_name">名号</label>
             <div class="controls">
               <input id="id_name" name="name" type="text" class="input-xlarge" maxlength="10" value="{{ name }}"{% if not user.userprofile.is_can_change_name %} disabled{% endif %}>
-              <p class="help-block"><small>{{ time_limit }} 天内名号只能修改一次</small></p>
+              <p class="help-block"><small>英文汉字皆可，{{ time_limit }} 天内名号只能修改一次</small></p>
             </div>
           </div>
           <div class="control-group">

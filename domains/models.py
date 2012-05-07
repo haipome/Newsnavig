@@ -3,6 +3,7 @@ from avatars.models import Avatar
 from django.contrib.contenttypes import generic
 from columns.models import Column
 from nng.settings import NAME_MAX_LEN
+from columns.utils import create_column
 
 class TagProfile(models.Model):
 	'''
@@ -25,7 +26,6 @@ class Domain(TagProfile):
 	'''
 	'''
 	domain = models.CharField(max_length=64, db_index=True)
-	# will create a same name topic
 	
 	def __unicode__(self):
 		return '%s: %s' % (self.domain, self.name)
@@ -43,7 +43,7 @@ class Domain(TagProfile):
 		try:
 			return self.columns.all()[0]
 		except:
-			return None
+			return create_column(self)
 		
 	def get_absolute_url(self):
 		return '/%s/%s/' % ('domain', self.domain)

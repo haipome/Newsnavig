@@ -1,0 +1,82 @@
+<div class="modal hide fade" id="post">
+  <div class="tabbable"> 
+  
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">×</button>
+      <br />
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#post_link" data-toggle="tab">发布网址</a></li>
+        <li><a href="#post_discuss" data-toggle="tab">发起讨论</a></li>
+      </ul>
+    </div>
+    
+    <div class="tab-content">
+    
+      <div class="tab-pane active" id="post_link">
+        <div class="modal-body">
+          <form class="well" action="/link/post/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="goback" value="True">
+            <div>
+              <label for="id_url">网址 * </label>
+              <input id="id_url" name="url" type="text" class="span6" placeholder="http://">
+            </div>
+            <div>
+              <label for="id_title_link">标题 * </label>
+              <textarea class="span6" rows="3" id="id_title_link" name="title" maxlength="300"></textarea>
+            </div>
+            <div>
+              <label for="id_topics_link">话题 &nbsp;&nbsp;<small>（多个话题以空格分隔，不超过三个）</small></label>
+              <span><input id="id_topics_link" name="topics" type="text" class="span6">
+              {% if user_topics %}
+              <p class="help-block"><small>我的话题：</small>
+              {% for topic in user_topics %}
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a>&nbsp;</span>
+              {% endfor %}
+              </p></span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary">发布</button>
+          </div>
+        </form>
+      </div>
+      
+      <div  class="tab-pane" id="post_discuss">
+        <div class="modal-body">
+          <form class="well" action="/discuss/post/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="goback" value="True">
+            <div>
+              <label for="id_title_discuss">标题 * </label>
+              <textarea class="span6" rows="2" id="id_title_discuss" name="title" maxlength="300"></textarea>
+            </div>
+            <div>
+              <label for="id_detail">内容 * </label>
+              <textarea class="span6" rows="4" id="id_detail" name="detail"></textarea>
+            </div>
+            <div>
+              <label for="id_topics_discuss">话题 &nbsp;&nbsp;<small>（多个话题以空格分隔，不超过三个）</small></label>
+              <span><input id="id_topics_discuss" name="topics" type="text" class="span6">
+              {% if user_topics %}
+              <p class="help-block"><small>我的话题：</small>
+              {% for topic in user_topics %}
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a>&nbsp;</span>
+              {% endfor %}
+              </p></span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary">发布</button>
+          </div>
+        </form>
+      </div>
+      
+    </div> <!-- end tab content -->
+    
+  </div>
+</div>

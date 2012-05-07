@@ -54,21 +54,23 @@ def link(request, t='hot'):
 		start_time = now() - oneday
 		links = Link.objects.filter(
 		        is_visible=True).filter(
-		        post_time__gt=start_time).order_by(
-		        '-n_supporter', '-id').all(
+		        time__gt=start_time).order_by(
+		        '-n_supporter', 'id').all(
 		        )[s:e].prefetch_related(
-		       'post_user__userprofile__avatar', 'topics', 'domain')
+		       'user__userprofile__avatar', 'topics', 'domain')
 	elif t == 'super':
 		links = Link.objects.filter(
 		        is_visible=True).filter(
-		        is_boutique=True).all(
+		        is_boutique=True).order_by(
+		        '-id').all(
 		        )[s:e].prefetch_related(
-		       'post_user__userprofile__avatar', 'topics', 'domain')
+		       'user__userprofile__avatar', 'topics', 'domain')
 	elif t == 'new':
 		links = Link.objects.filter(
-		        is_visible=True).all(
+		        is_visible=True).order_by(
+		        '-id').all(
 		        )[s:e].prefetch_related(
-		       'post_user__userprofile__avatar', 'topics', 'domain')
+		       'user__userprofile__avatar', 'topics', 'domain')
 	else:
 		raise Http404
 	
@@ -93,23 +95,23 @@ def discuss(request, t='hot'):
 		start_time = now() - oneday
 		discusses = Discuss.objects.filter(
 		        is_visible=True).filter(
-		        start_time__gt=start_time).order_by(
-		        '-n_supporter', '-id').all(
+		        time__gt=start_time).order_by(
+		        '-n_supporter', 'id').all(
 		        )[s:e].prefetch_related(
-		       'start_user__userprofile__avatar', 'topics')
+		       'user__userprofile__avatar', 'topics')
 	elif t == 'super':
 		discusses = Discuss.objects.filter(
 		        is_visible=True).filter(
 		        is_boutique=True).order_by(
 		        '-id').all(
 		        )[s:e].prefetch_related(
-		       'start_user__userprofile__avatar', 'topics')
+		       'user__userprofile__avatar', 'topics')
 	elif t == 'new':
 		discusses = Discuss.objects.filter(
 		        is_visible=True).order_by(
 		        '-id').all(
 		        )[s:e].prefetch_related(
-		       'start_user__userprofile__avatar', 'topics')
+		       'user__userprofile__avatar', 'topics')
 	else:
 		raise Http404
 	
@@ -135,7 +137,7 @@ def comment(request, t='hot'):
 		comments = Comment.objects.filter(
 		        is_visible=True).filter(
 		        time__gt=start_time).order_by(
-		        '-n_supporter', '-id').all(
+		        '-n_supporter', 'id').all(
 		        )[s:e].prefetch_related(
 		       'user__userprofile__avatar', 'content_object', 'parent_comment')
 	elif t == 'super':
@@ -147,7 +149,8 @@ def comment(request, t='hot'):
 		       'user__userprofile__avatar', 'content_object', 'parent_comment')
 	elif t == 'new':
 		comments = Comment.objects.filter(
-		        is_visible=True).all(
+		        is_visible=True).order_by(
+		        '-id').all(
 		        )[s:e].prefetch_related(
 		       'user__userprofile__avatar', 'content_object', 'parent_comment')
 	else:

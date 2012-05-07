@@ -1,0 +1,75 @@
+{% extends 'index.html' %}
+{% block nav_discuss %}active{% endblock %}
+{% block title %}讨论 - NNG{% endblock %}
+{% block index_nav_discuss %}active{% endblock %}
+{% block content %}
+<div class="row">
+<div class="pull-right">
+  {% if t == 'follow' %}我关注的 /{% else %}<a href="/discuss/">我关注的</a> /{% endif %}
+  {% if t == 'reply' %}我回复过的 /{% else %}<a href="/discuss/reply/">我回复过的</a> /{% endif %}
+  {% if t == 'me' %}我发起的{% else %}<a href="/discuss/me/">我发起的</a>{% endif %}
+</div>
+</div>
+<hr />
+{% if discusses %}
+{% if t == 'follow' %}
+{% for d in discusses %}
+{% with c=d.discuss w=d.way o=d.column.content_object p=d.discuss.user.userprofile t=d.last_active_time l=d.last_active_user %}
+{% spaceless %}
+<div>
+  <div class="row">
+    <div class="span7">
+      <p><a href="{{ c.get_absolute_url }}"><h4>{{ c.title }}</h4></a></p>
+      <p>
+        {% include 'dynamic_op.html' with time=t %}
+        <small>&nbsp;&nbsp;</small>
+        {% if w == 'f' %}
+          <small>话题&nbsp;</small>
+        {% endif %}
+          <small><a href="{{ o.get_absolute_url }}">{{ o.get_name }}</a>&nbsp;</small>
+        {% if w == 'e' %}
+          <small>发起了该讨论</small>
+        {% elif w == 'f' %}
+          <small>添加了该讨论</small>
+        {% endif %}
+        {% if l %}
+          <small>&nbsp;&nbsp;最后回复：<a href="{{ l.userprofile.get_absolute_url }}">{{ l.userprofile.get_name }}</a></small>
+        {% endif %}
+      </p>
+    </div>
+    <div class="span1">
+      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
+    </div>
+  </div>
+</div>
+<hr />
+{% endspaceless %}
+{% endwith %}
+{% endfor %}
+
+{% else %}
+{% for d in discusses %}
+{% with p=d.user.userprofile t=d.last_active_time l=d.last_active_user %}
+{% spaceless %}
+<div>
+  <div class="row">
+    <div class="span7">
+      <p><a href="{{ d.get_absolute_url }}"><h4>{{ d.title }}</h4></a></p>
+      <p>
+        {% include 'dynamic_op.html' with c=d w='e' time=t %}
+        {% if l %}
+          <small>&nbsp;&nbsp;最后回复：<a href="{{ l.userprofile.get_absolute_url }}">{{ l.userprofile.get_name }}</a></small>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+<hr />
+{% endspaceless %}
+{% endwith %}
+{% endfor %}
+{% endif %}
+
+{% endif %}
+{% include "pager.html" %}
+{% endblock %}

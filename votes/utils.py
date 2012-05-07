@@ -42,19 +42,15 @@ def vote_obj(user, obj):
 	if v:
 		return v[0]
 	
-	if isinstance(obj, Link):
-		to_user = obj.post_user
-	elif isinstance(obj, Discuss):
-		to_user = obj.start_user
-	elif isinstance(obj, Comment):
-		to_user = obj.user
-	else:
+	if not isinstance(obj, Link) and \
+	   not isinstance(obj, Discuss) and \
+	   not isinstance(obj, Comment):
 		return False
 	
-	if to_user == user:
+	if user == obj.user:
 		return True
 	
-	data = to_user.userdata
+	data = obj.user.userdata
 	data.honor += 1
 	
 	now = timezone.now()
@@ -76,10 +72,10 @@ def vote_obj(user, obj):
 	
 	if isinstance(obj, Link):
 		for topic in obj.topics.all():
-			topic_ship_update(topic, to_user, domain=obj.domain, is_vote=True)
+			topic_ship_update(topic, obj.user, domain=obj.domain, is_vote=True)
 	elif isinstance(obj, Discuss):
 		for topic in obj.topics.all():
-			topic_ship_update(topic, to_user, is_vote=True)
+			topic_ship_update(topic, obj.user, is_vote=True)
 	
 	obj.n_supporter += 1
 	
@@ -88,9 +84,9 @@ def vote_obj(user, obj):
 		average_sum = 0
 		
 		for topic in obj.topics.all():
-			column = topic.get_column()
 			if obj.n_supporter >= int(HOT_RATE * \
 			                          topic.link_average_votes) + 1:
+				column = topic.get_column()
 				if not Dynamic.objects.filter(
 				       column=column).filter(
 				       object_id=obj.id).count():
@@ -116,9 +112,9 @@ def vote_obj(user, obj):
 		average_sum = 0
 		
 		for topic in obj.topics.all():
-			column = topic.get_column()
 			if obj.n_supporter >= int(HOT_RATE * \
 			                          topic.discuss_average_votes) + 1:
+				column = topic.get_column()
 				if not Dynamic.objects.filter(
 				       column=column).filter(
 				       object_id=obj.id).count():
@@ -144,14 +140,13 @@ def vote_obj(user, obj):
 		average_sum = 0
 		
 		for topic in obj.content_object.topics.all():
-			
-			average_sum += topic.comments_average_votes
+			average_sum += topic.comment_average_votes
 		
 		count = obj.content_object.topics.count()
 		if count:
 			average = average_sum * 1.0 / count
 		else:
-			average = get_averages().comments_average_votes
+			average = get_averages().comment_average_votes
 		
 		if obj.n_supporter >= int(BOUTIQUE_RATE * average) + 1:
 			if average != 0:

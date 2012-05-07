@@ -42,15 +42,19 @@ def post(request):
 			title, url, topics_n = (data['title'], data['url'],
 			     data['topics'].split(' '))
 			
+			title = title[:TITLE_MAX_LEN]
 			topics = topics_get(topics_n)
 			
-			if user.user_links.filter(url=url).count():
-				messages.error(request, u'你似乎已经发布过这个链接了')
+			links = user.user_links.filter(url__iexact=url).all()
+			if links:
+				link = links[0]
+				HttpResponseRedirect(reverse('show_link', args=[link.id]))
 			else:
 				l = post_link(user, url, title, topics)
 				
 				if not l:
 					messages.error(request, u'发布失败')
+			
 			if data['goback'] or not l:
 				try:
 					from_url = request.META['HTTP_REFERER']

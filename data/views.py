@@ -31,7 +31,7 @@ def follow(request):
 				if column.content_object == user:
 					return HttpResponse('False')
 				data = user.userdata
-				if column not in data.follows.all():
+				if not data.follows.filter(id=column.id).count():
 					data.n_follows += 1
 					data.follows.add(column)
 					column.n_followers += 1

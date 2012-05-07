@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="row">
+  <div class="span8">
+  {% block page_nav %}{% endblock %}
+  {% block content_title %}{% endblock %}
+  {% block content %}{% endblock %}
+  </div>
+  
+  <div class="span3 offset1">
+  {% block sidebar %}
+  {% block sidebar-title %}{% endblock %}
+  {% block sidebar-body %}{% endblock %}
+  {% endblock %}
+  </div>
+</div>
+{% endblock %}

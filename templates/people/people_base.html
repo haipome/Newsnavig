@@ -23,11 +23,11 @@
     <hr />
     {% with detail=people.userprofile.detail %}
     {% if detail %}
-      <span>{{ detail|urlizetrunc:20|linebreaks }}</span>
+      <span>{{ detail|urlizetrunc:20|linebreaksbr }}</span>
     {% endif %}
     {% endwith %}
     {% if user == people %}
-      <span class="pull-right"><a href="{% url settings.views.edit_profile %}"><i class="icon-edit"></i> 编辑我的个人资料</a></span>
+      <a href="{% url settings.views.edit_profile %}"><i class="icon-edit"></i> 编辑</a>
     {% endif %}
     </div>
   </div>

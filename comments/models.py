@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from data.models import ContentBase
+from globalvars.models import ContentBase
+from domains.models import Domain
 
 class Comment(ContentBase):
 	'''
@@ -19,6 +20,7 @@ class Comment(ContentBase):
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 	
+	domain = models.ForeignKey(Domain, related_name="domain_comments", null=True, blank="true") # not user
 	comments = generic.GenericRelation('self')
 	
 	def __unicode__(self):
@@ -30,5 +32,3 @@ class Comment(ContentBase):
 	def get_absolute_url(self):
 		return '/%s/%s/' % ('comment', str(self.id))
 	
-	def get_relative_url(self):
-		return '%s#%s' % (self.content_object.get_absolute_url(), self.id) 
