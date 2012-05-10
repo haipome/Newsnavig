@@ -1,16 +1,15 @@
-{% extends "base-no-sidebar.html" %}
+{% extends "base-sidebar.html" %}
 {% block title %}发私信{% endblock %}
 {% block content_title %}
 {% if to_user %}
-<h3>给<a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name}}</a>发送私信</h3>
-<span class="pull-right"><a href="{{ to_user.userprofile.get_absolute_url }}"><< 返回{{ to_user.userprofile.get_name}}的主页</a></span>
+<p><h3>给 <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name}}</a> 发送私信</h3></P>
 {% else %}
 <h3>发送私信</h3>
-<span class="pull-right"><a href="{% url messages.views.inbox %}"><< 返回私信主页</a></span>
 <hr />
 {% endif %}
 {% endblock %}
 {% block content %}
+<div>
   <form action="{% url messages.views.send %}" method="post">
   {% csrf_token %}
     {% if not to_user %}
@@ -20,11 +19,17 @@
     {% else %}
     <input type="hidden" name="send_to" value="{{ to_user.username }}">
     {% endif %}
-    <textarea type="textarea" class="span10" rows="4" name="message" placeholder="想说的话..."></textarea>
+    <textarea type="textarea" class="span8" rows="20" name="message" placeholder="想说的话..."></textarea>
     <div class="pull-right">
+      <a href="{% if from_url %}{{ from_url }}{% else %}{% url messages.views.inbox %}{% endif %}" class="btn">取消</a>
       <button type="submit" class="btn btn-primary">发送</button>
     </div>
   </form>
-
-<br><br><br><br>
+</div>
+{% endblock %}
+{% block sidebar %}
+{% if to_user %}
+<p><a href="{{ to_user.userprofile.get_absolute_url }}"><< 去 {{ to_user.userprofile.get_name}} 的主页</a></p>
+{% endif %}
+<p><a href="{% url messages.views.inbox %}"><< 返回私信主页</a></p>
 {% endblock %}

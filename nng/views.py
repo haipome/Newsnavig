@@ -136,8 +136,14 @@ def post(request):
 	
 	user_topics = get_user_topics(user)
 	
+	try:
+		from_url = request.META['HTTP_REFERER']
+	except:
+		from_url = None
+	
 	return render_to_response('post.html',
-	                         {'user_topics': user_topics,},
+	                         {'user_topics': user_topics,
+	                          'from_url': from_url,},
 	                           context_instance=RequestContext(request))
 
 

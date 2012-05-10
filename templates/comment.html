@@ -1,0 +1,10 @@
+      {% with l=140 %}
+        {% if content|length < l %}
+        <span> <p>{{ content }}</p></span>
+        {% else %}
+        <span>
+          <span class="show"><p>{{ content|truncatechars:l }} <a onclick="return show_all(this)" href="#">显示全部 »</a></p></span>
+          <span class="hide" style="display: none;"><p>{{ content|linebreaksbr }}</p></span>
+        </span>
+        {% endif %}
+      {% endwith %}

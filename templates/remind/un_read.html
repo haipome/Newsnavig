@@ -1,4 +1,4 @@
-{% extends "base-no-sidebar.html" %}
+{% extends "base-sidebar.html" %}
 {% block title %}未读提醒{% endblock %}
 {% block content_title %}
 <div>
@@ -27,5 +27,8 @@
 {% if more %}
 <a href="{% url remind.views.remind %}"><button class="btn">更多</button></a>
 {% endif %}
+{% endblock %}
+{% block sidebar %}
+<p><a href="/"><< 返回主页</a></p>
 {% endblock %}
 

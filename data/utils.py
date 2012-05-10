@@ -12,8 +12,7 @@ def get_follows(user):
 	          userdata=user.userdata).order_by(
 	          '-time').all(
 	          ).prefetch_related(
-	          'column__content_object__avatar',
-	          'column__content_object')
+	          'column__content_object__avatar')
 	
 	follows = []
 	follows_user = []

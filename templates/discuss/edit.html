@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block nav_post %}active{% endblock %}
+{% block title %}编辑" {{ d.title|truncatechars:30 }}"{% endblock %}
+
+{% block content %}
+<form class="form-horizontal" action="{% url discusses.views.edit %}" method="post">
+  {% csrf_token %}
+  <fieldset>
+  <legend>编辑讨论 "{{ d.title }}"</legend>
+    <div class="control-group">
+      <label class="control-label" for="id_title_discuss">标题 *</label>
+      <div class="controls">
+        <textarea class="span8" rows="2" id="id_title_discuss" name="title" maxlength="300">{{ d.title }}</textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_detail">内容&nbsp;&nbsp;</label>
+        <div class="controls">
+          <textarea class="span8" rows="20" id="id_detail" name="detail" >{{ d.detail }}</textarea>
+        </div>
+    </div>
+    <input type="hidden" name="discuss_id" value="{{ d.id }}">
+    <div class="form-actions">
+      <a class="btn" href="{% if from_url %}{{ from_url }}{% else %}/{% endif %}">取消</a>
+      <button type="submit" class="btn btn-primary">就这样</button>
+    </div>
+  </fieldset>
+</form>
+
+{% endblock %}

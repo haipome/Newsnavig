@@ -1,20 +1,20 @@
-{% extends "base-no-sidebar.html" %}
+{% extends "base-sidebar.html" %}
 {% block title %}私信{% endblock %}
 {% block content_title %}
 <h3>我与 <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a> 的对话</h3>
-<span class="pull-right"><a href="{% url messages.views.inbox %}"><< 返回私信首页</a></span>
 <hr />
 {% endblock %}
 {% block content %}
 
 <div class="row">
-  <div class="span10">
-    <div><h4>发私信给{{ to_user.userprofile.get_name }}</h4></div>
+  <div class="span8">
+    <span><strong>发私信给{{ to_user.userprofile.get_name }}</strong></span>
+    <span class="pull-right"><a href="{% url messages.views.send %}?to={{ to_user.username }}">大窗口</a></span>
     <div>
       <form action="{% url messages.views.send %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="send_to" value="{{ to_user.username }}">
-        <textarea type="textarea" class="span10" rows="4" name="message" placeholder="想说的话..."></textarea>
+        <textarea type="textarea" class="span8" rows="4" name="message" placeholder="想说的话..."></textarea>
         <div class="pull-right">
           <button type="submit" class="btn btn-primary">发送</button>
         </div>
@@ -27,38 +27,34 @@
   <hr />
   {% for m in ms %}
     <div class="row">
+      <div class="span7">
+      {% if m.sender == user.id %}
+        <p><h4>我</h4></p>
+      </div>
       <div class="span1">
-        <div class="pull-right">
-          {% if m.sender == user.id %}
-          <a href="{{ user.userprofile.get_absolute_url }}"><img src="{{ user.userprofile.avatar.get_medium_url }}" /></a>
-          {% else %}
-          <a href="{{ to_user.userprofile.get_absolute_url }}"><img src="{{ to_user.userprofile.avatar.get_medium_url }}" /></a>
-          {% endif %}
-        </div>
+        <span class="pull-right"><a href="{{ user.userprofile.get_absolute_url }}"><img src="{{ user.userprofile.avatar.get_small_url }}" /></a></span>
       </div>
-      <div class="span9">
-        <div class="row">
-          <div class="span9">
-            <p>
-            {% if m.sender == user.id %}
-              我：
-            {% else %}
-              <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a>：
-            {% endif %}
-            {{ m.message|urlize|linebreaksbr }}</p>
-            <small>{{ m.send_time|date:"Y-n-j H:i" }}</small>
-            <span class="pull-right">
-              <a href="{% url messages.views.delete %}?t=m&i={{ m.id }}">删除</a>
-            </span>
-          </div>
-        </div>
+      {% else %}
+        <p><h4><a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name }}</a></h4></p>
       </div>
+      <div class="span1">
+        <span class="pull-right"><a href="{{ to_user.userprofile.get_absolute_url }}"><img src="{{ to_user.userprofile.avatar.get_small_url }}" /></a></span>
+      </div>
+        {% endif %}
     </div>
+        <p>{{ m.message|urlize|linebreaksbr }}</p>
+        <p>
+        <small>{{ m.send_time|date:"Y-n-j H:i" }}</small>
+        <span class="pull-right">
+          <a href="{% url messages.views.delete %}?t=m&i={{ m.id }}"><small>删除</small></a>
+        </span>
+        </p>
     <hr />
   {% endfor %}
-{% else %}
-<br><br><br><br>
 {% endif %}
 {% include "pager.html" %}
+{% endblock %}
+{% block sidebar %}
+<a href="{% url messages.views.inbox %}"><< 返回私信首页</a>
 {% endblock %}
 

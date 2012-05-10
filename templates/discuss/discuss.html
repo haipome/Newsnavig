@@ -1,15 +1,15 @@
 {% if d.is_visible %}
 <div id="{{ d.id }}">
   <div class="row">
-    <div class="span9">
+    <div class="span8">
       {% with p=d.user.userprofile %}
       <p><h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4></p>
-      <span>{{ d.detail|urlizetrunc:20|linebreaks }}</span>
+      <p>{{ d.detail|urlizetrunc:20|linebreaksbr }}</p>
       <p>
       <a href="{{ d.get_absolute_url }}"><small>{{ d.time|date:"Y-n-j" }}</small></a>
       {% include 'operater.html' with t='d' obj=d counter=1 p=p %}
       {% if edit and d.user == user %}
-      <a data-toggle="modal" href="#edit" ><small>编辑</small></a>
+      <a  href="{% url discusses.views.edit %}?c={{ d.id }}"><small>编辑</small></a>
       {% endif %}
       {% if user == d.user and d.n_comment == 0 %}
       <a href="{% url nng.views.delete %}?c=d-{{ d.id }}" ><small>删除</small></a>
@@ -24,7 +24,7 @@
       {% endwith %}
       </p>
     </div>
-    <div class="span1">
+    <div class="span2">
       <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
       {% endwith %}
     </div>
@@ -32,7 +32,4 @@
 </div>
 {% else %}
 <p>该讨论已被删除</p>
-{% endif %}
-{% if edit and d.user == user %}
-{% include "discuss/edit_form.html" %}
 {% endif %}

@@ -42,7 +42,7 @@
   <div class="row">
     <div class="span8">
       {% if w in 'hijk' %}
-        {{ c.content|linebreaks }}
+      {% include 'comment.html' with content=c.content %}
       {% endif %}
       <p>
         {% include 'dynamic_op.html' %}

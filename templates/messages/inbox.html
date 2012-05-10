@@ -1,39 +1,34 @@
-{% extends "base-no-sidebar.html" %}
+{% extends "base-sidebar.html" %}
 {% block title %}私信{% endblock %}
 {% block content_title %}
 <h3>我的私信（共 {{ n_contacts }} 条）</h3>
-<span class="pull-right"><a href="{% url messages.views.send %}">发送私信</a></span>
+<hr />
 {% endblock %}
 {% block content %}
-<hr />
 {% if contacts %}
   {% for c in contacts  %}
   {% with m=c.last_message t=c.last_contact n=c.n_messages u=c.un_read%}
     <div class="row">
       <div class="span1">
-        <div class="pull-right">
+        <span class="pull-right">
           <a href="{{ c.to_user.userprofile.get_absolute_url }}"><img src="{{ c.to_user.userprofile.avatar.get_medium_url }}" /></a>
-        </div>
+        </span>
       </div>
-      <div class="span9">
-        <div class="row">
-          <div class="span9">
-            <p>
-            {% if m.sender == user %}
-              我对 <a href="{{ m.receiver.userprofile.get_absolute_url }}">{{ m.receiver.userprofile.get_name }}</a> 说：
-            {% else %}
-              <a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a> 对我说：
-            {% endif %}
-            {{ m.message|urlize|truncatechars:100 }}</p>
-            <span><small>{{ t|date:"Y-n-j H:i" }}</small></span>
-            <span class="pull-right">
-              {% if u %}<a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | {% endif %}
-              <a href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a> | 
-              <a href="{% url messages.views.conversation contact_id=c.id %}">回复</a> | 
-              <a href="{% url messages.views.delete %}?t=c&i={{ c.to_user }}">删除</a>
-            </span>
-          </div>
-        </div>
+      <div class="span7">
+        <p>
+        {% if m.sender == user %}
+          <strong>我对 <a href="{{ m.receiver.userprofile.get_absolute_url }}">{{ m.receiver.userprofile.get_name }}</a> 说：</strong>
+        {% else %}
+          <strong><a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a> 对我说：</strong>
+          {% endif %}
+          {{ m.message|urlize|truncatechars:100 }}</p>
+          <small>{{ t|date:"Y-n-j H:i" }}</small>
+          <span class="pull-right">
+            {% if u %}<a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | {% endif %}
+            <a href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a> | 
+            <a href="{% url messages.views.conversation contact_id=c.id %}">回复</a> | 
+            <a class="fake" href="{% url messages.views.delete %}?t=c&i={{ c.to_user }}">删除</a>
+          </span>
       </div>
     </div>
     <hr />
@@ -43,4 +38,8 @@
 <br><br><br><br>
 {% endif %}
 {% include "pager.html" %}
+{% endblock %}
+{% block sidebar %}
+<p><a href="{% url messages.views.send %}">>> 发送私信</a></p>
+<p><a href="{% url messages.views.choose %}">>> 给我关注的人写信</a></p>
 {% endblock %}

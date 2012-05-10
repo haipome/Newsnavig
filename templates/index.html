@@ -23,6 +23,7 @@
 
 {% block sidebar %}
 <p><a data-toggle="modal" href="#post">快速发布</a></p>
+{% include 'quick_post.html' with user_topics=user_topics %}
 <p><a href="/explore/link/new/">所有网址</a></p>
 <p><a href="/explore/discuss/new/">所有讨论</a></p>
 <p><a href="{% url profiles.views.people user.username 'collections' %}">我的收藏</a></p>

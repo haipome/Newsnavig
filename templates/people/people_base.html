@@ -30,7 +30,7 @@
 <hr />
 {% if user != people %}
   <span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if hf %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
-  <span><a href="{% url messages.views.send %}?to={{ o.username }}" class="btn">发送私信</a></span>
+  <span><a href="{% url messages.views.send %}?to={{ people.username }}" class="btn">发送私信</a></span>
   <hr />
 {% else %}
   <br />

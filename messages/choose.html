@@ -1,0 +1,21 @@
+{% extends "base-sidebar.html" %}
+{% block title %}发私信{% endblock %}
+{% block content_title %}
+<p><h3>选择收信人</h3></p>
+{% endblock %}
+{% block content %}
+<div>
+{% if follows_user %}
+{% for p in follows_user %}
+<dl>
+  <dt><a href="{% url messages.views.send %}?to={{ p.username }}"><img src="{{ p.avatar.get_medium_url }}" alt="{{ p.get_name }}" /></a></dt>
+  <dt><a href="{% url messages.views.send %}?to={{ p.username }}">{{ p.get_name }}</a></dt>
+</dl>
+{% endfor %}
+{% else %}
+<p>你还没有关注任何人</p>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base-no-sidebar.html" %}
+{% extends "base-sidebar.html" %}
 {% block title %}所有提醒{% endblock %}
 {% block content_title %}
 <div>
@@ -25,4 +25,7 @@
 <br><br><br><br>
 {% endif %}
 {% include "pager.html" %}
+{% endblock %}
+{% block sidebar %}
+<p><a href="/"><< 返回主页</a></p>
 {% endblock %}

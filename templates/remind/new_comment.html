@@ -1,7 +1,7 @@
 <div class="row">
-  <div class="span10">
+  <div class="span8">
     {% with type=c.way obj=c.content_object pc=c.parent_comment %}
-    <span><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a>&nbsp;&nbsp;<a href="{{ c.get_absolute_url }}">回复了你{% if pc %}对{% elif type == 'l' %}发布的{% elif type == 'd' %}发起的{% endif %}{% if type == 'l' %}网址{% elif type == 'd' %}讨论{% endif %}&nbsp;{{ obj.title|truncatechars:45 }}&nbsp;{% if pc %}的回复{% endif %}</a>&nbsp;&nbsp;<small>{{ t|date:"Y-n-j H:i" }}</small></span>
+    <span><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a>&nbsp;&nbsp;<a href="{{ c.get_absolute_url }}">回复了你{% if pc %}对{% elif type == 'l' %}发布的{% elif type == 'd' %}发起的{% endif %}{% if type == 'l' %}网址{% elif type == 'd' %}讨论{% endif %}&nbsp;{{ obj.title }}&nbsp;{% if pc %}的回复{% endif %}</a>&nbsp;&nbsp;<small>{{ t|date:"Y-n-j H:i" }}</small></span>
     {% endwith %}
   </div>
 </div>

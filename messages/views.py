@@ -14,6 +14,7 @@ from forms import MessageSendForm
 from string import atoi
 from models import Contact, Message
 from nng.settings import *
+from data.utils import get_follows
 
 @login_required
 def send(request):
@@ -32,12 +33,14 @@ def send(request):
 			else:
 				if to_user == from_user:
 					return HttpResponseRedirect(reverse('message_inbox'))
+			'''
 				try:
 					contact = from_user.contact_list.filter(to_user=to_user)[0]
 					return HttpResponseRedirect(reverse(conversation, 
 				               kwargs={'contact_id': contact.id}))
 				except:
 					pass
+			'''
 	elif request.method == "POST":
 		form = MessageSendForm(request.POST)
 		if form.is_valid():
@@ -65,10 +68,26 @@ def send(request):
 				pass
 	else:
 		pass
+	try:
+		from_url = request.META['HTTP_REFERER']
+	except:
+		from_url = None
 	return render_to_response('messages/send.html',
 	                         {'form': form,
-	                          'to_user': to_user,},
+	                          'to_user': to_user,
+	                          'from_url': from_url,},
 	                          context_instance=RequestContext(request))
+
+@login_required
+def choose(request):
+	'''
+	'''
+	follows_user = get_follows(request.user)[1]
+	
+	return render_to_response('messages/choose.html',
+	                         {'follows_user': follows_user,},
+	                          context_instance=RequestContext(request))
+
 
 @login_required
 def inbox(request):

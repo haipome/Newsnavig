@@ -14,9 +14,9 @@
 {% with p=c.user.userprofile obj=c.content_object t=c.way pc=c.parent_comment%}
 <div id="{{ c.id }}">
   <div class="row">
-    <div class="span9">
-      <p><a href="{{ p.get_absolute_url }}"><strong>{{ p.get_name }}</strong></a><small>&nbsp;|&nbsp;{% if t == 'l' %}网址{% elif t == 'd' %}讨论{% endif %}&nbsp;|&nbsp;</small><small><a class="fake" href="{{ obj.get_absolute_url }}">{{ obj.title|truncatechars:70 }}</a>{% if t == 'l' %}&nbsp;<small>(<a class="fake" href="{{ obj.domain.get_absolute_url }}">{{ obj.domain.domain }}</a>)</small>&nbsp;&nbsp;<a href="{{ obj.url }}" target="_blank"><i class= "icon-chevron-right icon-white" style="background-color: lightgray;"></i></a>{% endif %}</small></p>
-      {{ c.content|linebreaks }}
+    <div class="span8">
+      <p><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a><small>&nbsp;|&nbsp;{% if t == 'l' %}网址{% elif t == 'd' %}讨论{% endif %}&nbsp;|&nbsp;</small><small><a class="fake" href="{{ obj.get_absolute_url }}">{{ obj.title|truncatechars:70 }}</a>{% if t == 'l' %}&nbsp;<small>(<a class="fake" href="{{ obj.domain.get_absolute_url }}">{{ obj.domain.domain }}</a>)</small>&nbsp;&nbsp;<a href="{{ obj.url }}" target="_blank"><i class= "icon-chevron-right icon-white" style="background-color: lightgray;"></i></a>{% endif %}</small></p>
+      {% include 'comment.html' with content=c.content %}
       <p>
       <small><a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a></small>
       <small><a class="fake" href="{{ c.get_absolute_url }}">回复</a></small>
@@ -26,7 +26,7 @@
       {% endif %}
       </p>
     </div>
-    <div class="span1">
+    <div class="span2">
       <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
   </div>
 </div>

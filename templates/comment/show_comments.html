@@ -8,9 +8,9 @@
         <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a>
       </span>
     </div>
-    <div class="span{{ l }}">
+    <div class="span{% if not o %}8{%else %}{{ l }}{% endif %}">
       <p>{% include 'user.html' with p=p %}</p>
-      <span>{{ c.content|urlizetrunc:20|linebreaks }}</span>
+      <p>{{ c.content|urlizetrunc:20|linebreaksbr }}</p>
       <p>
       <a href="{{ c.get_absolute_url }}"><small>{{ c.time|date:"Y-n-j" }}</small></a>
       <a href="{{ c.get_absolute_url }}"><small>回复</small></a>
@@ -18,7 +18,7 @@
       {% if user == c.user and c.n_comment == 0 %}
       <a href="{% url nng.views.delete %}?c=c-{{ c.id }}" ><small>删除</small></a>
       {% endif %}
-      <a href="#{% firstof c.parent_comment_id c.object_id %}"><small>上一级</small></a>
+      <a class="fake" href="#{% firstof c.parent_comment_id c.object_id %}"><small>上一级</small></a>
       </p>
     </div>
   </div>

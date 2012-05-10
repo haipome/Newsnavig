@@ -71,6 +71,23 @@ def edit(request):
 			d.save()
 			
 			return HttpResponseRedirect(reverse('show_discuss', args=[d.id]))
+	elif request.method  == 'GET':
+		if 'c' in  request.GET and request.GET['c']:
+			c = atoi(request.GET['c'])
+			try:
+				d = Discuss.objects.get(pk=c)
+			except:
+				raise Http404
+			
+			try:
+				from_url = request.META['HTTP_REFERER']
+			except:
+				from_url = "/"
+			
+			return render_to_response('discuss/edit.html',
+			                         {'d': d,
+			                          'from_url': from_url,},
+			                           context_instance=RequestContext(request))
 	
 	try:
 		from_url = request.META['HTTP_REFERER']
