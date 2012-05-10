@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^link/', include('links.urls'), name='link'),
     url(r'^discuss/', include('discusses.urls'), name='discuss'),
     url(r'^comment/', include('comments.urls'), name='comment'),
+    url(r'^delete/$', 'nng.views.delete', name='delete'),
     
     url(r'^people/', include('profiles.urls'), name='people'),
     url(r'^topic/', include('topics.urls'), name='topic'),

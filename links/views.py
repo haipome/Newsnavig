@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -45,7 +45,9 @@ def post(request):
 			title = title[:TITLE_MAX_LEN]
 			topics = topics_get(topics_n)
 			
-			links = user.user_links.filter(url__iexact=url).all()
+			links = user.user_links.filter(
+			        url__iexact=url).filter(
+			        is_visible=True).all()
 			if links:
 				link = links[0]
 				HttpResponseRedirect(reverse('show_link', args=[link.id]))
@@ -71,7 +73,12 @@ def show_link(request, link_id):
 	'''
 	'''
 	link = get_object_or_404(Link, id=atoi(link_id))
-	comments = link.comments.all().prefetch_related(
+	if link.is_visible == False:
+		raise Http404
+	
+	comments = link.comments.filter(
+	           is_visible=True).all(
+	           ).prefetch_related(
 	           'user__userprofile__avatar')
 	
 	comments = comment_sort(comments, 9)

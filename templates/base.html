@@ -12,7 +12,7 @@
   <style type="text/css">
       body {
         padding-top: 75px;
-        padding-bottom: 40px;
+        padding-bottom: 10px;
         font-family: Verdana,"Helvetica Neue", Helvetica, Arial, sans-serif;
       }
       small {
@@ -29,6 +29,11 @@
       }
       a.fake:active {
         color: gray;
+      }
+      #backtop {
+        position:fixed;
+        bottom:10px;
+        right:50px;
       }
   </style>
   <!-- javascript -->
@@ -77,7 +82,7 @@
         $(p).val($(p).val() + v + ' ');
         s = $(node).parent();
         $(node).remove();
-        $(s).append(v + ' ');
+        $(s).append(v);
         
         return false
     }
@@ -127,31 +132,36 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/">Newsnavig.com</a>
+          <a class="brand" href="/">Newsnavig</a>
           <div class="nav-collapse">
             <form class="navbar-search pull-left" action="">
-              <input type="text" class="search-query" placeholder="Search">
+              <input type="text" class="search-query span4" placeholder="Search">
             </form>
           </div>
-            <ul class="nav pull-right">
+            <ul class="nav">
               <li class="{% block nav_home %}{% endblock %}"><a href="/">首页</a></li>
               <li class="{% block nav_discuss %}{% endblock %}"><a href="/discuss/">讨论</a></li>
+              <li class="{% block nav_post %}{% endblock %}"><a href="/post/">发布</a></li>
               <li class="{% block nav_explore %}{% endblock %}"><a href="/explore/">探索</a></li>
-              <li class="divider-vertical"></li>
+              <!-- <li class="divider-vertical"></li> -->
+            </ul>
+            <ul class="nav pull-right">
               {% block nav_people %}
               {% if user.is_authenticated %}
+              {% with d=user.userdata p=user.userprofile %}
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.userprofile.get_name }} {% if user.userdata.un_read_messages or user.userdata.un_read_remind %}<span class="badge">{{ user.userdata.un_read_messages|add:user.userdata.un_read_remind }}</span>{% endif %}<b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ p.get_name }} {% if d.un_read_messages or d.un_read_remind %}<span class="badge">{{ d.un_read_messages|add:d.un_read_remind }}</span>{% endif %}<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="{{ user.userprofile.get_absolute_url }}"><i class="icon-user"></i> 个人主页</a></li>
+                  <li><a href="{{ p.get_absolute_url }}"><i class="icon-user"></i>个人主页</a></li>
                   <li class="divider"></li>
-                  <li><a href="{% if user.userdata.un_read_remind %}{% url remind.views.remind %}{% else %}{% url remind.views.remind_all %}{% endif %}"><i class="icon-comment"></i> 提醒 {% if user.userdata.un_read_remind %}<span class="badge">{{ user.userdata.un_read_remind }}</span>{% endif %}</a></li>
-                  <li><a href="{% url messages.views.inbox %}"><i class=" icon-envelope"></i> 私信 {% if user.userdata.un_read_messages %}<span class="badge">{{ user.userdata.un_read_messages }}</span>{% endif %}</a></li>
+                  <li><a href="{% if d.un_read_remind %}{% url remind.views.remind %}{% else %}{% url remind.views.remind_all %}{% endif %}"><i class="icon-comment"></i>提醒{% if d.un_read_remind %}<span class="badge">{{ d.un_read_remind }}</span>{% endif %}</a></li>
+                  <li><a href="{% url messages.views.inbox %}"><i class=" icon-envelope"></i>私信{% if d.un_read_messages %}<span class="badge">{{ d.un_read_messages }}</span>{% endif %}</a></li>
                   <li class="divider"></li>
-                  <li><a href="{% url settings.views.edit_profile %}"><i class=" icon-cog"></i> 设置</a></li>
-                  <li><a href="/logout/"><i class="icon-off"></i> 注销</a></li>
+                  <li><a href="{% url settings.views.edit_profile %}"><i class=" icon-cog"></i>设置</a></li>
+                  <li><a href="/logout/"><i class="icon-off"></i>注销</a></li>
                 </ul>
               </li>
+              {% endwith %}
               {% else %}
               <li class="{% block nav_login %}{% endblock %}"><a href="/login/">登录</li></a>
               <li class="{% block nav_regist %}{% endblock %}"><a href="/regist/">注册</li></a>
@@ -163,7 +173,8 @@
     </div>
     {% endspaceless %}
     {% endblock %}
-    
+    <span id="top"></span>
+    {% include 'quick_post.html' with user_topics=user_topics %}
     <div class="row">
       <div class="span12">
       {% block notice %}
@@ -196,7 +207,10 @@
     <div class="row" id="footer">
       <div class="span12">
       {% block fotter %}
+        <a class="fake" href="#top" id="backtop">Top</a>
         <hr />
+        <span class="pull-left"><small>&copy; 2012 newsnavig.com, all rights reserved.</small></span>
+        
       {% endblock %}
       </div>
     </div>

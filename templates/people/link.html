@@ -1,32 +1,33 @@
 {% if link.is_visible %}
 <div id="{{ link.id }}">
   <div class="row">
-    <div class="span9">
-      {% with p=link.user.userprofile %}
+    <div class="span8">
       <p><h4><a href="{{ link.url }}" target="_blank">{{ link.title }}</a>&nbsp;<small>(<a class="fake" href="{{ link.domain.get_absolute_url }}">{{ link.domain.domain }}</a>)</small></h4></p>
       <p>
       <a href="{{ link.get_absolute_url }}"><small>{{ link.time|date:"Y-n-j" }}</small></a>
-      <small>{{ link.n_comment }}&nbsp;回复</small>
-      {% include 'operater.html' with t='l' obj=link counter=1 p=p%}
-      {% if user == link.user and link.n_comment == 0 %}
-      <small><a href="{% url nng.views.delete %}?c=l-{{ link.id }}">删除</a></small>
-      {% endif %}
+      <a href="{{ link.get_absolute_url }}"><small>{% firstof link.n_comment '' %} 回复</small></a>
+      {% include 'operater.html' with t='l' obj=link counter=1 %}
+      {% if show_topics %}
       {% with topics=link.topics.all %}
-      {% if topics %}
+      {% if link %}
       <small>话题</small>
       {% for topic in topics %}
       <a href="{{ topic.get_absolute_url }}"><small>{{ topic.name }}</small></a>
       {% endfor %}
       {% endif %}
       {% endwith %}
+      {% endif %}
+      {% if show_delete %}
+      {% include "people/delete.html" with id=link.id %}
+      {% endif %}
       </p>
-    </div>
-    <div class="span1">
-      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
-      {% endwith %}
     </div>
   </div>
 </div>
 {% else %}
-<p>该网址已被删除</p>
+  <p>该网址已被删除
+  {% if show_delete %}
+  {% include "people/delete.html" with id=link.id %}
+  {% endif %}</p>
 {% endif %}
+<hr />

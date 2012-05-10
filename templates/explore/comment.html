@@ -15,12 +15,16 @@
 <div id="{{ c.id }}">
   <div class="row">
     <div class="span9">
-      <p><a href="{{ p.get_absolute_url }}"><strong>{{ p.get_name }}</strong></a><small>&nbsp;|&nbsp;{% if t == 'l' %}网址{% elif t == 'd' %}讨论{% endif %}&nbsp;|&nbsp;</small><small><a class="fake" href="{{ obj.get_absolute_url }}">{{ obj.title|truncatechars:45 }}</a>{% if t == 'l' %}&nbsp;&nbsp;<a href="{{ obj.url }}" target="_blank"><i class= "icon-chevron-right icon-white" style="background-color: lightgray;"></i></a>{% endif %}</small></p>
+      <p><a href="{{ p.get_absolute_url }}"><strong>{{ p.get_name }}</strong></a><small>&nbsp;|&nbsp;{% if t == 'l' %}网址{% elif t == 'd' %}讨论{% endif %}&nbsp;|&nbsp;</small><small><a class="fake" href="{{ obj.get_absolute_url }}">{{ obj.title|truncatechars:70 }}</a>{% if t == 'l' %}&nbsp;<small>(<a class="fake" href="{{ obj.domain.get_absolute_url }}">{{ obj.domain.domain }}</a>)</small>&nbsp;&nbsp;<a href="{{ obj.url }}" target="_blank"><i class= "icon-chevron-right icon-white" style="background-color: lightgray;"></i></a>{% endif %}</small></p>
       {{ c.content|linebreaks }}
-      <span><a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a></span>
-      <span><a class="fake" href="{{ c.get_absolute_url }}">回复</a></span>
-      {% include 'operater.html' with t='c' obj=c counter=False %}
-      <span><a class="fake" href="{% if pc %}{{ pc.get_absolute_url }}{% else %}{{ obj.get_absolute_url }}{% endif %}">上一级</a></span>
+      <p>
+      <small><a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a></small>
+      <small><a class="fake" href="{{ c.get_absolute_url }}">回复</a></small>
+      {% include 'operater.html' with t='c' obj=c counter=0 %}
+      {% if pc %}
+      <small><a class="fake" href="{{ pc.get_absolute_url }}">上一级</a></small>
+      {% endif %}
+      </p>
     </div>
     <div class="span1">
       <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>

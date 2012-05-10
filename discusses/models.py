@@ -19,15 +19,13 @@ class Discuss(ContentBase):
 	title = models.CharField(max_length=TITLE_MAX_LEN)
 	detail = models.TextField(blank=True)
 	
-	domain = models.ForeignKey(Domain, related_name="domain_discuss", null=True, blank="true") # not user
-	topics = models.ManyToManyField(Topic, related_name="topic_discuss")
+	domain = models.ForeignKey(Domain, related_name="domain_discusses", null=True, blank="true") # not user
+	topics = models.ManyToManyField(Topic, related_name="topic_discusses")
 	
 	comments = generic.GenericRelation(Comment)
 	
-	last_active_time = models.DateTimeField(null=True)
-	last_active_user = models.ForeignKey(User,
-	                                     related_name="user_last_discuss",
-	                                     null=True)
+	last_active_time = models.DateTimeField(db_index=True)
+	last_active_user = models.ForeignKey(User, related_name="user_last_discuss")
 	
 	class Meta:
 		ordering = ["-id"]

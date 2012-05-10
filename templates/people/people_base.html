@@ -1,43 +1,72 @@
 {% extends "base-sidebar.html" %}
-{% block title %}{{ people.userprofile.get }}{% endblock %}
+{% block title %}{{ people.userprofile.get_name }}{% endblock %}
 {% block content_title %}
+{% with p=people.userprofile %}
+
 <div class="row">
-  <div class="people_profile">
-    <div class="span2">
-      <div class="pull-right">
-        <a href="{{ people.userprofile.get_absolute_url }}"><img src="{{ people.userprofile.avatar.get_large_url }}" /></a>
-      </div>
-    </div>
-    <div class="span7">
-    <strong><a href="{{ people.userprofile.get_absolute_url }}">{{ people.userprofile.get_name }}</a></strong>
-    {% with sign=people.userprofile.signature %}
-    {% if sign %}
-      , {{ sign|urlizetrunc:20 }}
-    {% endif %}
-    {% endwith %}
-    {% with website=people.userprofile.website %}
-    {% if website %}
-      , <a href="{{ website }}" target="_blank">{{ website|truncatechars:20 }}</a>
-    {% endif %}
-    {% endwith %}
-    <hr />
-    {% with detail=people.userprofile.detail %}
-    {% if detail %}
-      <span>{{ detail|urlizetrunc:20|linebreaksbr }}</span>
-    {% endif %}
-    {% endwith %}
-    {% if user == people %}
-      <a href="{% url settings.views.edit_profile %}"><i class="icon-edit"></i> 编辑</a>
-    {% endif %}
-    </div>
+  <div class="span2">
+    <span class="pull-right">
+      <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_large_url }}" /></a>
+    </span>
+  </div>
+  <div class="span6">
+  <p>
+    <strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong>&nbsp;&nbsp;{{ p.signature|urlizetrunc:20 }}&nbsp;&nbsp;<a href="{{ p.website }}" target="_blank">{{ p.website }}</a>
+  </p>
+  <hr />
+  <span>{{ p.detail|urlizetrunc:20|linebreaksbr }}</span>
+  {% if user == people %}
+    <a href="{% url settings.views.edit_profile %}"><i class="icon-edit"></i> 编辑</a>
+  {% endif %}
   </div>
 </div>
+<hr />
+{% endwith %}
 {% endblock %}
+
 {% block sidebar-title %}
+{% with p=people.userprofile d=people.userdata hf=follows.5 c=follows.4 %}
+<p>荣誉 <strong>{{ d.honor }}</strong></p>
+<hr />
 {% if user != people %}
-  <br>
-  <span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if has_followed %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
-  <span><a href="{% url messages.views.send %}?to={{ people.username }}" class="btn">发送私信</a></span>
+  <span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if hf %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+  <span><a href="{% url messages.views.send %}?to={{ o.username }}" class="btn">发送私信</a></span>
+  <hr />
+{% else %}
+  <br />
 {% endif %}
+
+<p><a href="{% url profiles.views.people people.username 'followees' %}"> 关注 {{ d.n_follows_user }} 人</a></p>
+{% for u in follows.1|slice:":7" %}
+{% with profile=u.0 %}
+<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
+{% endwith %}
+{% endfor %}
+<hr />
+<p><a href="{% url profiles.views.people people.username 'followers' %}">关注者 {{ c.n_followers }} 人</a></p>
+{% for t in follows.6|slice:":7" %}
+{% with f=t.user.userprofile %}
+<a href="{{ f.get_absolute_url }}" rel="tooltip" title="{{ f.get_name }}"><img src="{{ f.avatar.get_small_url }}" /></a>
+{% endwith %}
+{% endfor %}
+<hr />
+<p><a href="{% url profiles.views.people people.username 'topics' %}">关注 {{ d.n_follows_topic }} 话题</a></p>
+{% for t in follows.2|slice:":7" %}
+{% with topic=t.0 %}
+<a href="{{ topic.get_absolute_url }}" rel="tooltip" title="{{ topic.get_name }}"><img src="{{ topic.avatar.get_small_url }}" /></a>
+{% endwith %}
+{% endfor %}
+<hr />
+
+<p><a href="{% url profiles.views.people people.username 'domains' %}">关注 {{ d.n_follows_domain }} 站点</a></p>
+{% for s in follows.3|slice:":7" %}
+{% with domain=s.0 %}
+<a href="{{ domain.get_absolute_url }}" rel="tooltip" title="{{ domain.get_name }}"><img src="{{ domain.avatar.get_small_url }}" /></a>
+{% endwith %}
+{% endfor %}
+<hr />
+
+{% endwith %}
 {% endblock %}
+
 

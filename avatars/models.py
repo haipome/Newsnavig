@@ -84,7 +84,7 @@ class Avatar(models.Model):
 			filename = get_avatar(MEDIA_ROOT + self._get_path('origin'), size)
 			storage.save(self._get_path(t), File(open(filename)))
 			remove(filename)
-		if not size:
+		else:
 			if isinstance(f, File):
 				storage.save(self._get_path(t), f)
 			elif isinstance(f, file):

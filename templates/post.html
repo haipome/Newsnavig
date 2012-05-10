@@ -1,4 +1,5 @@
 {% extends "base-no-sidebar.html" %}
+{% block nav_post %}active{% endblock %}
 {% block title %}发布{% endblock %}
 
 {% block content %}
@@ -59,7 +60,7 @@
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="id_detail">内容 *</label>
+      <label class="control-label" for="id_detail">内容</label>
         <div class="controls">
           <textarea class="span6" rows="12" id="id_detail" name="detail" ></textarea>
         </div>

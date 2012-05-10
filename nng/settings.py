@@ -120,6 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.humanize',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'avatars',
@@ -170,7 +171,17 @@ LOGGING = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+D_CACHE_AGE = 21600
+
 INTERNAL_IPS = ('127.0.0.1',)
+
+FOLLOWS_MAX = 100
 
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
@@ -216,7 +227,8 @@ PASSWORD_LEN_LIMIT = 6
 
 REMEMBER_ME_WEEKS = 2
 
-MESSAGES_PER_PAGE = 50
+MESSAGES_PER_PAGE = 30
+COMMENTS_PER_PAGE = 100
 MAX_PAGE_NUMBER = 10
 
 WAY_LINK_USER_POST           = 'a'
@@ -241,5 +253,5 @@ MAX_TOPICS_NUMBER = 3
 LATEST_TOPICS_NUMBER = 30
 
 
-PREFETCH_RATE = 1.25
+PREFETCH_RATE = 1.5
 

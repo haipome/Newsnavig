@@ -1,0 +1,17 @@
+<div>
+  <div class="row">
+    <div class="span1">
+      <span class="pull-right"><a href="{{topic.get_absolute_url }}"><img src="{{ topic.avatar.get_medium_url }}" /></a></span>
+    </div>
+    <div class="span5">
+      <p>
+      <strong><a href="{{ topic.get_absolute_url }}">{{ topic.get_name }}</a></strong>
+      <span>{{ topic.detail|urlizetrunc:20|truncatechars:70 }}</span>
+      </p>
+    </div>
+    <div class="span2">
+      <span class="pull-right"><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in ufcs %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+    </div>
+  </div>
+  <hr />
+</div>

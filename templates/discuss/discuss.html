@@ -1,17 +1,28 @@
+{% if d.is_visible %}
 <div id="{{ d.id }}">
   <div class="row">
     <div class="span9">
       {% with p=d.user.userprofile %}
-      <span><a href="{{ d.get_absolute_url }}"><h4>{{ d.title }}</h4></a><br>
+      <p><h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4></p>
       <span>{{ d.detail|urlizetrunc:20|linebreaks }}</span>
-      <span><a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a>
+      <p>
+      <a href="{{ d.get_absolute_url }}"><small>{{ d.time|date:"Y-n-j" }}</small></a>
       {% include 'operater.html' with t='d' obj=d counter=1 p=p %}
-      {% if d.topics %}
-      <span><small>话题</small></span>
-      {% for topic in d.topics.all %}
-      <span><a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></span>
+      {% if edit and d.user == user %}
+      <a data-toggle="modal" href="#edit" ><small>编辑</small></a>
+      {% endif %}
+      {% if user == d.user and d.n_comment == 0 %}
+      <a href="{% url nng.views.delete %}?c=d-{{ d.id }}" ><small>删除</small></a>
+      {% endif %}
+      {% with topics=d.topics.all %}
+      {% if topics %}
+      <small>话题</small>
+      {% for topic in topics %}
+      <a href="{{ topic.get_absolute_url }}"><small>{{ topic.name }}</small></a>
       {% endfor %}
       {% endif %}
+      {% endwith %}
+      </p>
     </div>
     <div class="span1">
       <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
@@ -19,3 +30,9 @@
     </div>
   </div>
 </div>
+{% else %}
+<p>该讨论已被删除</p>
+{% endif %}
+{% if edit and d.user == user %}
+{% include "discuss/edit_form.html" %}
+{% endif %}

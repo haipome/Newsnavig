@@ -9,12 +9,19 @@ from django.contrib.auth.decorators import login_required
 from topics.models import TopicUserShip
 from nng.settings import LATEST_TOPICS_NUMBER
 from dynamic.utils import get_dynamics
+from dynamic.models import Dynamic
 from discusses.utils import get_discusses
 from explore.views import process_pager
 from datetime import date
 from dateutil import tz
 from nng.settings import TIME_ZONE, MESSAGES_PER_PAGE
-from django.contrib.contenttypes.models import ContentType
+from data.utils import get_follows
+from links.models import Link
+from discusses.models import Discuss, DiscussIndex
+from comments.models import Comment
+from shares.models import Share
+from collect.models import Collect
+from string import atoi
 
 def get_user_topics(user):
 	if user.is_authenticated():
@@ -24,43 +31,15 @@ def get_user_topics(user):
 		return None
 
 
-def get_follows(user):
-	'''
-	'''
-	user_type   = ContentType.objects.get(app_label='profiles', model='userprofile')
-	topic_type  = ContentType.objects.get(app_label='topics',   model='topic')
-	domain_type = ContentType.objects.get(app_label='domains',  model='domain')
-	
-	columns = user.userdata.follows.all().prefetch_related(
-	          'content_object__avatar')
-	
-	follows = []
-	follows_user = []
-	follows_topic = []
-	follows_domain = []
-	
-	for c in columns:
-		follows.append(c)
-		if c.content_type == user_type:
-			follows_user.append(c.content_object)
-		elif c.content_type == topic_type:
-			follows_topic.append(c.content_object)
-		elif c.content_type == domain_type:
-			follows_domain.append(c.content_object)
-		else:
-			pass
-	
-	user_self = user.userprofile.get_column()
-	if user_self not in follows:
-		follows.append(user.userprofile.get_column())
-	
-	return (follows, follows_user, follows_topic, follows_domain, user_self)
-
-
 def index(request):
 	'''
 	'''
 	pre_page, next_page, s, e = process_pager(request)
+	
+	if pre_page:
+		page = pre_page + 1
+	else:
+		page = 1
 	
 	user = request.user
 	if not user.is_authenticated():
@@ -69,7 +48,7 @@ def index(request):
 	user_topics = get_user_topics(user)
 	
 	follow = get_follows(user)
-	dynamics = get_dynamics(follow[0], s, e)
+	dynamics, has_next_page = get_dynamics(user, follow[0], page)
 	
 	today = date.today()
 	local = tz.gettz(TIME_ZONE)
@@ -77,7 +56,7 @@ def index(request):
 	for d in dynamics:
 		d.time = d.time.astimezone(local)
 	
-	if len(dynamics) < MESSAGES_PER_PAGE:
+	if not has_next_page:
 		next_page = False
 	
 	return render_to_response('dynamic.html', 
@@ -103,20 +82,31 @@ def discuss(request, t='follow'):
 	user_topics = get_user_topics(user)
 	follow = get_follows(user)
 	
+	if pre_page:
+		page = pre_page + 1
+	else:
+		page = 1
+	
 	if t == 'follow':
-		discusses = get_discusses(follow[0], s, e)
+		discusses, has_next_page = get_discusses(user, follow[0], page)
+		if not has_next_page:
+			next_page = False
 	elif t == 'reply':
 		discusses = user.userdata.discusses.order_by(
 		            '-last_active_time').all(
 		            )[s:e].prefetch_related(
 		            'user__userprofile__avatar',
 		            'last_active_user__userprofile',)
+		if len(discusses) < MESSAGES_PER_PAGE:
+			next_page = False
 	elif t == 'me':
 		discusses = user.user_discusses.order_by(
 		            '-last_active_time').all(
 		            )[s:e].prefetch_related(
 		            'user__userprofile__avatar',
 		            'last_active_user__userprofile',)
+		if len(discusses) < MESSAGES_PER_PAGE:
+			next_page = False
 	else:
 		raise Http404
 	
@@ -125,9 +115,6 @@ def discuss(request, t='follow'):
 	for d in discusses:
 		if d.last_active_time:
 			d.last_active_time = d.last_active_time.astimezone(local)
-	
-	if len(discusses) < MESSAGES_PER_PAGE:
-		next_page = False
 	
 	return render_to_response('discuss.html', 
 	                         {'user_topics': user_topics,
@@ -152,4 +139,116 @@ def post(request):
 	return render_to_response('post.html',
 	                         {'user_topics': user_topics,},
 	                           context_instance=RequestContext(request))
+
+
+
+def delete(request):
+	'''
+	'''
+	user = request.user
+	if request.method == 'GET':
+		if 'c' in request.GET and request.GET['c']:
+			c = request.GET['c']
+			
+			items = c.split('-')
+			t = items[0]
+			i = atoi(items[1])
+			
+			if t == 'l' and i:
+				try:
+					obj = Link.objects.get(id__exact=i)
+				except:
+					raise Http404
+			elif t == 'd' and i:
+				try:
+					obj = Discuss.objects.get(id__exact=i)
+				except:
+					raise Http404
+			elif t == 'c' and i:
+				try:
+					obj = Comment.objects.get(id__exact=i)
+				except:
+					raise Http404
+			elif t == 's' and i:
+				try:
+					obj = Share.objects.get(user=user, object_id=i)
+				except:
+					raise Http404
+			elif t == 'f' and i:
+				try:
+					obj = Collect.objects.get(user=user, object_id=i)
+				except:
+					raise Http404
+			else:
+				raise Http404
+			
+			if t == 's' or t == 'f':
+				
+				if t == 's':
+					obj.content_object.n_share -= 1
+					obj.content_object.save()
+					user.userdata.n_shares -= 1
+					user.userdata.save()
+				elif t == 'f':
+					obj.content_object.n_collecter -= 1
+					obj.content_object.save()
+					user.userdata.n_collections -= 1
+					user.userdata.save()
+				else:
+					pass
+				obj.delete()
+				try:
+					from_url = request.META['HTTP_REFERER']
+					return HttpResponseRedirect(from_url)
+				except KeyError:
+					return HttpResponseRedirect(reverse('homepage'))
+			
+			
+			if obj.is_visible == False:
+				raise Http404
+			
+			if user == obj.user and obj.n_comment == 0:
+				
+				obj.is_visible = False
+				obj.save()
+				if t == 'c':
+					user.userdata.n_comments -= 1
+					user.userdata.save()
+					if obj.parent_comment:
+						obj.parent_comment.n_comment -= 1
+						obj.parent_comment.save()
+					if obj.content_object:
+						obj.content_object.n_comment -= 1
+						obj.content_object.save()
+				
+				Dynamic.objects.filter(object_id=obj.id).update(
+				                is_visible=False)
+				
+				if t == 'd':
+					user.userdata.n_discusses -= 1
+					user.userdata.save()
+					DiscussIndex.objects.filter(
+					             discuss_id=obj.id).update(
+					             is_visible=False)
+				
+				if t == 'l':
+					user.userdata.n_links -= 1
+					user.userdata.save()
+				
+				if t == 'l' or t == 'd':
+					return HttpResponseRedirect(reverse('homepage'))
+				elif t == 'c':
+					if isinstance(obj.content_object, Link):
+						return HttpResponseRedirect(
+						       reverse('links.views.show_link',
+						       args=[str(obj.content_object.id)]))
+					elif isinstance(obj.content_object, Discuss):
+						return HttpResponseRedirect(
+						       reverse('discusses.views.show_discuss',
+						       args=[str(obj.content_object.id)]))
 	
+	try:
+		from_url = request.META['HTTP_REFERER']
+		return HttpResponseRedirect(from_url)
+	except KeyError:
+		return HttpResponseRedirect(reverse('homepage'))

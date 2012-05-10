@@ -5,19 +5,13 @@ from topics.utils import add_link_topic
 from globalvars.utils import get_available_id
 from dynamic.models import Dynamic
 from nng.settings import *
+from data.models import UserData
+from django.db.models import F
 import googl
-
-def _get_complete_url(url):
-	o = urlparse(url)
-	if not o[0]:
-		url = 'http://' + url
-	
-	return url
 
 def post_link(user, url, title, topic_names):
 	'''
 	'''
-	url = _get_complete_url(url)
 	domain = add_link_domain(url)
 	
 	if len(url) > URL_MAX_LEN:
@@ -49,6 +43,8 @@ def post_link(user, url, title, topic_names):
 	Dynamic.objects.create(column=user.userprofile.get_column(),
 	                       way=WAY_LINK_USER_POST,
 	                       content_object=link)
+	
+	UserData.objects.filter(user=user).update(n_links=F('n_links') + 1)
 	
 	return link
 	

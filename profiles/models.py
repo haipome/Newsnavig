@@ -13,6 +13,7 @@ class UserProfile(models.Model):
 	'''
 	'''
 	user = models.OneToOneField(User)
+	username = models.CharField(max_length=30)
 	
 	columns = generic.GenericRelation(Column)
 	
@@ -28,7 +29,10 @@ class UserProfile(models.Model):
 	
 	
 	def get_name(self):
-		return self.name
+		if self.name:
+			return self.name
+		else:
+			return self.username
 	
 	def __unicode__(self):
 		return self.get_name()
@@ -62,7 +66,7 @@ class UserProfile(models.Model):
 		return True
 	
 	def get_absolute_url(self):
-		return '/people/' + self.user.username + '/'
+		return '/people/' + self.username + '/'
 	
 	def get_column(self):
 		try:

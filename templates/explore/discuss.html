@@ -16,16 +16,18 @@
 <div id="{{ d.id }}">
   <div class="row">
     <div class="span9">
-      <span><a href="{{ d.get_absolute_url }}"><h4>{{ d.title }}</h4></a><br>
-      <span><a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a>
-      <span><a class="fake" href="{{ d.get_absolute_url }}">{% firstof d.n_comment '' %} 回复</a>
+      <p><h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4></p>
+      <p>
+      <small><a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a></small>
+      <small><a class="fake" href="{{ d.get_absolute_url }}">{% firstof d.n_comment '' %} 回复</a></small>
       {% include 'operater.html' with t='d' p=p obj=d counter=1 %}
       {% if d.topics %}
-      <span><small>话题</small></span>
+      <small>话题</small>
       {% for topic in d.topics.all %}
-      <span><a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></span>
+      <small><a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></small>
       {% endfor %}
       {% endif %}
+      </p>
     </div>
     <div class="span1">
       <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>

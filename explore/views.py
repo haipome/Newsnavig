@@ -22,25 +22,29 @@ def index(request):
 	return HttpResponseRedirect(reverse('explore_link'))
 
 
-def process_pager(request):
+def process_pager(request, limit=True, max_page=MESSAGES_PER_PAGE):
 	'''
 	'''
 	page = 1
 	if request.method == 'GET':
 		if 'p' in request.GET and request.GET['p']:
 			page = atoi(request.GET['p'])
-	if page > MAX_PAGE_NUMBER:
+	if limit and page > MAX_PAGE_NUMBER:
 		page = MAX_PAGE_NUMBER
 	if page != 1:
 		pre_page = page - 1
 	else:
 		pre_page = False
-	if page < MAX_PAGE_NUMBER:
-		next_page = page + 1
+	if limit:
+		if page < MAX_PAGE_NUMBER:
+			next_page = page + 1
+		else:
+			next_page = False
 	else:
-		next_page = False
-	s = (page - 1) * MESSAGES_PER_PAGE
-	e = s + MESSAGES_PER_PAGE
+		next_page = page + 1
+	
+	s = (page - 1) * max_page
+	e = s + max_page
 	
 	return (pre_page, next_page, s, e)
 
@@ -139,20 +143,26 @@ def comment(request, t='hot'):
 		        time__gt=start_time).order_by(
 		        '-n_supporter', 'id').all(
 		        )[s:e].prefetch_related(
-		       'user__userprofile__avatar', 'content_object', 'parent_comment')
+		       'user__userprofile__avatar',
+		       'content_object__domain',
+		       'parent_comment')
 	elif t == 'super':
 		comments = Comment.objects.filter(
 		        is_visible=True).filter(
 		        is_boutique=True).order_by(
 		        '-id').all(
 		        )[s:e].prefetch_related(
-		       'user__userprofile__avatar', 'content_object', 'parent_comment')
+		       'user__userprofile__avatar',
+		       'content_object__domain',
+		       'parent_comment')
 	elif t == 'new':
 		comments = Comment.objects.filter(
 		        is_visible=True).order_by(
 		        '-id').all(
 		        )[s:e].prefetch_related(
-		       'user__userprofile__avatar', 'content_object', 'parent_comment')
+		       'user__userprofile__avatar',
+		       'content_object__domain',
+		       'parent_comment')
 	else:
 		raise Http404
 	

@@ -7,6 +7,11 @@ from models import DiscussIndex
 from django.utils import timezone
 from nng.settings import *
 from django.utils.timezone import now
+from data.models import UserData
+from django.db.models import F
+from django.core.cache import cache
+from nng.settings import MESSAGES_PER_PAGE, PREFETCH_RATE, D_CACHE_AGE
+from dynamic.utils import process_cache
 
 def post_discuss(user, title, detail, topic_names):
 	'''
@@ -42,19 +47,75 @@ def post_discuss(user, title, detail, topic_names):
 	                       way=WAY_DISCUSS_USER_POST,
 	                       content_object=discuss)
 	
+	UserData.objects.filter(user=user).update(n_discusses=F('n_discusses') + 1)
+	
 	return discuss
 
 
-def get_discusses(follows, s, e):
+def get_objs(follows, offset, n, s=None, e=None):
 	
-	discusses = DiscussIndex.objects.filter(
-	            is_visible=True).filter(
-	            column__in=follows).order_by(
-	            '-last_active_time').all(
-	            )[s:e].prefetch_related(
-	            'discuss__user__userprofile__avatar',
-	            'column__content_object',
-	            'last_active_user__userprofile',)
+	if offset and n:
+		discusses = DiscussIndex.objects.filter(
+		            is_visible=True).filter(
+		            id__lt=offset).filter(
+		            column__in=follows).order_by(
+		            '-last_active_time').all(
+		            )[:n].prefetch_related(
+		            'discuss__user__userprofile__avatar',
+		            'column__content_object',
+		            'last_active_user__userprofile',)
+	else:
+		discusses = DiscussIndex.objects.filter(
+		            is_visible=True).filter(
+		            column__in=follows).order_by(
+		            '-last_active_time').all(
+		            )[s:e].prefetch_related(
+		            'discuss__user__userprofile__avatar',
+		            'column__content_object',
+		            'last_active_user__userprofile',)
 	
 	return discusses
+
+def get_discusses(user, follows, page):
+	
+	key = str(user.id) + 'd'
+	offset, logs, user_log = process_cache(key, page)
+	
+	n = int(MESSAGES_PER_PAGE * PREFETCH_RATE)
+	if offset:
+		objs = get_objs(follows, offset, n)
+	else:
+		s = n * (page - 1)
+		e = s + n
+		objs = get_objs(follows, offset=0, n=0, s=s, e=e)
+	
+	if not objs:
+		return ([], False)
+	
+	discusses = []
+	page_log = []
+	counter = 0
+	for obj in objs:
+		counter += 1
+		obj_id = obj.id
+		i = obj.discuss_id
+		if i not in logs:
+			logs.append(i)
+			page_log.append(i)
+			discusses.append(obj)
+	
+	offset = obj_id
+	user_log['offset'] = offset
+	user_log['pre_page'] = page
+	user_log[page] = page_log
+	cache.set(key, user_log, D_CACHE_AGE)
+	
+	
+	
+	if counter == n:
+		next_page = True
+	else:
+		next_page = False
+	
+	return (discusses, next_page)
 	

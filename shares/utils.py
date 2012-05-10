@@ -4,6 +4,8 @@ from comments.models import Comment
 from dynamic.models import Dynamic
 from models import Share
 from nng.settings import *
+from data.models import UserData
+from django.db.models import F
 
 def post_share(user, obj):
 	'''
@@ -17,11 +19,17 @@ def post_share(user, obj):
 	d = Dynamic(column=user.userprofile.get_column(),
 	            content_object=obj)
 	
+	share = Share(user=user, content_object=obj)
+	
 	if isinstance(obj, Link):
 		d.way = WAY_LINK_SHARE
+		share.way = 'l'
 	elif isinstance(obj, Discuss):
 		d.way = WAY_DISCUSS_SHARE
+		share.way = 'd'
 	elif isinstance(obj, Comment):
+		share.way = 'c'
+		share.comment_object = obj.content_object
 		if isinstance(obj.content_object, Link):
 			d.way = WAY_LINK_COMMENT_SHARE
 			d.comment_object = obj.content_object
@@ -38,6 +46,8 @@ def post_share(user, obj):
 	obj.n_share += 1
 	obj.save()
 	
-	share = Share.objects.create(user=user, content_object=obj)
+	UserData.objects.filter(user=user).update(n_shares=F('n_shares') + 1)
+	
+	share.save()
 	
 	return share

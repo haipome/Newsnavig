@@ -11,6 +11,8 @@ from profiles.models import UserProfile
 from nng.settings import REMIND_NEW_FOLLOWER
 from topics.models import Topic
 from domains.models import Domain
+from nng.settings import FOLLOWS_MAX
+from data.models import FollowShip
 
 def follow(request):
 	'''
@@ -28,12 +30,19 @@ def follow(request):
 			except:
 				pass
 			else:
-				if column.content_object == user:
+				if column.content_object == user.userprofile:
 					return HttpResponse('False')
 				data = user.userdata
-				if not data.follows.filter(id=column.id).count():
+				if not FollowShip.objects.filter(userdata=data,
+				                                 column=column).count():
+					
+					if data.n_follows > FOLLOWS_MAX:
+						return HttpResponse('False')
+					
 					data.n_follows += 1
-					data.follows.add(column)
+					
+					FollowShip.objects.create(userdata=data, column=column)
+					
 					column.n_followers += 1
 					if isinstance(column.content_object, UserProfile):
 						creat_remind(column.content_object.user,
@@ -50,7 +59,14 @@ def follow(request):
 						
 				else:
 					data.n_follows -= 1
-					data.follows.remove(column)
+					
+					try:
+						ship = FollowShip.objects.get(userdata=data, column=column)
+					except:
+						return HttpResponse('False')
+					else:
+						ship.delete()
+					
 					column.n_followers -= 1
 					if isinstance(column.content_object, UserProfile):
 						data.n_follows_user -= 1

@@ -1,5 +1,5 @@
 {% extends "base-sidebar.html" %}
-{% block title %}站点 {{ domain.get_name }}{% endblock %}
+{% block title %}{{ domain.get_name }}{% endblock %}
 {% block content_title %}
 <div class="row">
   <div class="domain_profile">
@@ -8,7 +8,7 @@
         <a href="{{ domain.get_absolute_url }}"><img src="{{ domain.avatar.get_large_url }}" /></a>
       </div>
     </div>
-    <div class="span7">
+    <div class="span6">
       <h3>站点：
       {% if domain.name %}
       <a href="{{ domain.get_absolute_url }}">{{ domain.name }}</a>&nbsp;
@@ -16,10 +16,10 @@
       <a href="{{ domain.get_domain_url }}" target="_blank">{{ domain.domain }}</a></h3><hr />
       {{ domain.detail|urlizetrunc:20|linebreaksbr }}
       <a data-toggle="modal" href="#domain_edit"><i class="icon-edit"></i><small>编辑</small></a>
-      <hr />
     </div>
   </div>
 </div>
+<hr />
 
 <div class="modal hide fade" id="domain_edit">
   <div class="modal-header">
@@ -31,7 +31,7 @@
     {% csrf_token %}
       <label for="id_name">站名</label>
         <input type="text" class="span6" id="id_name" name="name" max_length="10" value="{{ domain.name }}" />
-        <p class="help-block"><small>不超过10个字</small></p>
+        <p class="help-block"><small></small></p>
       <label for="id_avatar">图片</label>
         <img src="{{ domain.avatar.get_medium_url }}" />
         <input class="input-file" id="id_avatar" type="file" name="avatar" accept="image/*" />
@@ -48,5 +48,10 @@
 {% endblock %}
 {% block sidebar-title %}
 <br>
-<span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if has_followed %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+<span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in user.userdata.follows.all %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+<hr />
+<p><a href="{% url domains.views.domain domain.domain %}followers/">{{ column.n_followers }} 人关注了该站点</a></p>
+{% for profile in followers %}
+<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
+{% endfor %}
 {% endblock %}

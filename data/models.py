@@ -9,7 +9,9 @@ class UserData(models.Model):
 	user = models.OneToOneField(User)
 	
 	n_follows = models.IntegerField(default=0)
-	follows = models.ManyToManyField(Column, related_name="column_follower")
+	follows = models.ManyToManyField(Column,
+	                                 through="FollowShip",
+	                                 related_name="column_followers")
 	
 	discusses = models.ManyToManyField(Discuss, related_name="discuss_users")
 	
@@ -26,9 +28,9 @@ class UserData(models.Model):
 	n_links = models.IntegerField(default=0)
 	n_comments = models.IntegerField(default=0)
 	n_discusses = models.IntegerField(default=0)
-	n_collection = models.IntegerField(default=0)
+	n_collections = models.IntegerField(default=0)
 	n_shares = models.IntegerField(default=0)
-	n_support = models.IntegerField(default=0)
+	n_supports = models.IntegerField(default=0)
 	
 	
 	last_month_half_votes = models.IntegerField(default=0)
@@ -42,4 +44,16 @@ class UserData(models.Model):
 		return self.user.username + ' ' + str(self.honor)
 	
 
+
+class FollowShip(models.Model):
+	'''
+	'''
+	userdata = models.ForeignKey(UserData)
+	column   = models.ForeignKey(Column)
+	
+	time = models.DateTimeField(auto_now_add=True, db_index=True)
+	
+	class Meta:
+		ordering = ['-time']
+	
 

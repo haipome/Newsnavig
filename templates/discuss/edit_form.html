@@ -1,0 +1,20 @@
+<div class="modal hide fade" id="edit">
+  <div class="modal-header">
+    <button class="close" data-dismiss="modal">×</button>
+   <h4>编辑 {{ d.title|truncatechars:30 }} </h4>
+  </div>
+  <div class="modal-body">
+    <form class="well" action="{% url discusses.views.edit %}" method="post">
+    {% csrf_token %}
+      <input type="hidden" name="discuss_id" value="{{ d.id }}">
+      <label for="id_title">标题</label>
+        <textarea class="span6" rows="2" id="id_title" name="title" max_length="300">{{ d.title }}</textarea>
+      <label for="id_detail">内容</label>
+        <textarea class="span6" rows="10" id="id_detail" name="detail">{{ domain.detail }}</textarea>
+  </div>
+  <div class="modal-footer">
+     <button class="btn" data-dismiss="modal">取消</button>
+     <button type="submit" class="btn btn-primary">保存</button>
+  </div>
+  </form>
+</div>

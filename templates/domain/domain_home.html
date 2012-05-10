@@ -1,1 +1,22 @@
 {% extends 'domain/domain_base.html' %}
+{% block content %}
+{% if t == 'followers' %}
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>关注该站点的人</strong></p>
+<hr />
+{% for u in datas %}
+{% include 'people/user.html' with profile=u.0 column=u.1 ufcs=user.userdata.follows.all %}
+{% endfor %}
+
+{% else %}
+<ul class="nav nav-tabs">
+  <li class="{% if t == 'links' %}active{% endif %}"><a href="{% url domains.views.domain domain.domain %}">网址 <small>({{ domain.n_links }})</small></a></li>
+  <li class="{% if t == 'super' %}active{% endif %}"><a href="{% url domains.views.domain domain.domain %}super/">精华 <small>({{ domain.n_links_boutiques }})</small></a></li>
+</ul>
+{% for link in datas %}
+{% include 'people/link.html' with topics=1 %}
+{% endfor %}
+
+{% endif %}
+{% include "pager.html" %}
+{% endblock %}
+

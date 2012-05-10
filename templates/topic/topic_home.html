@@ -1,1 +1,53 @@
 {% extends 'topic/topic_base.html' %}
+{% block content %}
+{% if t == 'followers' %}
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>关注该话题的人</strong></p>
+<hr />
+{% for u in datas %}
+{% include 'people/user.html' with profile=u.0 column=u.1 ufcs=user.userdata.follows.all %}
+{% endfor %}
+
+{% else %}
+<ul class="nav nav-tabs">
+  <li class="{% if t == 'links' or t == 'links-super' %}active{% endif %}"><a href="{% url topics.views.topic topic.name %}">网址 <small>({{ topic.n_links }})</small></a></li>
+  <li class="{% if t == 'discusses' or t == 'discusses-super' %}active{% endif %}"><a href="{% url topics.views.topic topic.name %}discusses/">讨论 <small>({{ topic.n_discusses }})</small></a></li>
+</ul>
+<div class="row">
+  <div class="pull-right">
+    {% if t == 'links' %}
+    所有 <small>({{ topic.n_links }})</small> / <a href="{% url topics.views.topic topic.name %}links-super/">精华 <small>({{ topic.n_links_boutiques }})</small></a>
+    {% elif t == 'links-super' %}
+    <a href="{% url topics.views.topic topic.name %}">所有 <small>({{ topic.n_links }})</small></a> / 精华 <small>({{ topic.n_links_boutiques }})</small>
+    {% elif t == 'discusses' %}
+    所有 <small>({{ topic.n_discusses }})</small> / <a href="{% url topics.views.topic topic.name %}discusses-super/">精华 <small>({{ topic.n_discusses_boutiques }})</small></a>
+    {% elif t == 'discusses-super' %}
+    <a href="{% url topics.views.topic topic.name %}discusses/">所有 <small>({{ topic.n_discusses }})</small></a> / 精华 <small>({{ topic.n_discusses_boutiques }})</small>
+    {% endif %}
+  </div>
+</div>
+<hr />
+{% if t == 'links' %}
+{% for link in datas %}
+{% include 'people/link.html' with topics=0 %}
+{% endfor %}
+
+{% elif t == 'links-super' %}
+{% for link in datas %}
+{% include 'people/link.html' with topics=0 %}
+{% endfor %}
+
+{% elif t == 'discusses' %}
+{% for d in datas %}
+{% include 'people/discuss.html' with topics=0 %}
+{% endfor %}
+
+{% elif t == 'discusses-super' %}
+{% for d in datas %}
+{% include 'people/discuss.html' with topics=0 %}
+{% endfor %}
+
+{% endif %}
+
+{% endif %}
+{% include "pager.html" %}
+{% endblock %}

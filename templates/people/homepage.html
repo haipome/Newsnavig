@@ -1,1 +1,51 @@
 {% extends 'people/people_base.html' %}
+{% block content %}
+{% with p=people.userprofile d=people.userdata %}
+<div>
+  <ul class="nav nav-tabs">
+    <li class="{% if t == 'links' %}active{% endif %}"><a href="{% url profiles.views.people people.username 'links' %}">网址<small>&nbsp;({{ d.n_links }})</small></a></li>
+    <li class="{% if t == 'discusses' %}active{% endif %}"><a href="{% url profiles.views.people people.username 'discusses' %}">讨论<small>&nbsp;({{ d.n_discusses }})</small></a></li>
+    <li class="{% if t == 'comments' %}active{% endif %}"><a href="{% url profiles.views.people people.username 'comments' %}">回复<small>&nbsp;({{ d.n_comments }})</small></a></li>
+    <li class="{% if t == 'shares' %}active{% endif %}"><a href="{% url profiles.views.people people.username 'shares' %}">分享<small>&nbsp;({{ d.n_shares }})</small></a></li>
+    {% if user == people %}
+    <li class="{% if t == 'collections' %}active{% endif %}"><a href="{% url profiles.views.people people.username 'collections' %}">收藏<small>&nbsp;({{ d.n_collections }})</small></a></li>
+    {% endif %}
+  </ul>
+</div>
+{% if t == 'links' %}
+{% for link in datas %}
+{% include 'people/link.html' with show_topics=1 %}
+{% endfor %}
+{% elif t == 'discusses' %}
+{% for d in datas %}
+{% include 'people/discuss.html' with show_topics=1 %}
+{% endfor %}
+{% elif t == 'comments' %}
+{% for c in datas %}
+{% include 'people/comment.html' with obj=c.content_object t=c.way pc=c.parent_comment %}
+{% endfor %}
+{% elif t == 'shares' %}
+{% for i in datas %}
+  {% if i.way == 'l' %}
+    {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=1 delete_type='s' %}
+  {% elif i.way == 'd' %}
+    {% include 'people/discuss.html' with d=i.content_object show_topics=1 show_delete=1 delete_type='s' %}
+  {% elif i.way == 'c' %}
+    {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=1 delete_type='s' %}
+  {% endif %}
+{% endfor %}
+{% elif t == 'collections' %}
+{% for i in datas %}
+  {% if i.way == 'l' %}
+    {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=1 delete_type='f' %}
+  {% elif i.way == 'd' %}
+    {% include 'people/discuss.html' with d=i.content_object show_topics=1 show_delete=1 delete_type='f' %}
+  {% elif i.way == 'c' %}
+    {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=1 delete_type='f' %}
+  {% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+{% include "pager.html" %}
+{% endblock %}

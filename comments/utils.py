@@ -8,6 +8,8 @@ from nng.settings import *
 from remind.utils import creat_remind
 from django.utils import timezone
 from discusses.models import DiscussIndex
+from data.models import UserData
+from django.db.models import F
 
 def post_comment(user, content, obj, parent=None):
 	'''
@@ -72,6 +74,8 @@ def post_comment(user, content, obj, parent=None):
 	
 	obj.n_comment += 1
 	obj.save()
+	
+	UserData.objects.filter(user=user).update(n_comments=F('n_comments') + 1)
 	
 	return comment
 

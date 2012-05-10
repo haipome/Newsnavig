@@ -6,7 +6,7 @@ from PIL import Image
 from tempfile import mktemp
 from django.core.files import File
 
-def get_avatar(f, l=96):
+def get_avatar(f, l):
 	if isinstance(f, File):
 		f = f.file
 	try:

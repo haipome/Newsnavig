@@ -8,6 +8,8 @@ from nng.settings import HOT_RATE, BOUTIQUE_RATE
 from dynamic.models import Dynamic
 from nng.settings import WAY_LINK_TOPIC_POST, WAY_DISCUSS_TOPIC_POST
 from globalvars.utils import get_averages
+from data.models import UserData
+from django.db.models import F
 
 def is_this_month(now, time):
 	if not time:
@@ -151,6 +153,8 @@ def vote_obj(user, obj):
 		if obj.n_supporter >= int(BOUTIQUE_RATE * average) + 1:
 			if average != 0:
 				obj.is_boutique = True
+	
+	UserData.objects.filter(user=user).update(n_supports=F('n_supports') + 1)
 	
 	obj.save()
 	vote = Vote.objects.create(user=user, content_object=obj)

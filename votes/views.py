@@ -61,4 +61,5 @@ def operate(request):
 					return HttpResponse('success')
 	
 	return HttpResponse('False')
-		
+
+

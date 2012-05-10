@@ -20,16 +20,15 @@
       <span class="pull-right"><a href="{{p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
     </div>
     <div class="span7">
-      <span><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong></span>
-      {% if p.signature %}<span>, {{ p.signature|urlizetrunc:20 }}</span>{% endif %}
-      {% if p.website %}<span>, <a href="{{ p.website }}" target="_blank">{{ p.website|truncatechars:20 }}</a></span>{% endif %}
-      <br>
-      {{ p.detail|truncatechars:70 }}
-      
+      <p><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong></p>
+      <p>
+      {% if p.signature %}<span>{{ p.signature|urlizetrunc:20 }}</span>{% endif %}
+      {% if p.website %}<span><a href="{{ p.website }}" target="_blank">{{ p.website|truncatechars:20 }}</a></span>{% endif %}
+      </p>
     </div>
-    <div class="span2">
+    <div class="pull-right">
       {% with c=columns.0 %}
-      {% if user != d.user %}<span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if c in follows %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>{% endif %}
+      {% if user.id != d.user_id %}<span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if c in follows %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>{% endif %}
       {% endwith %}
     </div>
   </div>

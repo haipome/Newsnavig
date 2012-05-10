@@ -13,6 +13,13 @@ class Collect(models.Model):
 	user = models.ForeignKey(User, related_name="user_collections")
 	time = models.DateTimeField(auto_now_add=True)
 	
+	way = models.CharField(max_length=1) # 'l' or 'd' or 'c'
+	
+	# optimization for comment
+	comment_type = models.ForeignKey(ContentType, related_name="collect_comment", null=True)
+	comment_obj_id = models.PositiveIntegerField(null=True)
+	comment_object = generic.GenericForeignKey('comment_type', 'comment_obj_id')
+	
 	class Meta:
 		ordering = ["-id"]
 

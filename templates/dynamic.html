@@ -4,7 +4,6 @@
 {% block index_nav_dynamic %}active{% endblock %}
 {% block content %}
 {% if dynamics %}
-<br />
 {% for d in dynamics %}
 {% with o=d.column.content_object c=d.content_object w=d.way time=d.time p=d.content_object.user.userprofile %}
 {% spaceless %}
@@ -34,16 +33,25 @@
         </h4><p>
          <p><small><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a>&nbsp;回复说该讨论说：</small></p>
         {% endif %}
+      {% endif %}
+    </div>
+    <div class="span1">
+      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span8">
+      {% if w in 'hijk' %}
         {{ c.content|linebreaks }}
       {% endif %}
       <p>
         {% include 'dynamic_op.html' %}
         {% if w in 'hijk' %}
           {% if c.parent_comment_id %}
-            <small><a class="fake" href="/comment/{{ c.parent_comment_id }}/">上一级</a>&nbsp;</small>
+            <span><a href="/comment/{{ c.parent_comment_id }}/"><small>上一级</small></a>&nbsp;</span>
           {% endif %}
         {% endif %}
-          <small>&nbsp;&nbsp;</small>
+          <span>&nbsp;</span>
         {% if w in 'bf' %}
           <small>话题&nbsp;</small>
         {% elif w == 'c' %}
@@ -70,9 +78,6 @@
           <small>分享了该回复</small>
         {% endif %}
       </P>
-    </div>
-    <div class="span1">
-      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
     </div>
   </div>
 </div>

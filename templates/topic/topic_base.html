@@ -1,5 +1,5 @@
 {% extends "base-sidebar.html" %}
-{% block title %}话题 {{ topic.name }}{% endblock %}
+{% block title %}{{ topic.name }}{% endblock %}
 {% block content_title %}
 <div class="row">
   <div class="topic_profile">
@@ -8,15 +8,14 @@
         <a href="{{ topic.get_absolute_url }}"><img src="{{ topic.avatar.get_large_url }}" /></a>
       </div>
     </div>
-    <div class="span7">
-      <h3>话题：<a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></h3><hr />
+    <div class="span6">
+      <h3>话题 <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></h3><hr />
         {{ topic.detail|urlizetrunc:20|linebreaksbr }}
         <a data-toggle="modal" href="#topic_edit"><i class="icon-edit"></i><small>编辑</small></a>
-        <hr />
     </div>
   </div>
 </div>
-
+<hr />
 <div class="modal hide fade" id="topic_edit">
   <div class="modal-header">
     <button class="close" data-dismiss="modal">×</button>
@@ -41,5 +40,10 @@
 {% endblock %}
 {% block sidebar-title %}
 <br>
-<span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if has_followed %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+<span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in user.userdata.follows.all  %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+<hr />
+<p><a href="{% url topics.views.topic topic.name %}followers/">{{ column.n_followers }} 人关注了该话题</a></p>
+{% for profile in followers %}
+<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
+{% endfor %}
 {% endblock %}

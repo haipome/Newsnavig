@@ -21,7 +21,7 @@ class ContentBase(models.Model):
 	'''
 	id = models.IntegerField(primary_key=True)
 	
-	is_visible = models.BooleanField(default=True)
+	is_visible = models.BooleanField(default=True, db_index=True)
 	is_boutique = models.BooleanField(default=False, db_index=True)
 	is_can_comment = models.BooleanField(default=True)
 	

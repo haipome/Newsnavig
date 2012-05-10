@@ -1,4 +1,4 @@
-{% extends "index_base.html" %}
+{% extends "base-sidebar.html" %}
 {% block notice %}
 {% if messages %}
   <div class="alert alert-info">
@@ -22,35 +22,35 @@
 {% endblock %}
 
 {% block sidebar %}
-<div class="row">
-  <div class="span3">
-    <p><span class="pull-right"><a href="/post/">>发布</a></span></p>
-  </div>
-</div>
 <p><a data-toggle="modal" href="#post">快速发布</a></p>
-{% include 'quick_post.html' with user_topics=user_topics %}
 <p><a href="/explore/link/new/">所有网址</a></p>
 <p><a href="/explore/discuss/new/">所有讨论</a></p>
-<p><a href="#">我的收藏</a></p>
+<p><a href="{% url profiles.views.people user.username 'collections' %}">我的收藏</a></p>
 {% with p=user.userprofile d=user.userdata %}
 <hr>
 <p><a href="{{ p.get_absolute_url }}">{{ p.get_name }}的主页</a><small>&nbsp;({{ d.honor }})</small></p>
 <hr>
-<p>我关注的人 ... （<a href="#">全部 {{ d.n_follows_user }}</a>）</p>
-{% for u in follow.1|slice:":10" %}
-<a href="{{ u.get_absolute_url }}" rel="tooltip" title="{{ u.get_name }}"><img src="{{ u.avatar.get_small_url }}" /></a>
+<p>我关注的人 ... （<a href="{% url profiles.views.people user.username 'followees' %}">全部 {{ d.n_follows_user }}</a>）</p>
+{% for u in follow.1|slice:":21" %}
+{% with profile=u.0 %}
+<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
+{% endwith %}
 {% endfor %}
 <hr>
-<p>我关注的话题 ... （<a href="#">全部 {{ d.n_follows_topic }}</a>）</p>
-{% for t in follow.2|slice:":10" %}
-<a href="{{ t.get_absolute_url }}" rel="tooltip" title="{{ t.get_name }}"><img src="{{ t.avatar.get_small_url }}" /></a>
+<p>我关注的话题 ... （<a href="{% url profiles.views.people user.username 'topics' %}">全部 {{ d.n_follows_topic }}</a>）</p>
+{% for t in follow.2|slice:":7" %}
+{% with topic=t.0 %}
+<a href="{{ topic.get_absolute_url }}" rel="tooltip" title="{{ topic.get_name }}"><img src="{{ topic.avatar.get_small_url }}" /></a>
+{% endwith %}
 {% endfor %}
 <hr>
-<p>我关注的站点 ... （<a href="#">全部 {{ d.n_follows_domain }}</a>）</p>
-{% for s in follow.3|slice:":10" %}
-<a href="{{ s.get_absolute_url }}" rel="tooltip" title="{{ s.get_name }}"><img src="{{ s.avatar.get_small_url }}" /></a>
+<p>我关注的站点 ... （<a href="{% url profiles.views.people user.username 'domains' %}">全部 {{ d.n_follows_domain }}</a>）</p>
+{% for s in follow.3|slice:":7" %}
+{% with domain=s.0 %}
+<a href="{{ domain.get_absolute_url }}" rel="tooltip" title="{{ domain.get_name }}"><img src="{{ domain.avatar.get_small_url }}" /></a>
+{% endwith %}
 {% endfor %}
 <hr>
-<p><a href="#"> 我被 {{ follow.4.n_followers }} 人关注</a></p>
+<p><a href="{% url profiles.views.people user.username 'followers' %}"> 我被 {{ follow.4.n_followers }} 人关注</a></p>
 {% endwith %}
 {% endblock %}

@@ -2,9 +2,11 @@
 {% block title %}{{ d.title }} | newsnavig{% endblock %}
 {% block content %}
 <hr />
-{% include 'discuss/discuss.html' with d=d %}
+{% include 'discuss/discuss.html' with d=d edit=1 %}
 <hr />
 {% include 'comment/comment_form.html' with reply_type='d' reply_id=d.id %}
 <hr />
 {% include "comment/show_comments.html" with comments=comments %}
+
+{% include "pager.html" %}
 {% endblock %}

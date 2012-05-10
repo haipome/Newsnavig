@@ -31,7 +31,7 @@
               {% if user_topics %}
               <p class="help-block"><small>我的话题：</small>
               {% for topic in user_topics %}
-              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a>&nbsp;</span>
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a></span>
               {% endfor %}
               </p></span>
               {% endif %}
@@ -54,7 +54,7 @@
               <textarea class="span6" rows="2" id="id_title_discuss" name="title" maxlength="300"></textarea>
             </div>
             <div>
-              <label for="id_detail">内容 * </label>
+              <label for="id_detail">内容</label>
               <textarea class="span6" rows="4" id="id_detail" name="detail"></textarea>
             </div>
             <div>
@@ -63,7 +63,7 @@
               {% if user_topics %}
               <p class="help-block"><small>我的话题：</small>
               {% for topic in user_topics %}
-              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a>&nbsp;</span>
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a></span>
               {% endfor %}
               </p></span>
               {% endif %}
