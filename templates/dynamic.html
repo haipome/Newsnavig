@@ -83,6 +83,11 @@
 <hr />
 {% endwith %}
 {% endfor %}
+
+{% else %}
+<br />
+<p>你还没有关注任何人和话题，到<a href="/explore/">探索</a>里发现一些感兴趣的用户和话题吧</p>
+
 {% endif %}
 {% include "pager.html" %}
 {% endblock %}

@@ -159,6 +159,8 @@ def regist(request):
 				messages.error(request, u'这个邮箱已经注册过了')
 			elif data['password1'] != data['password2']:
 				messages.error(request, u'两次密码输入不一致')
+			elif data['agreement'] == False:
+				messages.error(request, u'你在注册前需要同意Newnavig的使用协议')
 			else:
 				username, email, password = (data['username'],
 				                             data['email'],

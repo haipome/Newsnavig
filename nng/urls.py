@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
+from django.views.generic.simple import direct_to_template
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -31,6 +32,12 @@ urlpatterns = patterns('',
     url(r'^explore/', include('explore.urls'), name='explore'),
     
     url(r'^post/$', 'nng.views.post', name='post'),
+    
+    url(r'^about/$', direct_to_template, {'template': 'about.html',}),
+    url(r'^agreement/$', direct_to_template, {'template': 'agreement.html',}),
+    url(r'^guideline/$', direct_to_template, {'template': 'guideline.html',}),
+    url(r'^policye/$', direct_to_template, {'template': 'policye.html',}),
+    url(r'^contact/$', direct_to_template, {'template': 'contact.html',}),
     
     url(r'^admin/', include(admin.site.urls)),
 )

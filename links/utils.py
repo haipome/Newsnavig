@@ -14,7 +14,14 @@ from domains.utils import del_link_domain
 def post_link(user, url, title, topic_names):
 	'''
 	'''
-	domain = add_link_domain(url)
+	domain, domain_post = add_link_domain(url)
+	
+	link = Link(id= get_available_id(), url=url, user=user, title=title)
+	
+	if domain:
+		link.domain = domain
+	else:
+		return False
 	
 	if len(url) > URL_MAX_LEN:
 		client = googl.Googl("AIzaSyDL2zRCt7DmDZV-1_QQY6HZnterAZ3Kv84")
@@ -24,23 +31,17 @@ def post_link(user, url, title, topic_names):
 			return False
 		else:
 			url = result['id']
-	
-	link = Link(id= get_available_id(), url=url, user=user, title=title)
-	
-	if domain:
-		link.domain = domain
-	else:
-		return False
+			link.url = url
 	
 	for topic_name in topic_names:
 		topic = add_link_topic(topic_name, user, url, domain)
 		link.topics.add(topic)
 	
 	link.save()
-	
-	Dynamic.objects.create(column=domain.get_column(),
-	                       way=WAY_LINK_DOMAIN_POST,
-	                       content_object=link)
+	if not domain_post:
+		Dynamic.objects.create(column=domain.get_column(),
+		                       way=WAY_LINK_DOMAIN_POST,
+		                       content_object=link)
 	
 	Dynamic.objects.create(column=user.userprofile.get_column(),
 	                       way=WAY_LINK_USER_POST,

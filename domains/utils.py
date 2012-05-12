@@ -35,18 +35,18 @@ def add_link_domain(url):
 	'''
 	name = get_domain(url)
 	if not name:
-		return False
+		return (False, False)
 	try:
 		d = Domain.objects.filter(domain__iexact=name)[0]
 	except:
 		d= _create_domain(name)
 	
 	if d.domain_links.filter(url__iexact=url).count():
-		return d
+		return (d, True)
 	else:
 		d.n_links += 1
 		d.save()
-		return d
+		return (d, False)
 
 def del_link_domain(obj):
 	'''

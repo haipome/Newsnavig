@@ -1,0 +1,10 @@
+{% extends 'base-sidebar.html' %}
+{% block title %}联系{% endblock %}
+{% block content_title %}
+<h3>联系</h3>
+<hr />
+{% endblock %}
+{% block content %}
+{% load static %}
+<p>有任何事宜，请 Email: <img src="{% get_media_prefix %}admin.png" alt="contact" /></p>
+{% endblock %}

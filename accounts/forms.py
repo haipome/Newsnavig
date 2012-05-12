@@ -36,6 +36,7 @@ class RegistForm(forms.Form):
 	email = forms.EmailField(widget=forms.TextInput(attrs=dict(maxlength=75)))
 	password1 = forms.CharField(widget=forms.PasswordInput(render_value=False))
 	password2 = forms.CharField(widget=forms.PasswordInput(render_value=False))
+	agreement = forms.BooleanField(required=False)
 	
 class ResendActiveEmail(forms.Form):
 	'''

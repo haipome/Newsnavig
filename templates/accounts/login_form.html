@@ -1,4 +1,4 @@
-{% extends "accounts/base.html" %}
+{% extends "base-sidebar.html" %}
 {% block nav_login %}active{% endblock %}
 {% block title %}登录{% endblock %}
 {% block content_title %}<h2>登录到 NNG 新闻导航</h2>{% endblock %}
@@ -31,4 +31,12 @@
     </div>
   </fieldset>
 </form>
+{% endblock %}
+
+{% block sidebar %}
+<br><br>
+<h3>在这里向朋友分享网址，关注感兴趣的话题并参与讨论</h3>
+<br>
+<a href="/regist" class="btn btn-primary">加入 Newsnavig</a>
+
 {% endblock %}
