@@ -23,6 +23,7 @@ def send(request):
 	form = MessageSendForm()
 	from_user = request.user
 	to_user = None
+	contact = None
 	if request.method == 'GET':
 		if 'to' in request.GET and request.GET['to']:
 			username = request.GET['to']
@@ -33,14 +34,11 @@ def send(request):
 			else:
 				if to_user == from_user:
 					return HttpResponseRedirect(reverse('message_inbox'))
-			'''
 				try:
 					contact = from_user.contact_list.filter(to_user=to_user)[0]
-					return HttpResponseRedirect(reverse(conversation, 
-				               kwargs={'contact_id': contact.id}))
 				except:
-					pass
-			'''
+					contact = None
+			
 	elif request.method == "POST":
 		form = MessageSendForm(request.POST)
 		if form.is_valid():
@@ -71,11 +69,12 @@ def send(request):
 	try:
 		from_url = request.META['HTTP_REFERER']
 	except:
-		from_url = None
+		from_url = "/"
 	return render_to_response('messages/send.html',
 	                         {'form': form,
 	                          'to_user': to_user,
-	                          'from_url': from_url,},
+	                          'from_url': from_url,
+	                          'contact': contact,},
 	                          context_instance=RequestContext(request))
 
 @login_required

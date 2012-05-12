@@ -60,8 +60,9 @@ def domain(request, domain_name, t='links'):
 	                          'followers': followers,
 	                          'datas': datas,},
 	                           context_instance=RequestContext(request))
-	
 
+
+@login_required
 def edit(request, domain_name):
 	'''
 	'''

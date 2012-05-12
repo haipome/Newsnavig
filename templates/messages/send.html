@@ -2,11 +2,11 @@
 {% block title %}发私信{% endblock %}
 {% block content_title %}
 {% if to_user %}
-<p><h3>给 <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name}}</a> 发送私信</h3></P>
+<h3>给 <a href="{{ to_user.userprofile.get_absolute_url }}">{{ to_user.userprofile.get_name}}</a> 发送私信</h3>
 {% else %}
 <h3>发送私信</h3>
-<hr />
 {% endif %}
+<hr />
 {% endblock %}
 {% block content %}
 <div>
@@ -20,16 +20,21 @@
     <input type="hidden" name="send_to" value="{{ to_user.username }}">
     {% endif %}
     <textarea type="textarea" class="span8" rows="20" name="message" placeholder="想说的话..."></textarea>
-    <div class="pull-right">
-      <a href="{% if from_url %}{{ from_url }}{% else %}{% url messages.views.inbox %}{% endif %}" class="btn">取消</a>
-      <button type="submit" class="btn btn-primary">发送</button>
+    <div class="row">
+      <div class="pull-right">
+        <a href="{% if from_url %}{{ from_url }}{% else %}{% url messages.views.inbox %}{% endif %}" class="btn">取消</a>
+        <button type="submit" class="btn btn-primary">发送</button>
+      </div>
     </div>
   </form>
 </div>
 {% endblock %}
 {% block sidebar %}
-{% if to_user %}
-<p><a href="{{ to_user.userprofile.get_absolute_url }}"><< 去 {{ to_user.userprofile.get_name}} 的主页</a></p>
-{% endif %}
 <p><a href="{% url messages.views.inbox %}"><< 返回私信主页</a></p>
+{% if to_user %}
+<p><a href="{{ to_user.userprofile.get_absolute_url }}"><< 去{{ to_user.userprofile.get_name}}的主页</a></p>
+{% if contact %}
+<p><a href="{% url messages.views.conversation contact_id=contact.id %}"><< 我与{{ to_user.userprofile.get_name}}的对话</a></p>
+{% endif %}
+{% endif %}
 {% endblock %}

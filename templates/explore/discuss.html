@@ -15,22 +15,22 @@
 {% with p=d.user.userprofile %}
 <div id="{{ d.id }}">
   <div class="row">
-    <div class="span8">
-      <p><h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4></p>
-      <p>
-      <small><a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a></small>
-      <small><a class="fake" href="{{ d.get_absolute_url }}">{% firstof d.n_comment '' %} 回复</a></small>
+    <div class="span7-5">
+      <h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4>
+      <div class="small">
+      <a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a>
+      <a class="fake" href="{{ d.get_absolute_url }}">{% firstof d.n_comment '' %} 回复</a>
       {% include 'operater.html' with t='d' p=p obj=d counter=1 %}
       {% if d.topics %}
-      <small>话题</small>
+      话题
       {% for topic in d.topics.all %}
-      <small><a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></small>
+      <a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
       {% endfor %}
       {% endif %}
-      </p>
+      </div>
     </div>
-    <div class="span2">
-      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
+    <div class="span0-5">
+      <a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a>
     </div>
   </div>
   <hr />

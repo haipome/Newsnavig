@@ -6,6 +6,7 @@ from django.http import Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 from nng.settings import *
 from django.utils.timezone import now
 from string import atoi
@@ -59,7 +60,7 @@ def link(request, t='hot'):
 		links = Link.objects.filter(
 		        is_visible=True).filter(
 		        time__gt=start_time).order_by(
-		        '-n_supporter', 'id').all(
+		        '-n_supporter', '-id').all(
 		        )[s:e].prefetch_related(
 		       'user__userprofile__avatar', 'topics', 'domain')
 	elif t == 'super':
@@ -100,7 +101,7 @@ def discuss(request, t='hot'):
 		discusses = Discuss.objects.filter(
 		        is_visible=True).filter(
 		        time__gt=start_time).order_by(
-		        '-n_supporter', 'id').all(
+		        '-n_supporter', '-id').all(
 		        )[s:e].prefetch_related(
 		       'user__userprofile__avatar', 'topics')
 	elif t == 'super':
@@ -141,7 +142,7 @@ def comment(request, t='hot'):
 		comments = Comment.objects.filter(
 		        is_visible=True).filter(
 		        time__gt=start_time).order_by(
-		        '-n_supporter', 'id').all(
+		        '-n_supporter', '-id').all(
 		        )[s:e].prefetch_related(
 		       'user__userprofile__avatar',
 		       'content_object__domain',
@@ -176,13 +177,13 @@ def comment(request, t='hot'):
 	                          'next': next_page,},
 	                           context_instance=RequestContext(request))
 	
-
+@login_required
 def user(request, t='hot'):
 	'''
 	'''
 	if t == 'hot':
 		users = UserData.objects.order_by(
-		        '-this_month_vote', 'id').all(
+		        '-this_month_vote', '-id').all(
 		        )[:MESSAGES_PER_PAGE].prefetch_related(
 		        'user__userprofile__avatar', 'user__userprofile__columns')
 	elif t == 'new':
@@ -201,7 +202,7 @@ def topic(request, t='hot'):
 	'''
 	if t == 'hot':
 		topics = Topic.objects.order_by(
-		        '-n_links', 'id').all(
+		        '-n_links', '-id').all(
 		        )[:MESSAGES_PER_PAGE * 10]
 	elif t == 'new':
 		topics = Topic.objects.order_by(
@@ -218,7 +219,7 @@ def domain(request, t='hot'):
 	'''
 	if t == 'hot':
 		domains = Domain.objects.order_by(
-		        '-n_links', 'id').all(
+		        '-n_links', '-id').all(
 		        )[:MESSAGES_PER_PAGE * 10]
 	elif t == 'new':
 		domains = Domain.objects.order_by(

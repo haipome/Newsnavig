@@ -22,7 +22,7 @@ def get_avatar(f, l):
 		box = (s, 0, y + s, y)
 	im = im.crop(box).resize((l, l), Image.ANTIALIAS)
 	temp = mktemp() + ".jpg"
-	im.save(temp, "JPEG")
+	im.convert('RGB').save(temp, "JPEG")
 	
 	return temp
 

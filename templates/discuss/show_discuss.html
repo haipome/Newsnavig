@@ -1,12 +1,11 @@
-{% extends 'base-no-sidebar.html' %}
-{% block title %}{{ d.title }} | newsnavig{% endblock %}
-{% block content %}
+{% extends 'base.html' %}
+{% block title %}{{ d.title|truncatechars:30 }}{% endblock %}
+{% block content_title %}
 <hr />
 {% include 'discuss/discuss.html' with d=d edit=1 %}
+{% endblock %}
+{% block content %}
 <hr />
 {% include 'comment/comment_form.html' with reply_type='d' reply_id=d.id %}
-<hr />
 {% include "comment/show_comments.html" with comments=comments %}
-
-{% include "pager.html" %}
 {% endblock %}

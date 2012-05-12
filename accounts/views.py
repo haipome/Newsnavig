@@ -49,12 +49,18 @@ def user_login(request):
 						request.session.set_expiry(REMEMBER_ME_WEEKS * 7 * 86400)
 					else:
 						request.session.set_expiry(0)
+					
+					if data['way'] and data['way'] == 'quick':
+						try:
+							from_url = request.META['HTTP_REFERER']
+							return HttpResponseRedirect(from_url)
+						except:
+							pass
 					return HttpResponseRedirect(reverse('homepage'))
 				else:
 					messages.error(request, error_messages)
 		else:
 			messages.error(request, u'你的输入有误')
-	
 	return render_to_response('accounts/login_form.html', {'form': form},
 	                          context_instance=RequestContext(request))
 
@@ -167,6 +173,7 @@ def regist(request):
 	return render_to_response('accounts/regist_form.html', {'form': form},
 	                          context_instance=RequestContext(request))
 
+@login_required
 def email_resend(request):
 	'''
 	'''

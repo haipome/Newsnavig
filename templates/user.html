@@ -1,1 +1,1 @@
-<span><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong>{% if p.signature %}&nbsp;<small>({{ p.signature|urlizetrunc:20|truncatechars:30 }})</small>{% endif %}</span>
+<p><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong>{% if p.signature %}&nbsp;&nbsp;<span class="gray">({{ p.signature|urlizetrunc:20|truncatechars:30 }})</span>{% endif %}</p>

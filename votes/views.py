@@ -5,6 +5,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from links.models import Link
 from discusses.models import Discuss
 from comments.models import Comment
@@ -12,6 +13,7 @@ from votes.utils import vote_obj
 from shares.utils import post_share
 from collect.utils import collect
 from string import atoi
+
 
 def operate(request):
 	'''
@@ -24,10 +26,14 @@ def operate(request):
 		if 'c' in request.GET and request.GET['c']:
 			c = request.GET['c']
 		if c:
-			items = c.split('-')
-			a = items[0]
-			t = items[1]
-			i = atoi(items[2])
+			try:
+				items = c.split('-')
+				a = items[0]
+				t = items[1]
+				i = atoi(items[2])
+			except:
+				raise Http404
+			
 			if a:
 				if a == 'v':
 					operater = vote_obj

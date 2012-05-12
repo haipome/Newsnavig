@@ -13,18 +13,27 @@
   </ul>
 </div>
 {% if t == 'links' %}
+
 {% for link in datas %}
 {% include 'people/link.html' with show_topics=1 %}
 {% endfor %}
+
 {% elif t == 'discusses' %}
+
 {% for d in datas %}
 {% include 'people/discuss.html' with show_topics=1 %}
 {% endfor %}
+
 {% elif t == 'comments' %}
+
 {% for c in datas %}
 {% include 'people/comment.html' with obj=c.content_object t=c.way pc=c.parent_comment %}
 {% endfor %}
+
 {% elif t == 'shares' %}
+
+{% if user == people %}
+
 {% for i in datas %}
   {% if i.way == 'l' %}
     {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=1 delete_type='s' %}
@@ -34,7 +43,23 @@
     {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=1 delete_type='s' %}
   {% endif %}
 {% endfor %}
+
+{% else %}
+
+{% for i in datas %}
+  {% if i.way == 'l' %}
+    {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=0 delete_type='s' %}
+  {% elif i.way == 'd' %}
+    {% include 'people/discuss.html' with d=i.content_object show_topics=1 show_delete=0 delete_type='s' %}
+  {% elif i.way == 'c' %}
+    {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=0 delete_type='s' %}
+  {% endif %}
+{% endfor %}
+
+{% endif %}
+
 {% elif t == 'collections' %}
+
 {% for i in datas %}
   {% if i.way == 'l' %}
     {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=1 delete_type='f' %}
@@ -44,7 +69,9 @@
     {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=1 delete_type='f' %}
   {% endif %}
 {% endfor %}
+
 {% endif %}
+
 {% endwith %}
 
 {% include "pager.html" %}

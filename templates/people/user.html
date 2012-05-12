@@ -1,20 +1,22 @@
 <div>
   <div class="row">
-    <div class="span1">
-      <span class="pull-right"><a href="{{profile.get_absolute_url }}"><img src="{{ profile.avatar.get_medium_url }}" /></a></span>
+    <div class="span0-8">
+      <a href="{{profile.get_absolute_url }}"><img src="{{ profile.avatar.get_medium_url }}" /></a>
     </div>
-    <div class="span5">
-      <p><strong><a href="{{ profile.get_absolute_url }}">{{ profile.get_name }}</a></strong></p>
-      <p>
-      {{ profile.signature|urlizetrunc:20 }}
-      <a href="{{ profile.website }}" target="_blank">{{ profile.website|truncatechars:20 }}</a>
-      </p>
+    <div class="span5-9">
+      <strong><a href="{{ profile.get_absolute_url }}">{{ profile.get_name }}</a></strong>
+      <div class="profile">
+        {{ profile.signature|urlizetrunc:20 }}
+        {% if profile.website %}
+          <a class="fake" href="{{ profile.website }}" target="_blank">{{ profile.website|truncatechars:20 }}</a>
+        {% endif %}
+      </div>
     </div>
-    <div class="span2">
+    <div class="span1-3">
       {% if user.id != profile.user_id %}
-      <span class="pull-right"><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in ufcs %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+        <a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in ufcs %}class="btn btn-follow">取消关注{% else %}class="btn btn-primary btn-follow">关注{% endif %}</a>
       {% endif %}
     </div>
   </div>
-  <hr />
 </div>
+<hr />

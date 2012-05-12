@@ -1,6 +1,6 @@
 {% extends "accounts/base.html" %}
 {% block nav_login %}active{% endblock %}
-{% block title %}登录 NNG{% endblock %}
+{% block title %}登录{% endblock %}
 {% block content_title %}<h2>登录到 NNG 新闻导航</h2>{% endblock %}
 {% block content %}
 <form class="form-horizontal" action="" method="post">
@@ -23,7 +23,6 @@
       <label class="control-label" for="id_remember_me">在这台电脑上记住我</label>
         <div class="controls">
           <input id="id_remember_me" name="remember_me" type="checkbox">
-          <small>(连续两周没有登录将失效)</small>
         </div>
     </div>
     <div class="form-actions">

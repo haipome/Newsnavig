@@ -8,33 +8,44 @@
   
   <!-- style -->
   <link href="/static/css/bootstrap.2.02.min.css" rel="stylesheet">
-  <!--  <link href="/static/css/bootstrap-responsive.2.02.min.css" rel="stylesheet">  -->
   <style type="text/css">
-      body {
-        padding-top: 75px;
-        padding-bottom: 10px;
-        /* font-family: Verdana,"Helvetica Neue", Helvetica, Arial, sans-serif; */
-      }
-      small {
-        color: gray;
-      }
-      a.fake:link {
-        color: gray;
-      }
-      a.fake:visited {
-        color: gray;
-      }
-      a.fake:hover {
-        color: #049cdb;
-      }
-      a.fake:active {
-        color: gray;
-      }
-      #backtop {
-        position:fixed;
-        bottom:10px;
-        right:50px;
-      }
+      html,body {height: 90%;}
+      #container {min-height:100%; height: auto !important; height: 100%; position: relative; }
+      #page {padding-bottom: 72px;}
+      #footer { position: absolute; bottom: 20px; width: 100%; height: 36px; clear:both; }
+      body {padding-top:72px;}
+      .gray {color:gray; font-size:13px; font-weight:normal;}
+      small {color:gray; font-size:12px; font-weight:normal;}
+      .small {color:gray; font-size:12px; font-weight:normal;}
+      .small a {color:gray; font-weight:normal;}
+      a.fake:link {color:gray;}
+      a.fake:visited {color:gray;}
+      a.fake:hover {color: #08C;}
+      a.fake:active {color:gray;}
+      #backtop {position:fixed; bottom:12px; right:60px;}
+      .span0-5 {width:24px;margin-left:6px;}
+      .span7-5 {width:590px;}
+      .span1-5 {width:100px;}
+      .span6-5 {width:500px;}
+      .span0-8 {width:48px;}
+      .span7-2 {width:552px;}
+      .span5-9 {width:455px;}
+      .span7-9 {width:617px;}
+      .span1-3 {width:75;}
+      .btn-follow {width:52px;}
+      .offsetc5{margin-left:272px;}
+      .offsetc4{margin-left:222px;}
+      .offsetc3{margin-left:172px;}
+      .offsetc2{margin-left:122px;}
+      .offsetc1{margin-left:72px;}
+      .offsetc0{margin-left:22px;}
+      .offset0-8{margin-left:88px;}
+      hr{margin:12px 0}
+      h1,h2,h3,h4,h5,h6 {margin:6px 0;}
+      .comment {margin:6px 0;}
+      .profile {margin:6px 0; color:gray;}
+      .postbody {font-size:13px; margin:6px 0;}
+      .input-medium{width:188px;}
   </style>
   <!-- javascript -->
   <script src="/static/js/jquery-1.7.2.min.js"></script>
@@ -45,12 +56,15 @@
             if (data == 'success') {
                 if (node.innerHTML == "关注") {
                     node.innerHTML = "取消关注";
-                    $(node).attr("class", "btn");
+                    $(node).attr("class", "btn btn-follow");
                 }
                 else if (node.innerHTML == "取消关注") {
                     node.innerHTML = "关注";
-                    $(node).attr("class", "btn btn-primary");
+                    $(node).attr("class", "btn btn-primary btn-follow");
                 }
+            }
+            else if (data == 'needlogin') {
+                $('#login').modal('show');
             }
         });
         
@@ -61,14 +75,17 @@
         $.get("/operate/", { c: node.id }, function(data) {
             if (data == 'success') {
                 p = $(node).parent();
-                pp = $(node).parent().parent();
+                pp = $(p).parent();
                 $(node).remove();
-                $(p).append('<small>已' + node.innerHTML + '</small>');
-                var num = $(pp).find('small.counter').eq(0).text();
-                num = num.slice(1,num.length-1);
+                $(p).append('已' + node.innerHTML);
+                var num = $(pp).find('span.counter').eq(0).text();
+                num = num.slice(1, num.length - 1);
                 num = parseInt(num);
                 num = num + 1;
-                $(pp).find('small.counter').eq(0).text("(" + num + ")");
+                $(pp).find('span.counter').eq(0).text("(" + num + ")");
+            }
+            else if (data == 'needlogin') {
+                $('#login').modal('show');
             }
         });
         
@@ -95,7 +112,7 @@
                 $target = $target.length && $target
                     || $('[name=' + this.hash.slice(1) +']');
                 if ($target.length) {
-                    var targetOffset = $target.offset().top - 75;
+                    var targetOffset = $target.offset().top - 64;
                     var obj = document.documentElement; 
                     if (jQuery.browser.safari) 
                         obj = document.body
@@ -113,11 +130,29 @@
         s = $(node).parent().parent();
         p = $(s).parent();
         h = $(p).find('span.hide').eq(0);
-        style = $(h).attr('style');
-        $(s).attr('style', style);
+        $(s).hide();
         $(h).show();
         
         return false;
+    }
+    
+    function show_form(node) {
+        s = $(node).parent();
+        p = $(s).parent();
+        h = $(p).find('span.hide').eq(0);
+        $(s).hide()
+        $(h).show();
+        
+        return False;
+    }
+    function hide_form(node) {
+        s = $(node).parent();
+        p = $(s).parent();
+        h = $(p).find('span.topic').eq(0);
+        $(s).hide();
+        $(h).show();
+        
+        return False;
     }
   </script>
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -132,10 +167,10 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container" id="container">
     {% block navbar %}
     {% spaceless %}
-    <div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-fixed-top" id="header">
       <div class="navbar-inner">
         <div class="container">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -150,10 +185,10 @@
             </form>
           </div>
             <ul class="nav">
-              <li class="{% block nav_home %}{% endblock %}"><a href="/">&nbsp;&nbsp;首页</a></li>
-              <li class="{% block nav_discuss %}{% endblock %}"><a href="/discuss/">讨论</a></li>
-              <li class="{% block nav_post %}{% endblock %}"><a href="/post/"> 发布</a></li>
-              <li class="{% block nav_explore %}{% endblock %}"><a href="/explore/"> 探索</a></li>
+              <li class="{% block nav_home %}{% endblock %}"><a href="/">&nbsp;首页&nbsp;</a></li>
+              <li class="{% block nav_discuss %}{% endblock %}"><a href="/discuss/">&nbsp;讨论</a></li>
+              <li class="{% block nav_post %}{% endblock %}"><a href="/post/">&nbsp;发布</a></li>
+              <li class="{% block nav_explore %}{% endblock %}"><a href="/explore/">&nbsp;探索</a></li>
               <!-- <li class="divider-vertical"></li> -->
             </ul>
             <ul class="nav pull-right">
@@ -161,12 +196,12 @@
               {% if user.is_authenticated %}
               {% with d=user.userdata p=user.userprofile %}
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ p.get_name }} {% if d.un_read_messages or d.un_read_remind %}<span class="badge">{{ d.un_read_messages|add:d.un_read_remind }}</span>{% endif %}<b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ p.get_name }}{% if d.un_read_messages or d.un_read_remind %} <span class="badge">{{ d.un_read_messages|add:d.un_read_remind }}</span>{% endif %}<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="{{ p.get_absolute_url }}"><i class="icon-user"></i> 个人主页</a></li>
                   <li class="divider"></li>
-                  <li><a href="{% if d.un_read_remind %}{% url remind.views.remind %}{% else %}{% url remind.views.remind_all %}{% endif %}"><i class="icon-comment"></i> 提醒{% if d.un_read_remind %}<span class="badge">{{ d.un_read_remind }}</span>{% endif %}</a></li>
-                  <li><a href="{% url messages.views.inbox %}"><i class=" icon-envelope"></i> 私信{% if d.un_read_messages %}<span class="badge">{{ d.un_read_messages }}</span>{% endif %}</a></li>
+                  <li><a href="{% if d.un_read_remind %}{% url remind.views.remind %}{% else %}{% url remind.views.remind_all %}{% endif %}"><i class="icon-comment"></i> 提醒{% if d.un_read_remind %} <span class="badge">{{ d.un_read_remind }}</span>{% endif %}</a></li>
+                  <li><a href="{% url messages.views.inbox %}"><i class=" icon-envelope"></i> 私信{% if d.un_read_messages %} <span class="badge">{{ d.un_read_messages }}</span>{% endif %}</a></li>
                   <li class="divider"></li>
                   <li><a href="{% url settings.views.edit_profile %}"><i class=" icon-cog"></i> 设置</a></li>
                   <li><a href="/logout/"><i class="icon-off"></i> 注销</a></li>
@@ -185,7 +220,6 @@
     {% endspaceless %}
     {% endblock %}
     <span id="top"></span>
-    
     <div class="row">
       <div class="span12">
       {% block notice %}
@@ -203,30 +237,36 @@
       </div>
     </div>
     
-    <div class="row">
+    <div class="row" id="page">
       <div class="span12">
       {% block body %}
       
-      {% block page_menu %}{% endblock %}
-	  {% block content_title %}{% endblock %}
-
+      {% block page_nav %}{% endblock %}
+      {% block content_title %}{% endblock %}
       {% block content %}{% endblock %}
       
       {% endblock %}
       </div>
     </div>
+    
     <div class="row" id="footer">
       <div class="span12">
       {% block fotter %}
-        <a class="fake" href="#top" id="backtop">Top</a>
+        {% if not user.is_authenticated %}
+          {% include 'quick_login.html' %}
+        {% endif %}
+        <a class="fake small" href="#top" id="backtop">Top</a>
         <hr />
-        <span class="pull-left"><small>&copy; 2012 newsnavig.com, all rights reserved.</small></span>
+        <span class="pull-left small">&copy; 2012 newsnavig.com, all rights reserved.</span>
+        <span class="pull-right small">
+          <a href="http://www.nng.com/post/?type=discuss&topic=newsnavig">反馈</a>
+        · <a href="#">联系</a>
         
       {% endblock %}
       </div>
     </div>
-    
-    {% if debug %}
+  
+    {% if not debug %}
     <div class="row">
       <div class="span12">
       <hr />

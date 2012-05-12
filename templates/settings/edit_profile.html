@@ -1,9 +1,10 @@
 {% extends "settings/base.html" %}
 {% block nav-profile %}active{% endblock %}
 {% block content_title %}
-  <h2>个人资料设置</h2>
+  <h3>个人资料设置</h3>
 {% endblock %}
 {% block content %}
+
       <form enctype="multipart/form-data" class="form-horizontal" method="post" action=".">
        {% csrf_token %}
         <fieldset>
@@ -11,7 +12,7 @@
           <div class="control-group">
             <label class="control-label" for="id_name">名号</label>
             <div class="controls">
-              <input id="id_name" name="name" type="text" class="input-xlarge" maxlength="30" value="{{ name }}"{% if not user.userprofile.is_can_change_name %} disabled{% endif %}>
+              <input id="id_name" name="name" type="text" class="span3" maxlength="30" value="{{ name }}"{% if not user.userprofile.is_can_change_name %} disabled{% endif %}>
               <p class="help-block"><small>汉字或字母，{{ time_limit }} 天内名号只能修改一次</small></p>
             </div>
           </div>
@@ -26,21 +27,21 @@
           <div class="control-group">
             <label class="control-label" for="id_website">个人主页</label>
             <div class="controls">
-              <input id="id_website"  name="website" type="text" class="span6" placeholder="http://" value="{{ website }}"></textarea>
+              <input id="id_website"  name="website" type="text" class="span6-5" placeholder="http://" value="{{ website }}"></textarea>
               <p class="help-block"><small>网络上能代表的你的链接<small></p>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label" for="id_signature">一句话签名</label>
             <div class="controls">
-              <textarea  class="span6" type="textarea" rows="1" id="id_signature" name="signature" maxlength="70" >{{ signature }}</textarea>
+              <textarea  class="span6-5" type="textarea" rows="1" id="id_signature" name="signature" maxlength="70" >{{ signature }}</textarea>
               <p class="help-block"><small>不超过70个字<small></p>
             </div>
           </div>
           <div class="control-group">
             <label class="control-label" for="id_detail">个人说明</label>
             <div class="controls">
-              <textarea class="span6" rows="6" id="id_detail" name="detail">{{ detail }}</textarea>
+              <textarea class="span6-5" rows="6" id="id_detail" name="detail">{{ detail }}</textarea>
             </div>
           </div>
           <div class="form-actions">

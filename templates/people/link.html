@@ -2,17 +2,17 @@
 <div id="{{ link.id }}">
   <div class="row">
     <div class="span8">
-      <p><h4><a href="{{ link.url }}" target="_blank">{{ link.title }}</a>&nbsp;<small>(<a class="fake" href="{{ link.domain.get_absolute_url }}">{{ link.domain.domain }}</a>)</small></h4></p>
-      <p>
-      <a href="{{ link.get_absolute_url }}"><small>{{ link.time|date:"Y-n-j" }}</small></a>
-      <a href="{{ link.get_absolute_url }}"><small>{% firstof link.n_comment '' %} 回复</small></a>
+      <h4><a href="{{ link.url }}" target="_blank">{{ link.title }}</a>&nbsp;<span class="small">(<a class="fake" href="{{ link.domain.get_absolute_url }}">{{ link.domain.domain }}</a>)</span></h4>
+      <div class="small">
+      <a class="fake" href="{{ link.get_absolute_url }}">{{ link.time|date:"Y-n-j" }}</a>
+      <a class="fake" href="{{ link.get_absolute_url }}">{% firstof link.n_comment '' %} 回复</a>
       {% include 'operater.html' with t='l' obj=link counter=1 %}
       {% if show_topics %}
       {% with topics=link.topics.all %}
-      {% if link %}
-      <small>话题</small>
+      {% if topics %}
+      话题
       {% for topic in topics %}
-      <a href="{{ topic.get_absolute_url }}"><small>{{ topic.name }}</small></a>
+      <a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
       {% endfor %}
       {% endif %}
       {% endwith %}
@@ -20,7 +20,7 @@
       {% if show_delete %}
       {% include "people/delete.html" with id=link.id %}
       {% endif %}
-      </p>
+      </div>
     </div>
   </div>
 </div>

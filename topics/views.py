@@ -5,12 +5,21 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from topics.models import Topic
-from forms import TopicEditForm
+from forms import TopicEditForm, TopicsEditForm
 from django.http import Http404
 from explore.views import process_pager
 from nng.settings import MESSAGES_PER_PAGE
 from data.models import FollowShip
+from links.views import topics_get
+from string import atoi
+from links.models import Link
+from discusses.models import Discuss
+from utils import add_link_topic, add_discuss_topic, del_link_topic, del_discuss_topic
+from django.utils.encoding import smart_str, smart_unicode
+from dynamic.models import Dynamic
+from nng.settings import *
 
 def topic(request, topic_name, t='links'):
 	'''
@@ -90,4 +99,97 @@ def edit(request, topic_name):
 		return HttpResponseRedirect(from_url)
 	except KeyError:
 		raise Http404
+
+def topics_change(t, i, topics, user):
+	'''
+	'''
+	try:
+		topics_name = topics_get(topics.lower().split(' '))
+		
+		if t == 'l' and i:
+			obj = Link.objects.get(pk=i)
+		elif t == 'd' and i:
+			obj = Discuss.objects.get(pk=i)
+		else:
+			return False
+		
+		if obj.user != user:
+			return False
+		
+		is_b = obj.is_boutique
+		old_topics = obj.topics.all()
+		old_topics_name = []
+		for topic in old_topics:
+			name = topic.name.lower()
+			if name not in topics_name:
+				if isinstance(obj, Link):
+					del_link_topic(obj, topic)
+				elif isinstance(obj, Discuss):
+					del_discuss_topic(obj, topic)
+				else:
+					return False
+				obj.topics.remove(topic)
+			else:
+				old_topics_name.append(name)
+		
+		for t_name in topics_name:
+			if t_name not in old_topics_name:
+				if isinstance(obj, Link):
+					topic = add_link_topic(t_name, user, obj.url, obj.domain)
+					if is_b:
+						topic.n_links_boutiques += 1
+						topic.save()
+						Dynamic.objects.create(column=topic.get_column(),
+						                       way=WAY_LINK_TOPIC_POST,
+						                       content_object=obj)
+				elif isinstance(obj, Discuss):
+					topic = add_discuss_topic(t_name, user)
+					if is_b:
+						topic.n_discusses_boutiques += 1
+						topic.save()
+						Dynamic.objects.create(column=topic.get_column(),
+						                       way=WAY_DISCUSS_TOPIC_POST,
+						                       content_object=obj)
+				else:
+					return False
+				obj.topics.add(topic)
+		
+		return obj
+	except:
+		return False
+
+
+@login_required
+def topics_edit(request):
+	'''
+	'''
+	if request.method == 'POST':
+		form = TopicsEditForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+			c = data['c']
+			topics = data['topics']
+			try:
+				items = c.split('-')
+				t = items[0]
+				i = atoi(items[1])
+			except:
+				raise Http404
+			
+			obj = topics_change(t, i, topics, request.user)
+			
+			if obj:
+				if isinstance(obj, Link):
+					return HttpResponseRedirect(reverse('show_link', 
+					                                     args=[obj.id]))
+				if isinstance(obj, Discuss):
+					return HttpResponseRedirect(reverse('show_discuss', 
+					                                     args=[obj.id]))
+			try:
+				from_url = request.META['HTTP_REFERER']
+				return HttpResponseRedirect(from_url)
+			except KeyError:
+				return HttpResponseRedirect('/')
+	
+	raise Http404
 	

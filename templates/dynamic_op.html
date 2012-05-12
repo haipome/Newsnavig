@@ -1,5 +1,5 @@
-<span><a href="{{ c.get_absolute_url }}"><small>{% if time.date == today %}今天&nbsp;{{ time|time:"H:i" }}{% else %}{{ time|date:"n月j日" }}{% endif %}</small></a>&nbsp;<span>
-<span><a href="{{ c.get_absolute_url }}"><small>{% firstof c.n_comment '' %}回复</small></a>&nbsp;</span>
+<a class="fake" href="{{ c.get_absolute_url }}">{% if time.date == today %}今天 {{ time|time:"H:i" }}{% else %}{{ time|date:"n月j日" }}{% endif %}</a>&nbsp;<span>
+<a class="fake"  href="{{ c.get_absolute_url }}">{% firstof c.n_comment '' %} 回复</a>&nbsp;
 {% if w in 'abcd' %}
   {% include 'operater.html' with t='l' obj=c p=p %}
 {% elif w in 'efg' %}

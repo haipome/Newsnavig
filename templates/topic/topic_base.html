@@ -2,16 +2,19 @@
 {% block title %}{{ topic.name }}{% endblock %}
 {% block content_title %}
 <div class="row">
-  <div class="topic_profile">
-    <div class="span2">
-      <div class="pull-right">
-        <a href="{{ topic.get_absolute_url }}"><img src="{{ topic.avatar.get_large_url }}" /></a>
-      </div>
-    </div>
-    <div class="span6">
-      <h3>话题 <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></h3><hr />
-        {{ topic.detail|urlizetrunc:20|linebreaksbr }}
-        <a data-toggle="modal" href="#topic_edit"><i class="icon-edit"></i><small>编辑</small></a>
+  <div class="span1-5">
+    <a href="{{ topic.get_absolute_url }}"><img src="{{ topic.avatar.get_large_url }}" /></a>
+  </div>
+  <div class="span6-5">
+    <h3>
+      <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
+      <span class="small">话题<span>
+    </h3>
+    <hr />
+    {% load comment_spacify %}
+    <div>
+      {{ topic.detail|urlizetrunc:20|spacify|linebreaksbr }}
+      <a data-toggle="modal" href="#topic_edit"><i class="icon-edit"></i>编辑</a>
     </div>
   </div>
 </div>
@@ -39,8 +42,8 @@
 </div>
 {% endblock %}
 {% block sidebar-title %}
-<br>
-<span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in user.userdata.follows.all  %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+<a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in user.userdata.follows.all  %}class="btn btn-follow">取消关注{% else %}class="btn btn-primary btn-follow" rel="tooltip" title="关注后该话题下的热门网址和讨论将会出现在你的主页">关注{% endif %}</a>
+<a class="btn" href="{% url nng.views.post %}?type=discuss&topic={{ topic.name }}">发起讨论</a>
 <hr />
 <p><a href="{% url topics.views.topic topic.name %}followers/">{{ column.n_followers }} 人关注了该话题</a></p>
 {% for profile in followers %}

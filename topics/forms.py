@@ -34,3 +34,10 @@ class TopicEditForm(forms.Form):
 			pass
 		
 		return t
+
+class TopicsEditForm(forms.Form):
+	'''
+	'''
+	c = forms.CharField(required=True)
+	topics = forms.CharField(required=False)
+	

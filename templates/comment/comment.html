@@ -1,26 +1,27 @@
 {% if c.is_visible %}
+{% with p=c.user.userprofile %}
   <div class="row" id="{{ c.id }}">
-    <div class="span1">
+    <div class="span0-8">
       <span class="pull-right">
-        {% with p=c.user.userprofile %}
         <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a>
       </span>
     </div>
-    <div class="span9">
-      <p>{% include 'user.html' with p=p %}</p>
-      <span>{{ c.content|urlizetrunc:20|linebreaks }}</span>
-      <p>
-      <a href="{{ c.get_absolute_url }}"><small>{{ c.time|date:"Y-n-j" }}</small></a>
-      <small>{{ c.n_comment }}&nbsp;回复</small>
-      {% include 'operater.html' with t='c' obj=c counter=0 %}
-      {% if user == c.user and c.n_comment == 0 %}
-      <a href="{% url nng.views.delete %}?c=c-{{ c.id }}"><small>删除</small></a>
-      {% endif %}
-      <a href="{% if c.parent_comment %}{{ c.parent_comment.get_absolute_url }}{% else %}{{ c.content_object.get_absolute_url }}{% endif %}"><small>上一级</small></a>
-      {% endwith %}
-      </p>
+    <div class="span8">
+      {% include 'user.html' with p=p %}
+       {% load comment_spacify %}
+      <div class="postbody">{{ c.content|urlizetrunc:20|spacify|linebreaksbr }}</div>
+      <div class="small">
+        <a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a>
+        &nbsp;{{ c.n_comment }} 回复
+        {% include 'operater.html' with t='c' obj=c counter=0 %}
+        {% if user == c.user and c.n_comment == 0 %}
+        <a class="fake" href="{% url nng.views.delete %}?c=c-{{ c.id }}">删除</a>
+        {% endif %}
+        <a class="fake" href="{% if c.parent_comment %}{{ c.parent_comment.get_absolute_url }}{% else %}{{ c.content_object.get_absolute_url }}{% endif %}">上一级</a>
+      </div>
     </div>
   </div>
+{% endwith %}
 {% else %}
   <p>该回复已被删除</p>
 {% endif %}

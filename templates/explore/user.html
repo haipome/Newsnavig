@@ -1,11 +1,11 @@
 {% extends 'explore/base.html' %}
 {% block title %}探索 :: 用户{% endblock %}
-{% block exp_nav_user %}active{% endblock %}
+{% block page_nav %}<h3>用户</h3><hr />{% endblock %}
 {% block content %}
 <div class="row">
 <div class="pull-right">
   {% if t == 'hot' %}月度星级用户 /{% else %}<a href="{% url explore.views.user %}">月度星级用户</a> /{% endif %}
-  {% if t == 'new' %}最近注册{% else %}<a href="{% url explore.views.user %}new/">最近注册</a>{% endif %}
+  {% if t == 'new' %}最新注册{% else %}<a href="{% url explore.views.user %}new/">最新注册</a>{% endif %}
 </div>
 </div>
 <hr />
@@ -14,28 +14,7 @@
 {% with follows=user.userdata.follows.all %}
 {% for d in users %}
 {% with p=d.user.userprofile columns=d.user.userprofile.columns.all %}
-<div>
-  <div class="row">
-    <div class="span1">
-      <span class="pull-right"><a href="{{p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
-    </div>
-    <div class="span7">
-      <p><strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong></p>
-      <p>
-      {% if p.signature %}<span>{{ p.signature|urlizetrunc:20 }}</span>{% endif %}
-      {% if p.website %}<span><a href="{{ p.website }}" target="_blank">{{ p.website|truncatechars:20 }}</a></span>{% endif %}
-      </p>
-    </div>
-    <div class="span2">
-      <span class="pull-right">
-      {% with c=columns.0 %}
-      {% if user.id != d.user_id %}<span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if c in follows %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>{% endif %}
-      {% endwith %}
-      </span>
-    </div>
-  </div>
-  <hr />
-</div>
+{% include 'people/user.html' with profile=p column=columns.0 ufcs=follows %}
 {% endwith %}
 {% endfor %}
 {% endwith %}

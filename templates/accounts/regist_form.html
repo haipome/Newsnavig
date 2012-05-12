@@ -1,4 +1,4 @@
-{% extends "accounts/base.html" %}
+{% extends "base-no-sidebar.html" %}
 {% block nav_regist %}active{% endblock %}
 {% block title %}注册 NNG{% endblock %}
 {% block content_title %}<h2>注册</h2>{% endblock %}
@@ -11,28 +11,28 @@
     <div class="control-group">
       <label class="control-label" for="id_username">用户名</label>
         <div class="controls">
-          <input id="id_username" name="username" type="text" maxlength="30" class="span4" {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+          <input id="id_username" name="username" type="text" maxlength="30" class="span5" {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
           <p class="help-block">字母或数字</p>
         </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="id_email">电子邮箱</label>
         <div class="controls">
-          <input id="id_email" name="email" type="text" maxlength="75" class="span4" {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
+          <input id="id_email" name="email" type="text" maxlength="75" class="span5" {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
           <p class="help-block">用来登录和重置密码，我们绝不会发垃圾邮件</p>
         </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="id_password1">密码</label>
         <div class="controls">
-          <input id="id_password1" name="password1" type="password" class="span4">
+          <input id="id_password1" name="password1" type="password" class="span5">
           <p class="help-block">我们不会保存你的密码</p>
         </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="id_password2">重复密码</label>
         <div class="controls">
-          <input id="id_password2" name="password2" type="password" class="span4">
+          <input id="id_password2" name="password2" type="password" class="span5">
         </div>
     </div>
     <div class="form-actions">

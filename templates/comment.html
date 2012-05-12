@@ -1,10 +1,13 @@
+      <div class="comment">
       {% with l=140 %}
+      {% load comment_spacify %}
         {% if content|length < l %}
-        <span> <p>{{ content }}</p></span>
+        <span><p>{{ content|spacify|linebreaksbr }}</p></span>
         {% else %}
         <span>
-          <span class="show"><p>{{ content|truncatechars:l }} <a onclick="return show_all(this)" href="#">显示全部 »</a></p></span>
-          <span class="hide" style="display: none;"><p>{{ content|linebreaksbr }}</p></span>
+          <span class="Summary"><p>{{ content|truncatechars:l }} <a onclick="return show_all(this)" href="#">显示全部 »</a></p></span>
+          <span class="hide" style="display: none;"><div class="post-comment">{{ content|spacify|linebreaksbr }}</div></span>
         </span>
         {% endif %}
       {% endwith %}
+      </div>

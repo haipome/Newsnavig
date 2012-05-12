@@ -1,12 +1,14 @@
-{% extends 'base-no-sidebar.html' %}
-{% block title %}{{ ct.content|truncatechars:30 }} | newsnavig{% endblock %}
-{% block content %}
+{% extends 'base.html' %}
+{% block title %}{{ ct.content|truncatechars:30 }}{% endblock %}
+{% block content_title %}
 <hr />
 {% if ct.way == 'l' %}
 {% include "link/link.html" with link=ct.content_object %}
 {% elif ct.way == 'd' %}
 {% include "discuss/discuss.html" with d=ct.content_object %}
 {% endif %}
+{% endblock %}
+{% block content %}
 <hr />
 {% with pc=ct.parent_comment %}
 {% if pc %}

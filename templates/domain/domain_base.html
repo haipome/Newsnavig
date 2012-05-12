@@ -2,18 +2,18 @@
 {% block title %}{{ domain.get_name }}{% endblock %}
 {% block content_title %}
 <div class="row">
-  <div class="domain_profile">
-    <div class="span2">
-      <div class="pull-right">
-        <a href="{{ domain.get_absolute_url }}"><img src="{{ domain.avatar.get_large_url }}" /></a>
-      </div>
+  <div class="span1-5">
+    <div class="pull-right">
+      <a href="{{ domain.get_absolute_url }}"><img src="{{ domain.avatar.get_large_url }}" /></a>
     </div>
-    <div class="span6">
-      <h3>站点：
-      {% if domain.name %}
-      <a href="{{ domain.get_absolute_url }}">{{ domain.name }}</a>&nbsp;
-      {% endif %}
-      <a href="{{ domain.get_domain_url }}" target="_blank">{{ domain.domain }}</a></h3><hr />
+  </div>
+  <div class="span6-5">
+    <h3>
+      <a href="{{ domain.get_absolute_url }}">{% if domain.name %}{{ domain.name }}{% else %}{{ domain.domain }}{% endif %}</a>
+      <a class="small fake" href="{{ domain.get_domain_url }}" target="_blank">{{ domain.domain }}</a>
+    </h3>
+    <hr />
+    <div>
       {{ domain.detail|urlizetrunc:20|linebreaksbr }}
       <a data-toggle="modal" href="#domain_edit"><i class="icon-edit"></i><small>编辑</small></a>
     </div>
@@ -47,8 +47,7 @@
 </div>
 {% endblock %}
 {% block sidebar-title %}
-<br>
-<span><a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in user.userdata.follows.all %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+<a onclick="return follow(this)" id="{{ column.secret_id }}" href="#" {% if column in user.userdata.follows.all %}class="btn btn-follow">取消关注{% else %}class="btn btn-primary btn-follow">关注{% endif %}</a></span>
 <hr />
 <p><a href="{% url domains.views.domain domain.domain %}followers/">{{ column.n_followers }} 人关注了该站点</a></p>
 {% for profile in followers %}

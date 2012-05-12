@@ -70,7 +70,7 @@ def show_comment(request, comment_id):
 	
 	comments = comment.content_object.comments.all().prefetch_related(
 	           'user__userprofile__avatar')
-	comments = comment_sort_common(comment, comments, 9)
+	comments = comment_sort_common(comment, comments, COMMENT_DEEPS)
 	
 	return render_to_response('comment/show_comment.html',
 	                         {'ct': comment,

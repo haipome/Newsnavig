@@ -20,7 +20,7 @@ def topics_get(topic_names):
 	for n in topic_names:
 		if n:
 			n = n[:NAME_MAX_LEN]
-			if '/' not in n:
+			if '/' not in n and n not in topics:
 				topics.append(n)
 				if len(topics) == MAX_TOPICS_NUMBER:
 					return topics
@@ -81,7 +81,7 @@ def show_link(request, link_id):
 	           ).prefetch_related(
 	           'user__userprofile__avatar')
 	
-	comments = comment_sort(comments, 9)
+	comments = comment_sort(comments, COMMENT_DEEPS)
 	
 	return render_to_response('link/show_link.html',
 	                         {'link': link,

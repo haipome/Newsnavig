@@ -22,6 +22,9 @@ from comments.models import Comment
 from shares.models import Share
 from collect.models import Collect
 from string import atoi
+from comments.utils import del_comment
+from discusses.utils import del_discuss
+from links.utils import del_link
 
 def get_user_topics(user):
 	if user.is_authenticated():
@@ -69,15 +72,13 @@ def index(request):
 	                           context_instance=RequestContext(request))
 	
 
-
+@login_required
 def discuss(request, t='follow'):
 	'''
 	'''
 	pre_page, next_page, s, e = process_pager(request)
 	
 	user = request.user
-	if not user.is_authenticated():
-		return HttpResponseRedirect(reverse('login'))
 	
 	user_topics = get_user_topics(user)
 	follow = get_follows(user)
@@ -133,8 +134,20 @@ def post(request):
 	'''
 	'''
 	user = request.user
-	
 	user_topics = get_user_topics(user)
+	
+	if request.method == 'GET':
+		if 'topic' in request.GET and request.GET['topic']:
+			topic = request.GET['topic']
+		else:
+			topic = ''
+		if 'type'  in request.GET and request.GET['type']:
+			t = request.GET['type']
+		else:
+			t = 'link'
+	
+	if t != 'link' and t != 'discuss':
+		t = 'link'
 	
 	try:
 		from_url = request.META['HTTP_REFERER']
@@ -143,11 +156,13 @@ def post(request):
 	
 	return render_to_response('post.html',
 	                         {'user_topics': user_topics,
-	                          'from_url': from_url,},
+	                          'from_url': from_url,
+	                          't': t,
+	                          'topic': topic,},
 	                           context_instance=RequestContext(request))
 
 
-
+@login_required
 def delete(request):
 	'''
 	'''
@@ -156,9 +171,12 @@ def delete(request):
 		if 'c' in request.GET and request.GET['c']:
 			c = request.GET['c']
 			
-			items = c.split('-')
-			t = items[0]
-			i = atoi(items[1])
+			try:
+				items = c.split('-')
+				t = items[0]
+				i = atoi(items[1])
+			except:
+				raise Http404
 			
 			if t == 'l' and i:
 				try:
@@ -195,6 +213,12 @@ def delete(request):
 					obj.content_object.save()
 					user.userdata.n_shares -= 1
 					user.userdata.save()
+					
+					Dynamic.objects.filter(
+					        column=user.userprofile.get_column()).filter(
+					        object_id=obj.content_object.id).update(
+					        is_visible=False)
+					
 				elif t == 'f':
 					obj.content_object.n_collecter -= 1
 					obj.content_object.save()
@@ -202,6 +226,7 @@ def delete(request):
 					user.userdata.save()
 				else:
 					pass
+				
 				obj.delete()
 				try:
 					from_url = request.META['HTTP_REFERER']
@@ -214,32 +239,24 @@ def delete(request):
 				raise Http404
 			
 			if user == obj.user and obj.n_comment == 0:
-				
-				obj.is_visible = False
-				obj.save()
-				if t == 'c':
-					user.userdata.n_comments -= 1
-					user.userdata.save()
-					if obj.parent_comment:
-						obj.parent_comment.n_comment -= 1
-						obj.parent_comment.save()
-					if obj.content_object:
-						obj.content_object.n_comment -= 1
-						obj.content_object.save()
-				
 				Dynamic.objects.filter(object_id=obj.id).update(
 				                is_visible=False)
 				
+				obj.is_visible = False
+				obj.save()
+				
+				if t == 'c':
+					del_comment(obj)
+				
 				if t == 'd':
-					user.userdata.n_discusses -= 1
-					user.userdata.save()
+					del_discuss(obj)
+					
 					DiscussIndex.objects.filter(
 					             discuss_id=obj.id).update(
 					             is_visible=False)
 				
 				if t == 'l':
-					user.userdata.n_links -= 1
-					user.userdata.save()
+					del_link(obj)
 				
 				if t == 'l' or t == 'd':
 					return HttpResponseRedirect(reverse('homepage'))
@@ -258,3 +275,4 @@ def delete(request):
 		return HttpResponseRedirect(from_url)
 	except KeyError:
 		return HttpResponseRedirect(reverse('homepage'))
+	

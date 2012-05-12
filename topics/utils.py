@@ -8,6 +8,8 @@ from django.db.models import F
 from domains.models import Domain
 from columns.utils import create_column
 from django.utils.timezone import now
+from links.models import Link
+from discusses.models import Discuss
 
 def _creat_topic(name, links=0, discusses=0):
 	'''
@@ -38,6 +40,21 @@ def add_link_topic(name, user, url, domain):
 		t.save()
 		return t
 
+def del_link_topic(l, t):
+	'''
+	'''
+	if not isinstance(l, Link):
+		return False
+	if t.topic_links.filter(url__iexact=l.url).count() == 1:
+		t.n_links -= 1
+	
+	if l.is_boutique:
+		t.n_links_boutiques -= 1
+	
+	topic_ship_update(t, l.user, domain=l.domain, num=-1)
+	t.save()
+	
+
 def add_discuss_topic(name, user):
 	'''
 	'''
@@ -51,6 +68,19 @@ def add_discuss_topic(name, user):
 	t.save()
 	
 	return t
+	
+
+def del_discuss_topic(d, t):
+	'''
+	'''
+	if not isinstance(d, Discuss):
+		return False
+	
+	t.n_discusses -= 1
+	if d.is_boutique:
+		t.n_links_boutiques -= 1
+	topic_ship_update(t, d.user, is_discuss=True, num=-1)
+	t.save()
 	
 
 def topic_ship_update_by_name(topic_name, user,
@@ -86,23 +116,24 @@ def topic_ship_update(topic, user,
                       domain = None,
                       is_discuss=False,
                       is_comment=False,
-                      is_vote=False):
+                      is_vote=False,
+                      num = 1):
 	
 	errorn = 0
 	
 	if not is_vote:
 		if is_discuss:
 			if not TopicUserShip.objects.filter(user=user, topic=topic).update(
-		           n_discusses=F('n_discusses') + 1, last_active_time=now()):
+		           n_discusses=F('n_discusses') + num, last_active_time=now()):
 				_creat_user_ship(user=user, topic=topic, n_discusses=1)
 		elif is_comment:
 			if not TopicUserShip.objects.filter(user=user, topic=topic).update(
-			       n_comments=F('n_comments') + 1):
+			       n_comments=F('n_comments') + num):
 				errorn += 1
 			if domain:
 				if not TopicDomainShip.objects.filter(
 				       domain=domain, topic=topic).update(
-				       n_comments=F('n_comments') + 1):
+				       n_comments=F('n_comments') + num):
 					errorn += 1
 		else:
 			if not TopicUserShip.objects.filter(user=user, topic=topic).update(
@@ -111,12 +142,12 @@ def topic_ship_update(topic, user,
 			if domain:
 				if not TopicDomainShip.objects.filter(
 				       domain=domain, topic=topic).update(
-				       n_links=F('n_links') + 1):
+				       n_links=F('n_links') + num):
 					_creat_domain_ship(domain=domain, topic=topic, n_links=1)
 	else:
 		if user:
 			if not TopicUserShip.objects.filter(user=user, topic=topic).update(
-			       votes=F('votes') + 1):
+			       votes=F('votes') + num):
 				errorn += 1
 		if domain:
 			if not TopicDomainShip.objects.filter(domain=domain, topic=topic).update(

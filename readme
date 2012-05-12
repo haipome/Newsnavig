@@ -1,3 +1,10 @@
+crontab -e
+0 3 * * * python ~/nng/nng/crontab.py
+
+find -name "*.py" -exec wc -l {} \;|awk '{a+=$1}END{print a}'
+
+修改 bootstrap 文件中 modal width=530
+
 sudo apt-get install memcached
 memcached -d -m 64 -u root -l 127.0.0.1 -p 11211 -c 1024 -P /tmp/memcached.log
 ftp://ftp.tummy.com/pub/python-memcached/python-memcached-1.48.tar.gz

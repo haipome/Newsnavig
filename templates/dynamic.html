@@ -6,85 +6,81 @@
 {% if dynamics %}
 {% for d in dynamics %}
 {% with o=d.column.content_object c=d.content_object w=d.way time=d.time p=d.content_object.user.userprofile %}
-{% spaceless %}
-
 <div>
   <div class="row">
-    <div class="span7">
+    <div class="span7-5">
       {% if w in 'abcd' %}
-      <p><h4>
-        <a href="{{ c.url }}" target="_blank"><strong>{{ c.title }}</strong></a>
-        <small>&nbsp;&nbsp;(<a href="{{ c.domain.get_absolute_url }}" class="fake">{{ c.domain.domain }}</a>)</small>
-      </h4></p>
+      <h4>
+        <a href="{{ c.url }}" target="_blank">{{ c.title }}</a>
+        <span class="small">(<a href="{{ c.domain.get_absolute_url }}" class="fake">{{ c.domain.domain }}</a>)</span>
+      </h4>
       {% elif w in 'efg' %}
-      <p><h4>
-        <a href="{{ c.get_absolute_url }}"><strong>{{ c.title }}</strong></a>
-      </h4></p>
+      <h4>
+        <a href="{{ c.get_absolute_url }}">{{ c.title }}</a>
+      </h4>
       {% elif w in 'hijk' %}
         {% if w in 'hj' %}
-        <p><h4>
-          <a href="{{ d.comment_object.url }}" target="_blank"><strong>{{ d.comment_object.title }}</strong></a>
-          <small>&nbsp;&nbsp;(<a href="{{ d.comment_object.domain.get_absolute_url }}" class="fake">{{ d.comment_object.domain.domain }}</a>)</small>
-        </h4></p>
-         <p><small><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a>&nbsp;回复该网址说：</small></p>
+        <h4>
+          <a href="{{ d.comment_object.url }}" target="_blank">{{ d.comment_object.title|truncatechars:70 }}</a>
+          <span class="small">(<a href="{{ d.comment_object.domain.get_absolute_url }}" class="fake">{{ d.comment_object.domain.domain }}</a>)</span>
+        </h4>
+         <span class="small"><a class="fake" href="{{ p.get_absolute_url }}">{{ p.get_name }}</a> 回复该网址说：</span>
         {% elif w in 'ik' %}
-        <p><h4>
-          <a href="{{ d.comment_object.get_absolute_url }}"><strong>{{ d.comment_object.title }}</strong></a>
-        </h4><p>
-         <p><small><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a>&nbsp;回复说该讨论说：</small></p>
+        <h4>
+          <a href="{{ d.comment_object.get_absolute_url }}">{{ d.comment_object.title|truncatechars:70 }}</a>
+        </h4>
+         <span class="small"><a class="fake" href="{{ p.get_absolute_url }}">{{ p.get_name }}</a> 回复说该讨论说：</span>
         {% endif %}
       {% endif %}
     </div>
-    <div class="span1">
-      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
+    <div class="span0-5">
+      <a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a>
     </div>
   </div>
   <div class="row">
     <div class="span8">
-      {% if w in 'hijk' %}
+      {% if w in 'efg' and c.detail %}
+      {% include 'comment.html' with content=c.detail %}
+      {% elif w in 'hijk' %}
       {% include 'comment.html' with content=c.content %}
       {% endif %}
-      <p>
+      <div class="small">
         {% include 'dynamic_op.html' %}
         {% if w in 'hijk' %}
           {% if c.parent_comment_id %}
-            <span><a href="/comment/{{ c.parent_comment_id }}/"><small>上一级</small></a>&nbsp;</span>
+            <a class="fake" href="/comment/{{ c.parent_comment_id }}/">上一级</a>
           {% endif %}
-        {% endif %}
-          <span>&nbsp;</span>
+        {% endif %}&nbsp;
         {% if w in 'bf' %}
-          <small>话题&nbsp;</small>
+          话题
         {% elif w == 'c' %}
-          <small>站点&nbsp;</small>
+          站点
         {% endif %}
         {% if w in 'abcdefgjk' %}
-          <small><a href="{{ o.get_absolute_url }}">{{ o.get_name }}</a>&nbsp;</small>
+          <span><a class="fake" href="{{ o.get_absolute_url }}">{{ o.get_name }}</a></span>
         {% endif %}
         {% if w == 'a' %}
-          <small>发布了该网址</small>
+          发布了该网址
         {% elif w == 'b' %}
-          <small>添加了一个热门网址</small>
+          添加了一个热门网址
         {% elif w == 'c' %}
-          <small>添加了一个新的网址</small>
+          添加了一个新的网址
         {% elif w == 'd' %}
-          <small>分享了该网址</small>
+          分享了该网址
         {% elif w == 'e' %}
-          <small>发起了该讨论</small>
+          发起了该讨论
         {% elif w == 'f' %}
-          <small>添加了一个热门讨论</small>
+          添加了一个热门讨论
         {% elif w == 'g' %}
-          <small>分享了该讨论</small>
+          分享了该讨论
         {% elif w in 'jk' %}
-          <small>分享了该回复</small>
+          分享了该回复
         {% endif %}
-      </P>
+      </div>
     </div>
   </div>
 </div>
-
 <hr />
-
-{% endspaceless %}
 {% endwith %}
 {% endfor %}
 {% endif %}

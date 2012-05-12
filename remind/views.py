@@ -11,18 +11,23 @@ from models import Remind
 from django.http import Http404
 from string import atoi
 
+
 def get_unread_remind(user, number=MESSAGES_PER_PAGE):
 	'''
 	'''
 	reminds = Remind.objects.filter(
-	          to_user = user).filter(
+	          to_user=user).filter(
 	          is_read=False).all(
 	          )[:number].prefetch_related(
 	          'from_user__userprofile', 'comment')
 	
+	last_id = -1
 	for remind in reminds:
-		remind.is_read = True
-		remind.save()
+		last_id = remind.id
+	
+	if last_id != -1:
+		Remind.objects.filter(to_user=user).filter(id__gte=last_id).update(
+		               is_read=True)
 	
 	l = len(reminds)
 	if l:

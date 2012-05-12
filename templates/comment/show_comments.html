@@ -1,29 +1,28 @@
 {% for comment in comments %}
-  {% with o=comment.0 l=comment.1 c=comment.2 %}
-  {% with p=c.user.userprofile %}
+{% with o=comment.0 l=comment.1 c=comment.2 p=comment.2.user.userprofile %}
+<hr />
 <div id="{{ c.id }}">
   <div class="row">
-    <div class="span1 {% if o %}offset{{ o }}{% endif %}">
+    <div class="span0-8 offsetc{{ o }}">
       <span class="pull-right">
         <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_medium_url }}" /></a>
       </span>
     </div>
-    <div class="span{% if not o %}8{%else %}{{ l }}{% endif %}">
-      <p>{% include 'user.html' with p=p %}</p>
-      <p>{{ c.content|urlizetrunc:20|linebreaksbr }}</p>
-      <p>
-      <a href="{{ c.get_absolute_url }}"><small>{{ c.time|date:"Y-n-j" }}</small></a>
-      <a href="{{ c.get_absolute_url }}"><small>回复</small></a>
-      {% include 'operater.html' with t='c' obj=c counter=False %}
-      {% if user == c.user and c.n_comment == 0 %}
-      <a href="{% url nng.views.delete %}?c=c-{{ c.id }}" ><small>删除</small></a>
-      {% endif %}
-      <a class="fake" href="#{% firstof c.parent_comment_id c.object_id %}"><small>上一级</small></a>
-      </p>
+    <div class="span8">
+      {% include 'user.html' with p=p %}
+      {% load comment_spacify %}
+      <div class="postbody">{{ c.content|urlizetrunc:20|spacify|linebreaksbr }}</div>
+      <div class="small">
+        <a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a>
+        <a class="fake" href="{{ c.get_absolute_url }}">回复</a>
+        {% include 'operater.html' with t='c' obj=c counter=False %}
+        {% if user == c.user and c.n_comment == 0 %}
+          <a href="{% url nng.views.delete %}?c=c-{{ c.id }}">删除</a>
+        {% endif %}
+        <a class="fake" href="#{% firstof c.parent_comment_id c.object_id %}">上一级</a>
+      </div>
     </div>
   </div>
 </div>
-  <hr />
-  {% endwith %}
-  {% endwith %}
+{% endwith %}
 {% endfor %}

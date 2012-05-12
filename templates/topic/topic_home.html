@@ -1,7 +1,7 @@
 {% extends 'topic/topic_base.html' %}
 {% block content %}
 {% if t == 'followers' %}
-<p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>关注该话题的人</strong></p>
+<h4>关注该话题的人</h4>
 <hr />
 {% for u in datas %}
 {% include 'people/user.html' with profile=u.0 column=u.1 ufcs=user.userdata.follows.all %}

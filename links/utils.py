@@ -8,6 +8,8 @@ from nng.settings import *
 from data.models import UserData
 from django.db.models import F
 import googl
+from topics.utils import del_link_topic
+from domains.utils import del_link_domain
 
 def post_link(user, url, title, topic_names):
 	'''
@@ -48,3 +50,18 @@ def post_link(user, url, title, topic_names):
 	
 	return link
 	
+
+def del_link(l):
+	if not isinstance(l, Link):
+		return False
+	
+	data = l.user.userdata
+	data.n_links -= 1
+	data.save()
+	
+	for t in l.topics.all():
+		del_link_topic(l, t)
+	
+	del_link_domain(l)
+	
+	return True

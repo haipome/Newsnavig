@@ -5,9 +5,11 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from data.utils import get_follows
 from explore.views import process_pager
 from nng.settings import MESSAGES_PER_PAGE
+
 
 def people_follows(request, people):
 	'''

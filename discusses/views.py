@@ -15,6 +15,8 @@ from string import atoi
 from models import Discuss
 from comments.utils import comment_sort
 from comments.models import Comment
+from nng.views import get_user_topics
+from topics.views import topics_change
 
 @login_required
 def post(request):
@@ -60,6 +62,7 @@ def edit(request):
 			                             data['title'],
 			                             data['detail'] )
 			title = title[:TITLE_MAX_LEN]
+			topics = data['topics']
 			
 			try:
 				d = Discuss.objects.get(pk=discuss_id)
@@ -68,6 +71,10 @@ def edit(request):
 			
 			d.title = title
 			d.detail = detail
+			
+			if not topics_change('d', d.id, topics, user):
+				pass
+			
 			d.save()
 			
 			return HttpResponseRedirect(reverse('show_discuss', args=[d.id]))
@@ -79,6 +86,8 @@ def edit(request):
 			except:
 				raise Http404
 			
+			user_topics = get_user_topics(user)
+			
 			try:
 				from_url = request.META['HTTP_REFERER']
 			except:
@@ -86,7 +95,8 @@ def edit(request):
 			
 			return render_to_response('discuss/edit.html',
 			                         {'d': d,
-			                          'from_url': from_url,},
+			                          'from_url': from_url,
+			                          'user_topics': user_topics,},
 			                           context_instance=RequestContext(request))
 	
 	try:
@@ -108,7 +118,7 @@ def show_discuss(request, discuss_id):
 	           ).prefetch_related(
 	           'user__userprofile__avatar')
 	
-	comments = comment_sort(comments, 9)
+	comments = comment_sort(comments, COMMENT_DEEPS)
 	
 	return render_to_response('discuss/show_discuss.html',
 	                         {'d': discuss,

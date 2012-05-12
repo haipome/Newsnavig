@@ -2,25 +2,25 @@
 <div id="{{ d.id }}">
   <div class="row">
     <div class="span8">
-      <p><h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4></p>
-      <p>
-      <a href="{{ d.get_absolute_url }}"><small>{{ d.time|date:"Y-n-j" }}</small></a>
-      <a href="{{ d.get_absolute_url }}"><small>{% firstof d.n_comment '' %} 回复</small></a>
-      {% include 'operater.html' with t='d' p=p obj=d counter=1 %}
-      {% if show_topics %}
-      {% with topics=d.topics.all %}
-      {% if topics %}
-      <small>话题</small>
-      {% for topic in topics %}
-      <a href="{{ topic.get_absolute_url }}"><small>{{ topic.name }}</small></a>
-      {% endfor %}
-      {% endif %}
-      {% endwith %}
-      {% endif %}
-      {% if show_delete %}
-      {% include "people/delete.html" with id=d.id %}
-      {% endif %}
-      </p>
+      <h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4>
+      <div class="small">
+        <a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a>
+        <a class="fake" href="{{ d.get_absolute_url }}">{% firstof d.n_comment '' %} 回复</a>
+        {% include 'operater.html' with t='d' p=p obj=d counter=1 %}
+        {% if show_topics %}
+          {% with topics=d.topics.all %}
+            {% if topics %}
+             话题
+            {% for topic in topics %}
+              <a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
+            {% endfor %}
+            {% endif %}
+          {% endwith %}
+        {% endif %}
+        {% if show_delete %}
+        {% include "people/delete.html" with id=d.id %}
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>

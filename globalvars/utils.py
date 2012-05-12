@@ -17,7 +17,7 @@ def get_averages():
 	'''
 	'''
 	try:
-		g = GlobalVar.objects.select_for_update().get(pk=1)
+		g = GlobalVar.objects.get(pk=1)
 	except:
 		g = GlobalVar.objects.create()
 	

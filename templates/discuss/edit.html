@@ -19,6 +19,25 @@
           <textarea class="span8" rows="20" id="id_detail" name="detail" >{{ d.detail }}</textarea>
         </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="id_topics_discuss">话题&nbsp;&nbsp;</label>
+        <div class="controls">
+          {% with topics=d.topics.all %}
+          <input id="id_topics_discuss" name="topics" type="text" class="span4" value="{% for topic in topics %}{{ topic.name }} {% endfor%}"> <small>（多个话题以空格分隔，最多不超过三个话题）</small>
+          {% if user_topics %}
+          <p class="help-block"><small>我的话题：</small><br>
+            {% for topic in user_topics %}
+              {% if topic not in topics %}
+              <span><a onclick="return addto_topics(this)" href="#">{{ topic.name }}</a></span>
+              {% else %}
+              <span>{{ topic.name }}</span>
+              {% endif %}
+            {% endfor %}
+          </p>
+          {% endif %}
+          {% endwith %}
+        </div>
+    </div>
     <input type="hidden" name="discuss_id" value="{{ d.id }}">
     <div class="form-actions">
       <a class="btn" href="{% if from_url %}{{ from_url }}{% else %}/{% endif %}">取消</a>

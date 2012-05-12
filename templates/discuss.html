@@ -4,75 +4,68 @@
 {% block index_nav_discuss %}active{% endblock %}
 {% block content %}
 <div class="row">
-<div class="pull-right">
-  {% if t == 'follow' %}我关注的 /{% else %}<a href="/discuss/">我关注的</a> /{% endif %}
-  {% if t == 'reply' %}我参与的 /{% else %}<a href="/discuss/reply/">我参与的</a> /{% endif %}
-  {% if t == 'me' %}我发起的{% else %}<a href="/discuss/me/">我发起的</a>{% endif %}
-</div>
+  <div class="pull-right">
+    {% if t == 'follow' %}我关注的 /{% else %}<a href="/discuss/">我关注的</a> /{% endif %}
+    {% if t == 'reply' %}我参与的 /{% else %}<a href="/discuss/reply/">我参与的</a> /{% endif %}
+    {% if t == 'me' %}我发起的{% else %}<a href="/discuss/me/">我发起的</a>{% endif %}
+  </div>
 </div>
 <hr />
 {% if discusses %}
 {% if t == 'follow' %}
 {% for d in discusses %}
 {% with c=d.discuss w=d.way o=d.column.content_object p=d.discuss.user.userprofile t=d.last_active_time l=d.last_active_user %}
-{% spaceless %}
 <div>
   <div class="row">
-    <div class="span7">
-      <p><a href="{{ c.get_absolute_url }}"><h4>{{ c.title }}</h4></a></p>
-      <p>
+    <div class="span7-5">
+      <h4><a href="{{ c.get_absolute_url }}">{{ c.title }}</a></h4>
+      <div class="small">
         {% include 'dynamic_op.html' with time=t %}
-        <small>&nbsp;&nbsp;</small>
         {% if w == 'f' %}
-          <small>话题&nbsp;</small>
+          话题
         {% endif %}
-          <small><a href="{{ o.get_absolute_url }}">{{ o.get_name }}</a>&nbsp;</small>
+          <a class="fake" href="{{ o.get_absolute_url }}">{{ o.get_name }}</a>
         {% if w == 'e' %}
-          <small>发起了该讨论</small>
+          发起了该讨论
         {% elif w == 'f' %}
-          <small>添加了该讨论</small>
+          添加了该讨论
         {% endif %}
         {% if l %}
-          <small>&nbsp;&nbsp;最后回复：<a href="{{ l.userprofile.get_absolute_url }}">{{ l.userprofile.get_name }}</a></small>
+          最后回复: <a class="fake" href="{{ l.userprofile.get_absolute_url }}">{{ l.userprofile.get_name }}</a>
         {% endif %}
-      </p>
+      </div>
     </div>
-    <div class="span1">
+    <div class="span0-5">
       <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
     </div>
   </div>
 </div>
 <hr />
-{% endspaceless %}
 {% endwith %}
 {% endfor %}
-
 {% else %}
 {% for d in discusses %}
 {% with p=d.user.userprofile t=d.last_active_time l=d.last_active_user %}
-{% spaceless %}
 <div>
   <div class="row">
-    <div class="span7">
-      <p><a href="{{ d.get_absolute_url }}"><h4>{{ d.title }}</h4></a></p>
-      <p>
+    <div class="span7-5">
+      <h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4>
+      <div class="small">
         {% include 'dynamic_op.html' with c=d w='e' time=t %}
         {% if l %}
-          <small>&nbsp;&nbsp;最后回复：<a href="{{ l.userprofile.get_absolute_url }}">{{ l.userprofile.get_name }}</a></small>
+          最后回复: <a class="fake" href="{{ l.userprofile.get_absolute_url }}">{{ l.userprofile.get_name }}</a></small>
         {% endif %}
-      </p>
+      </div>
     </div>
-    <div class="span1">
+    <div class="span0-5">
       <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
     </div>
   </div>
 </div>
 <hr />
-{% endspaceless %}
 {% endwith %}
 {% endfor %}
 {% endif %}
-
 {% endif %}
 {% include "pager.html" %}
 {% endblock %}

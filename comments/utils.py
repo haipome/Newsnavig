@@ -79,6 +79,36 @@ def post_comment(user, content, obj, parent=None):
 	
 	return comment
 
+def del_comment(c):
+	if not isinstance(c, Comment):
+		return False
+	
+	if c.is_visible:
+		c.is_visible = False
+		c.save()
+	
+	obj = c.content_object
+	obj.n_comment -= 1
+	obj.save()
+	topics = obj.topics.all()
+	if isinstance(obj, Link):
+		for t in topics:
+			topic_ship_update(topic=t, user=c.user,
+				              domain=obj.domain, is_comment=True, num=-1)
+	elif isinstance(obj, Discuss):
+		for t in topics:
+			topic_ship_update(topic=t, user=c.user,
+			                  is_comment=True, num=-1)
+	
+	data = c.user.userdata
+	data.n_comments -= 1
+	data.save()
+	
+	if c.parent_comment:
+		c.parent_comment.n_comment -= 1
+		c.parent_comment.save()
+	
+	return True
 
 def obj_cmp(obj1, obj2):
 	if obj1.n_supporter != obj2.n_supporter:
@@ -87,10 +117,9 @@ def obj_cmp(obj1, obj2):
 		return cmp(obj1.id, obj2.id)
 
 def get_offset(deep, length):
-	base = length - 4
-	offset = deep %(2 * base)
-	if offset >= base:
-		offset = base - (offset - base)
+	offset = deep % (2 * length)
+	if offset >= length:
+		offset = length - (offset - length)
 	
 	return offset
 
@@ -141,3 +170,6 @@ def comment_sort_common(comment, comments, length):
 		process(0, length, temp_l, comments, c_sorted)
 	
 	return c_sorted
+
+
+

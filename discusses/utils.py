@@ -12,6 +12,7 @@ from django.db.models import F
 from django.core.cache import cache
 from nng.settings import MESSAGES_PER_PAGE, PREFETCH_RATE, D_CACHE_AGE
 from dynamic.utils import process_cache
+from topics.utils import del_discuss_topic
 
 def post_discuss(user, title, detail, topic_names):
 	'''
@@ -50,6 +51,24 @@ def post_discuss(user, title, detail, topic_names):
 	UserData.objects.filter(user=user).update(n_discusses=F('n_discusses') + 1)
 	
 	return discuss
+
+
+def del_discuss(d):
+	if not isinstance(d, Discuss):
+		return False
+	
+	if d.is_visible:
+		d.is_visible = False
+		d.save()
+	
+	data = d.user.userdata
+	data.n_discusses -= 1
+	data.save()
+	
+	for topic in d.topics.all():
+		del_discuss_topic(d, topic)
+	
+	return True
 
 
 def get_objs(follows, offset, n, s=None, e=None):

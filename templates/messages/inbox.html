@@ -21,21 +21,23 @@
         {% else %}
           <strong><a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a> 对我说：</strong>
           {% endif %}
-          {{ m.message|urlize|truncatechars:100 }}</p>
-          <small>{{ t|date:"Y-n-j H:i" }}</small>
+          {{ m.message|urlize|truncatechars:70 }}</p>
+        <div class="small">
+          {{ t|date:"Y-n-j H:i" }}
           <span class="pull-right">
-            {% if u %}<a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | {% endif %}
-            <a href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a> | 
-            <a href="{% url messages.views.conversation contact_id=c.id %}">回复</a> | 
-            <a class="fake" href="{% url messages.views.delete %}?t=c&i={{ c.to_user }}">删除</a>
+            {% if u %}
+            <a class="fake" href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | 
+            {% endif %}
+            <a class="fake" href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a> | 
+            <a class="fake" href="{% url messages.views.conversation contact_id=c.id %}">回复</a> | 
+            <a href="{% url messages.views.delete %}?t=c&i={{ c.to_user }}">删除</a>
           </span>
+        </div>
       </div>
     </div>
     <hr />
   {% endwith %}
   {% endfor %}
-{% else %}
-<br><br><br><br>
 {% endif %}
 {% include "pager.html" %}
 {% endblock %}

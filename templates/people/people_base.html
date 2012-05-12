@@ -4,20 +4,27 @@
 {% with p=people.userprofile %}
 
 <div class="row">
-  <div class="span2">
-    <span class="pull-right">
-      <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_large_url }}" /></a>
-    </span>
+  <div class="span1-5">
+    <a href="{{ p.get_absolute_url }}"><img src="{{ p.avatar.get_large_url }}" /></a>
   </div>
-  <div class="span6">
-  <p>
-    <strong><a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a></strong>&nbsp;&nbsp;{{ p.signature|urlizetrunc:20 }}&nbsp;&nbsp;<a href="{{ p.website }}" target="_blank">{{ p.website }}</a>
-  </p>
-  <hr />
-  <span>{{ p.detail|urlizetrunc:20|linebreaksbr }}</span>
-  {% if user == people %}
-    <a href="{% url settings.views.edit_profile %}"><i class="icon-edit"></i> 编辑</a>
-  {% endif %}
+  <div class="span6-5">
+    <h3>
+      <a href="{{ p.get_absolute_url }}">{{ p.get_name }}</a>
+      <span class="small">
+        {{ p.signature|urlizetrunc:20 }}
+        {% if p.website %}
+          <a class="fake" href="{{ p.website }}" target="_blank">{{ p.website }}</a>
+        {% endif %}
+      </span>
+    </h3>
+    <hr />
+    {% load comment_spacify %}
+    <div>
+      {{ p.detail|urlizetrunc:20|spacify|linebreaksbr }}
+      {% if user == people %}
+        <a href="{% url settings.views.edit_profile %}"><i class="icon-edit"></i> 编辑</a>
+      {% endif %}
+    </div>
   </div>
 </div>
 <hr />
@@ -29,7 +36,7 @@
 <p>荣誉 <strong>{{ d.honor }}</strong></p>
 <hr />
 {% if user != people %}
-  <span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if hf %}class="btn">取消关注{% else %}class="btn btn-primary">关注{% endif %}</a></span>
+  <span><a onclick="return follow(this)" id="{{ c.secret_id }}" href="#" {% if hf %}class="btn  btn-follow">取消关注{% else %}class="btn btn-primary  btn-follow">关注{% endif %}</a></span>
   <span><a href="{% url messages.views.send %}?to={{ people.username }}" class="btn">发送私信</a></span>
   <hr />
 {% else %}

@@ -47,4 +47,17 @@ def add_link_domain(url):
 		d.n_links += 1
 		d.save()
 		return d
+
+def del_link_domain(obj):
+	'''
+	'''
+	if not isinstance(obj, Link):
+		return False
+	d = obj.domain
+	
+	if d.domain_links.filter(url__iexact=obj.url).count() == 1:
+		d.n_links -= 1
+	if obj.is_boutique:
+		d.n_links_boutiques -= 1
+	d.save()
 	

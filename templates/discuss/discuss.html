@@ -1,35 +1,39 @@
-{% if d.is_visible %}
-<div id="{{ d.id }}">
-  <div class="row">
-    <div class="span8">
-      {% with p=d.user.userprofile %}
-      <p><h4><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h4></p>
-      <p>{{ d.detail|urlizetrunc:20|linebreaksbr }}</p>
-      <p>
-      <a href="{{ d.get_absolute_url }}"><small>{{ d.time|date:"Y-n-j" }}</small></a>
-      {% include 'operater.html' with t='d' obj=d counter=1 p=p %}
-      {% if edit and d.user == user %}
-      <a  href="{% url discusses.views.edit %}?c={{ d.id }}"><small>编辑</small></a>
-      {% endif %}
-      {% if user == d.user and d.n_comment == 0 %}
-      <a href="{% url nng.views.delete %}?c=d-{{ d.id }}" ><small>删除</small></a>
-      {% endif %}
-      {% with topics=d.topics.all %}
-      {% if topics %}
-      <small>话题</small>
-      {% for topic in topics %}
-      <a href="{{ topic.get_absolute_url }}"><small>{{ topic.name }}</small></a>
-      {% endfor %}
-      {% endif %}
-      {% endwith %}
-      </p>
-    </div>
-    <div class="span2">
-      <span class="pull-right"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_medium_url }}" /></a></span>
-      {% endwith %}
+{% with p=d.user.userprofile %}
+<div class="row">
+  <div class="span8">
+    <div id="{{ d.id }}">
+    {% if d.is_visible %}
+      <h3><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h3>
+      {% load comment_spacify %}
+      <div class="postbody">{{ d.detail|urlizetrunc:20|spacify|linebreaksbr }}</div>
+      <div class="small">
+        <a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a>
+        &nbsp;<a cless="fake" href="{{ d.get_absolute_url }}">{{ d.n_comment }} 回复</a>
+        {% include 'operater.html' with t='d' obj=d counter=1 p=p %}
+        {% if edit and d.user == user %}
+          &nbsp;<a class="fake" href="{% url discusses.views.edit %}?c={{ d.id }}">编辑</a>
+        {% endif %}
+        {% if user == d.user and d.n_comment == 0 %}
+          <a href="{% url nng.views.delete %}?c=d-{{ d.id }}" >删除</a>
+        {% endif %}
+        {% with topics=d.topics.all %}
+        {% if topics %}
+          话题
+        {% for topic in topics %}
+          <a class="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+      </div>
+    {% else %}
+      <p>该讨论已被删除</p>
+    {% endif %}
     </div>
   </div>
+  <div class="span3 offset1">
+    {% if d.is_visible %}
+      <a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_medium_url }}" /></a>
+    {% endif %}
+  </div>
 </div>
-{% else %}
-<p>该讨论已被删除</p>
-{% endif %}
+{% endwith %}

@@ -5,11 +5,11 @@
 {% block content %}
 <div class="tabbable"> 
   <ul class="nav nav-tabs">
-    <li class="active"><a href="#tab1" data-toggle="tab">发布网址</a></li>
-    <li><a href="#tab2" data-toggle="tab">发起讨论</a></li>
+    <li class="{% if t == 'link' %}active{% endif %}"><a href="#tab1" data-toggle="tab">发布网址</a></li>
+    <li class="{% if t == 'discuss' %}active{% endif %}"><a href="#tab2" data-toggle="tab">发起讨论</a></li>
   </ul>
   <div class="tab-content">
-    <div class="tab-pane active" id="tab1">
+    <div class="tab-pane {% if t == 'link' %}active{% endif %}" id="tab1">
       
 <form class="form-horizontal" action="/link/post/" method="post">
   {% csrf_token %}
@@ -24,13 +24,13 @@
     <div class="control-group">
       <label class="control-label" for="id_title_link">标题 *</label>
       <div class="controls">
-        <textarea class="span8" rows="2" id="id_title_link" name="title"  maxlength="300"></textarea>
+        <textarea class="span8" rows="3" id="id_title_link" name="title"  maxlength="300"></textarea>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="id_topics_link">话题&nbsp;&nbsp;</label>
         <div class="controls">
-          <input id="id_topics_link" name="topics" type="text" class="span4"> <small>（多个话题以空格分隔，最多不超过三个话题）</small>
+          <input id="id_topics_link" name="topics" type="text" class="span4" value="{% if topic and t == 'link' %}{{ topic }} {% endif %}"><small>（多个话题以空格分隔，最多不超过三个话题）</small>
           {% if user_topics %}
           <p class="help-block"><small>我的话题：</small><br>
             {% for topic in user_topics %}
@@ -48,7 +48,7 @@
 </form>
       
     </div>
-    <div class="tab-pane" id="tab2">
+    <div class="tab-pane {% if t == 'discuss' %}active{% endif %}" id="tab2">
 
 <form class="form-horizontal" action="/discuss/post/" method="post">
   {% csrf_token %}
@@ -63,13 +63,13 @@
     <div class="control-group">
       <label class="control-label" for="id_detail">内容&nbsp;&nbsp;</label>
         <div class="controls">
-          <textarea class="span8" rows="16" id="id_detail" name="detail" ></textarea>
+          <textarea class="span8" rows="12" id="id_detail" name="detail" ></textarea>
         </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="id_topics_discuss">话题&nbsp;&nbsp;</label>
         <div class="controls">
-          <input id="id_topics_discuss" name="topics" type="text" class="span4"> <small>（多个话题以空格分隔，最多不超过三个话题）</small>
+          <input id="id_topics_discuss" name="topics" type="text" class="span4" value="{% if topic and t == 'discuss' %}{{ topic }} {% endif %}"> <small>（多个话题以空格分隔，最多不超过三个话题）</small>
           {% if user_topics %}
           <p class="help-block"><small>我的话题：</small><br>
             {% for topic in user_topics %}

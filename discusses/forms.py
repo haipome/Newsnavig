@@ -18,4 +18,4 @@ class DiscussEditForm(forms.Form):
 	discuss_id = forms.CharField(required=True)
 	title  = forms.CharField(required=True)
 	detail = forms.CharField(required=False)
-	
+	topics = forms.CharField(required=False)
