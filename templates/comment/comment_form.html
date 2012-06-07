@@ -1,3 +1,4 @@
+{% if user.is_authenticated %}
 <div class="row">
   <div class="span8{% if offset %} offset0-8{% endif %}">
     <form action="/comment/post/" method="post">
@@ -6,8 +7,11 @@
       <input type="hidden" name="parent" value="{{ parent_id }}">
       <textarea type="textarea" class="span8" rows="6" name="content"></textarea>
       <div class="row">
-      <div class="pull-right"><button type="submit" class="btn">回复</button></div>
+      <div class="pull-right" id="comments"><button type="submit" class="btn">回复</button></div>
       </div>
     </form>
   </div>
 </div>
+{% else %}
+{% include "accounts/easy_login.html" %}
+{% endif %}

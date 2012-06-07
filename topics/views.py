@@ -19,6 +19,8 @@ from discusses.models import Discuss
 from utils import add_link_topic, add_discuss_topic, del_link_topic, del_discuss_topic
 from django.utils.encoding import smart_str, smart_unicode
 from dynamic.models import Dynamic
+from discusses.models import DiscussIndex
+from django.utils import timezone
 from nng.settings import *
 
 def topic(request, topic_name, t='links'):
@@ -31,7 +33,7 @@ def topic(request, topic_name, t='links'):
 	
 	followers_ship = FollowShip.objects.filter(
 	                 column=column).all(
-	                 )[:MESSAGES_PER_PAGE].prefetch_related(
+	                 )[:TAG_FOLLOWS_NUM].select_related(
 	                 'userdata__user__userprofile__avatar')
 	
 	followers = [obj.userdata.user.userprofile for obj in followers_ship]
@@ -39,19 +41,19 @@ def topic(request, topic_name, t='links'):
 	if t == 'links':
 		datas = topic.topic_links.filter(
 		        is_visible=True).all(
-		        )[s:e].prefetch_related(
+		        )[s:e].select_related(
 		        'user__userprofile__avatar', 'domain')
 	elif t == 'links-super':
 		datas = datas = topic.topic_links.filter(
 		        is_visible=True).filter(
 		        is_boutique=True).all(
-		        )[s:e].prefetch_related(
+		        )[s:e].select_related(
 		        'user__userprofile__avatar', 'domain')
 	elif t == 'discusses':
 		datas = topic.topic_discusses.filter(
 		        is_visible=True).order_by(
 		        '-last_active_time').all(
-		        )[s:e].prefetch_related(
+		        )[s:e].select_related(
 		        'user__userprofile__avatar',
 		        'last_active_user__userprofile',)
 	elif t == 'discusses-super':
@@ -59,13 +61,13 @@ def topic(request, topic_name, t='links'):
 		        is_visible=True).filter(
 		        is_boutique=True).order_by(
 		        '-last_active_time').all(
-		        )[s:e].prefetch_related(
+		        )[s:e].select_related(
 		        'user__userprofile__avatar',
 		        'last_active_user__userprofile',)
 	elif t == 'followers':
 		followers_ship = FollowShip.objects.filter(
 		                 column=column).all(
-		                 )[s:e].prefetch_related(
+		                 )[s:e].select_related(
 		                 'userdata__user__userprofile__avatar')
 		
 		datas = [(obj.userdata.user.userprofile, \
@@ -136,18 +138,31 @@ def topics_change(t, i, topics, user):
 			if t_name not in old_topics_name:
 				if isinstance(obj, Link):
 					topic = add_link_topic(t_name, user, obj.url, obj.domain)
+					column = topic.get_column()
 					if is_b:
 						topic.n_links_boutiques += 1
 						topic.save()
-						Dynamic.objects.create(column=topic.get_column(),
+					if (not FILTER and \
+					   topic.topic_links.filter(url__iexact=obj.url
+					   ).count() == 0) or \
+					   (FILTER and is_b):
+						Dynamic.objects.create(column=column,
 						                       way=WAY_LINK_TOPIC_POST,
 						                       content_object=obj)
 				elif isinstance(obj, Discuss):
 					topic = add_discuss_topic(t_name, user)
+					column = topic.get_column()
 					if is_b:
 						topic.n_discusses_boutiques += 1
 						topic.save()
-						Dynamic.objects.create(column=topic.get_column(),
+					
+					DiscussIndex.objects.create(column=column,
+					                            way=WAY_DISCUSS_TOPIC_POST,
+					                            discuss=obj,
+					                            last_active_time=timezone.now())
+					
+					if (not FILTER) or (FILTER and is_b):
+						Dynamic.objects.create(column=column,
 						                       way=WAY_DISCUSS_TOPIC_POST,
 						                       content_object=obj)
 				else:

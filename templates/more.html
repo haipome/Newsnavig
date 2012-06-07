@@ -1,0 +1,13 @@
+      <div class="comment">
+      {% with l=135 %}
+      {% load comment_spacify %}
+        {% if content|length < l %}
+        <span><p>{{ content|spacify|urlizetrunc:40|linebreaksbr }}</p></span>
+        {% else %}
+        <span>
+          <span class="Summary"><p>{{ content|truncatechars:l }} <a onclick="return show_all(this)" href="#">显示全部 »</a></p></span>
+          <span class="hide" style="display: none;"><div class="post-comment">{{ content|spacify|urlizetrunc:40|linebreaksbr }}</div></span>
+        </span>
+        {% endif %}
+      {% endwith %}
+      </div>

@@ -9,7 +9,7 @@ from django.http import Http404
 from domains.models import Domain
 from forms import DomainEditForm
 from explore.views import process_pager
-from nng.settings import MESSAGES_PER_PAGE
+from nng.settings import *
 from data.models import FollowShip
 
 def domain(request, domain_name, t='links'):
@@ -22,7 +22,7 @@ def domain(request, domain_name, t='links'):
 	
 	followers_ship = FollowShip.objects.filter(
 	                 column=column).all(
-	                 )[:MESSAGES_PER_PAGE].prefetch_related(
+	                 )[:TAG_FOLLOWS_NUM].select_related(
 	                 'userdata__user__userprofile__avatar')
 	
 	followers = [obj.userdata.user.userprofile for obj in followers_ship]
@@ -30,19 +30,23 @@ def domain(request, domain_name, t='links'):
 	if t == 'links':
 		datas = domain.domain_links.filter(
 		        is_visible=True).all(
-		        )[s:e].prefetch_related(
-		        'user__userprofile__avatar', 'domain', 'topics')
+		        )[s:e].select_related(
+		        'user__userprofile__avatar', 'domain',
+		        ).prefetch_related(
+		        'topics')
 	elif t == 'super':
 		datas = domain.domain_links.filter(
 		        is_visible=True).filter(
 		        is_boutique=True).all(
-		        )[s:e].prefetch_related(
-		        'user__userprofile__avatar', 'domain', 'topics')
+		        )[s:e].select_related(
+		        'user__userprofile__avatar', 'domain',
+		        ).prefetch_related(
+		        'topics')
 	
 	elif t == 'followers':
 		followers_ship = FollowShip.objects.filter(
 		                 column=column).all(
-		                 )[s:e].prefetch_related(
+		                 )[s:e].select_related(
 		                 'userdata__user__userprofile__avatar')
 		
 		datas = [(obj.userdata.user.userprofile, \

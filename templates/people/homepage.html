@@ -36,9 +36,9 @@
 
 {% for i in datas %}
   {% if i.way == 'l' %}
-    {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=1 delete_type='s' %}
+    {% include 'people/link.html' with link=i.content_object show_topics=0 show_delete=1 delete_type='s' %}
   {% elif i.way == 'd' %}
-    {% include 'people/discuss.html' with d=i.content_object show_topics=1 show_delete=1 delete_type='s' %}
+    {% include 'people/discuss.html' with d=i.content_object show_topics=0 show_delete=1 delete_type='s' %}
   {% elif i.way == 'c' %}
     {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=1 delete_type='s' %}
   {% endif %}
@@ -48,9 +48,9 @@
 
 {% for i in datas %}
   {% if i.way == 'l' %}
-    {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=0 delete_type='s' %}
+    {% include 'people/link.html' with link=i.content_object show_topics=0 show_delete=0 delete_type='s' %}
   {% elif i.way == 'd' %}
-    {% include 'people/discuss.html' with d=i.content_object show_topics=1 show_delete=0 delete_type='s' %}
+    {% include 'people/discuss.html' with d=i.content_object show_topics=0 show_delete=0 delete_type='s' %}
   {% elif i.way == 'c' %}
     {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=0 delete_type='s' %}
   {% endif %}
@@ -62,9 +62,9 @@
 
 {% for i in datas %}
   {% if i.way == 'l' %}
-    {% include 'people/link.html' with link=i.content_object show_topics=1 show_delete=1 delete_type='f' %}
+    {% include 'people/link.html' with link=i.content_object show_topics=0 show_delete=1 delete_type='f' %}
   {% elif i.way == 'd' %}
-    {% include 'people/discuss.html' with d=i.content_object show_topics=1 show_delete=1 delete_type='f' %}
+    {% include 'people/discuss.html' with d=i.content_object show_topics=0 show_delete=1 delete_type='f' %}
   {% elif i.way == 'c' %}
     {% include 'people/comment.html' with p=i.content_object.user.userprofile c=i.content_object obj=i.comment_object t=i.content_object.way pc=0 show_delete=1 delete_type='f' %}
   {% endif %}

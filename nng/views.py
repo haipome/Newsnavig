@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from topics.models import TopicUserShip
+from topics.utils import get_hot_topic
 from nng.settings import LATEST_TOPICS_NUMBER
 from dynamic.utils import get_dynamics
 from dynamic.models import Dynamic
@@ -25,6 +26,7 @@ from string import atoi
 from comments.utils import del_comment
 from discusses.utils import del_discuss
 from links.utils import del_link
+from nng.settings import *
 
 def get_user_topics(user):
 	if user.is_authenticated():
@@ -43,18 +45,43 @@ def index(request):
 		page = pre_page + 1
 	else:
 		page = 1
+	today = date.today()
+	local = tz.gettz(TIME_ZONE)
 	
 	user = request.user
 	if not user.is_authenticated():
-		return HttpResponseRedirect(reverse('login'))
+		
+		topics = get_hot_topic(MESSAGES_PER_PAGE)
+		
+		d_types = ['a', 'e', 'h', 'i']
+		dynamics = Dynamic.objects.filter(
+		           is_visible=True).filter(
+		           way__in=d_types).order_by(
+		           '-id').all(
+		           )[s:e].prefetch_related(
+		           'content_object__user__userprofile__avatar',
+		           'content_object__domain',
+		           'column__content_object',
+		           'comment_object__domain',)
+		
+		for d in dynamics:
+			d.time = d.time.astimezone(local)
+		
+		if len(dynamics) < MESSAGES_PER_PAGE:
+			next_page = False
+		
+		return render_to_response('dynamic.html', 
+		                         {'dynamics':dynamics,
+		                          'topics': topics,
+		                          'today': today,
+		                          'pre': pre_page,
+		                          'next': next_page,},
+		                           context_instance=RequestContext(request))
 	
 	user_topics = get_user_topics(user)
 	
 	follow = get_follows(user)
 	dynamics, has_next_page = get_dynamics(user, follow[0], page)
-	
-	today = date.today()
-	local = tz.gettz(TIME_ZONE)
 	
 	for d in dynamics:
 		d.time = d.time.astimezone(local)
@@ -72,21 +99,51 @@ def index(request):
 	                           context_instance=RequestContext(request))
 	
 
-@login_required
 def discuss(request, t='follow'):
 	'''
 	'''
 	pre_page, next_page, s, e = process_pager(request)
 	
 	user = request.user
-	
-	user_topics = get_user_topics(user)
-	follow = get_follows(user)
-	
 	if pre_page:
 		page = pre_page + 1
 	else:
 		page = 1
+	today = date.today()
+	local = tz.gettz(TIME_ZONE)
+	
+	if not user.is_authenticated() and t == 'follow':
+		t = 'all'
+		topics = get_hot_topic(MESSAGES_PER_PAGE)
+		
+		discusses = Discuss.objects.filter(
+		            is_visible=True).order_by(
+		            '-last_active_time').all(
+		            )[s:e].prefetch_related(
+		            'user__userprofile__avatar',
+		            'last_active_user__userprofile',)
+		
+		if len(discusses) < MESSAGES_PER_PAGE:
+			next_page = False
+		
+		for d in discusses:
+			if d.last_active_time:
+				d.last_active_time = d.last_active_time.astimezone(local)
+		
+		return render_to_response('discuss.html',
+		                         {'discusses':discusses,
+		                          'topics': topics,
+		                          't': t,
+		                          'today': today,
+		                          'pre': pre_page,
+		                          'next': next_page,},
+		                           context_instance=RequestContext(request))
+		
+	if not user.is_authenticated():
+		return HttpResponseRedirect(reverse('login'))
+	
+	user_topics = get_user_topics(user)
+	follow = get_follows(user)
 	
 	if t == 'follow':
 		discusses, has_next_page = get_discusses(user, follow[0], page)
@@ -111,8 +168,6 @@ def discuss(request, t='follow'):
 	else:
 		raise Http404
 	
-	today = date.today()
-	local = tz.gettz(TIME_ZONE)
 	for d in discusses:
 		if d.last_active_time:
 			d.last_active_time = d.last_active_time.astimezone(local)

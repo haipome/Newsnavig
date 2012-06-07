@@ -26,24 +26,14 @@
   </div>
 </div>
 <hr />
-{% if t == 'links' %}
+{% if t == 'links' or t == 'links-super' %}
 {% for link in datas %}
-{% include 'people/link.html' with topics=0 %}
+{% include 'explore/link_user.html' with link=link topics=0 %}
 {% endfor %}
 
-{% elif t == 'links-super' %}
-{% for link in datas %}
-{% include 'people/link.html' with topics=0 %}
-{% endfor %}
-
-{% elif t == 'discusses' %}
+{% elif t == 'discusses' or t == 'discusses-super' %}
 {% for d in datas %}
-{% include 'people/discuss.html' with topics=0 %}
-{% endfor %}
-
-{% elif t == 'discusses-super' %}
-{% for d in datas %}
-{% include 'people/discuss.html' with topics=0 %}
+{% include 'explore/discuss_user.html' with d=d topics=0 %}
 {% endfor %}
 
 {% endif %}

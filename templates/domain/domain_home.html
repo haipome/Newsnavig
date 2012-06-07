@@ -13,7 +13,7 @@
   <li class="{% if t == 'super' %}active{% endif %}"><a href="{% url domains.views.domain domain.domain %}super/">精华 <small>({{ domain.n_links_boutiques }})</small></a></li>
 </ul>
 {% for link in datas %}
-{% include 'people/link.html' with topics=1 %}
+{% include 'explore/link_user.html' with topics=1 %}
 {% endfor %}
 
 {% endif %}

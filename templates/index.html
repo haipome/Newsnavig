@@ -11,47 +11,13 @@
   </div>
 {% endif %}
 {% endblock %}
-
-{% block page_nav %}
-<ul class="nav nav-tabs">
-  <li class="{% block index_nav_dynamic %}{% endblock %}"><a href="/">动态</a></li>
-  <li class="{% block index_nav_discuss %}{% endblock %}" ><a href="/discuss/">讨论</a></li>
-</ul>
-{% endblock %}
 {% block content %}
 {% endblock %}
 
 {% block sidebar %}
-<p><a data-toggle="modal" href="#post">快速发布</a></p>
-{% include 'quick_post.html' with user_topics=user_topics %}
-<p><a href="/explore/link/new/">所有网址</a></p>
-<p><a href="/explore/discuss/new/">所有讨论</a></p>
-<p><a href="{% url profiles.views.people user.username 'collections' %}">我的收藏</a></p>
-{% with p=user.userprofile d=user.userdata %}
-<hr>
-<p><a href="{{ p.get_absolute_url }}">{{ p.get_name }}的主页</a><small>&nbsp;({{ d.honor }})</small></p>
-<hr>
-<p>我关注的人 ... （<a href="{% url profiles.views.people user.username 'followees' %}">全部 {{ d.n_follows_user }}</a>）</p>
-{% for u in follow.1|slice:":21" %}
-{% with profile=u.0 %}
-<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
-{% endwith %}
-{% endfor %}
-<hr>
-<p>我关注的话题 ... （<a href="{% url profiles.views.people user.username 'topics' %}">全部 {{ d.n_follows_topic }}</a>）</p>
-{% for t in follow.2|slice:":7" %}
-{% with topic=t.0 %}
-<a href="{{ topic.get_absolute_url }}" rel="tooltip" title="{{ topic.get_name }}"><img src="{{ topic.avatar.get_small_url }}" /></a>
-{% endwith %}
-{% endfor %}
-<hr>
-<p>我关注的站点 ... （<a href="{% url profiles.views.people user.username 'domains' %}">全部 {{ d.n_follows_domain }}</a>）</p>
-{% for s in follow.3|slice:":7" %}
-{% with domain=s.0 %}
-<a href="{{ domain.get_absolute_url }}" rel="tooltip" title="{{ domain.get_name }}"><img src="{{ domain.avatar.get_small_url }}" /></a>
-{% endwith %}
-{% endfor %}
-<hr>
-<p><a href="{% url profiles.views.people user.username 'followers' %}"> 我被 {{ follow.4.n_followers }} 人关注</a></p>
-{% endwith %}
+{% if user.is_authenticated %}
+  {% include 'sidebar_login.html' %}
+{% else %}
+  {% include 'sidebar_unlogin.html' %}
+{% endif %}
 {% endblock %}

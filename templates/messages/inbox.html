@@ -9,28 +9,28 @@
   {% for c in contacts  %}
   {% with m=c.last_message t=c.last_contact n=c.n_messages u=c.un_read%}
     <div class="row">
-      <div class="span1">
+      <div class="span0-8">
         <span class="pull-right">
           <a href="{{ c.to_user.userprofile.get_absolute_url }}"><img src="{{ c.to_user.userprofile.avatar.get_medium_url }}" /></a>
         </span>
       </div>
-      <div class="span7">
+      <div class="span7-2">
         <p>
         {% if m.sender == user %}
           <strong>我对 <a href="{{ m.receiver.userprofile.get_absolute_url }}">{{ m.receiver.userprofile.get_name }}</a> 说：</strong>
         {% else %}
           <strong><a href="{{ m.sender.userprofile.get_absolute_url }}">{{ m.sender.userprofile.get_name }}</a> 对我说：</strong>
           {% endif %}
-          {{ m.message|urlize|truncatechars:70 }}</p>
-        <div class="small">
+          <p>{{ m.message|truncatechars:80 }}</p>
+        <div class="asmall">
           {{ t|date:"Y-n-j H:i" }}
           <span class="pull-right">
             {% if u %}
-            <a class="fake" href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | 
+            <a href="{% url messages.views.conversation contact_id=c.id %}">{{ u }} 条未读</a> | 
             {% endif %}
-            <a class="fake" href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a> | 
-            <a class="fake" href="{% url messages.views.conversation contact_id=c.id %}">回复</a> | 
-            <a href="{% url messages.views.delete %}?t=c&i={{ c.to_user }}">删除</a>
+            <a href="{% url messages.views.conversation contact_id=c.id %}">共 {{ n }} 条对话</a> | 
+            <a href="{% url messages.views.conversation contact_id=c.id %}">回复</a> | 
+            <span class="small"><a href="{% url messages.views.delete %}?t=c&i={{ c.to_user }}">删除</a></span>
           </span>
         </div>
       </div>

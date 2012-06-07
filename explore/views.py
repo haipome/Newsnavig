@@ -17,6 +17,8 @@ from profiles.models import UserProfile
 from data.models import UserData
 from topics.models import Topic
 from domains.models import Domain
+from django.contrib.contenttypes.models import ContentType
+from columns.models import Column
 import datetime
 
 def index(request):
@@ -201,9 +203,16 @@ def topic(request, t='hot'):
 	'''
 	'''
 	if t == 'hot':
-		topics = Topic.objects.order_by(
-		        '-n_links', '-id').all(
-		        )[:MESSAGES_PER_PAGE * 10]
+		topic_type  = ContentType.objects.get(app_label='topics', model='topic')
+		
+		topics_c = Column.objects.filter(content_type=topic_type).order_by(
+		                                 '-n_followers', '-id').all(
+		                                 )[:MESSAGES_PER_PAGE * 10
+		                                 ].prefetch_related(
+		                                 'content_object')
+		topics = []
+		for c in topics_c:
+			topics.append(c.content_object)
 	elif t == 'new':
 		topics = Topic.objects.order_by(
 		        '-id').all(
@@ -214,13 +223,24 @@ def topic(request, t='hot'):
 	                          't':t,},
 	                           context_instance=RequestContext(request))
 
+
+
 def domain(request, t='hot'):
 	'''
 	'''
 	if t == 'hot':
-		domains = Domain.objects.order_by(
-		        '-n_links', '-id').all(
-		        )[:MESSAGES_PER_PAGE * 10]
+		domain_type = ContentType.objects.get(app_label='domains',
+		                                      model='domain')
+		
+		domains_c = Column.objects.filter(content_type=domain_type).order_by(
+		                                 '-n_followers', '-id').all(
+		                                 )[:MESSAGES_PER_PAGE * 10
+		                                 ].prefetch_related(
+		                                 'content_object')
+		
+		domains = []
+		for c in domains_c:
+			domains.append(c.content_object)
 	elif t == 'new':
 		domains = Domain.objects.order_by(
 		        '-id').all(

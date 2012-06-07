@@ -10,8 +10,7 @@
     </div>
     <div class="span8">
       {% include 'user.html' with p=p %}
-      {% load comment_spacify %}
-      <div class="postbody">{{ c.content|urlizetrunc:20|spacify|linebreaksbr }}</div>
+      <div class="postbody">{% include "content.html" with content=c.content %}</div>
       <div class="small">
         <a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a>
         <a class="fake" href="{{ c.get_absolute_url }}">回复</a>

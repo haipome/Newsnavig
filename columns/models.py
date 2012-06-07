@@ -13,5 +13,5 @@ class Column(models.Model):
 	
 	time = models.DateTimeField(auto_now_add=True)
 	
-	n_followers = models.IntegerField(default=0)
+	n_followers = models.IntegerField(default=0, db_index=True)
 

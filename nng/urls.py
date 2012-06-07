@@ -33,11 +33,11 @@ urlpatterns = patterns('',
     
     url(r'^post/$', 'nng.views.post', name='post'),
     
-    url(r'^about/$', direct_to_template, {'template': 'about.html',}),
-    url(r'^agreement/$', direct_to_template, {'template': 'agreement.html',}),
-    url(r'^guideline/$', direct_to_template, {'template': 'guideline.html',}),
-    url(r'^policye/$', direct_to_template, {'template': 'policye.html',}),
-    url(r'^contact/$', direct_to_template, {'template': 'contact.html',}),
+    url(r'^about/$', direct_to_template, {'template': 'help/about.html',}),
+    url(r'^agreement/$', direct_to_template, {'template': 'help/agreement.html',}),
+    url(r'^guideline/$', direct_to_template, {'template': 'help/guideline.html',}),
+    url(r'^policye/$', direct_to_template, {'template': 'help/policye.html',}),
+    url(r'^contact/$', direct_to_template, {'template': 'help/contact.html',}),
     
     url(r'^admin/', include(admin.site.urls)),
 )

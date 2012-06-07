@@ -115,7 +115,7 @@ def show_discuss(request, discuss_id):
 	
 	comments = discuss.comments.filter(
 	           is_visible=True).all(
-	           ).prefetch_related(
+	           ).select_related(
 	           'user__userprofile__avatar')
 	
 	comments = comment_sort(comments, COMMENT_DEEPS)

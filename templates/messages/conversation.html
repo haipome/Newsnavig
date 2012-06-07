@@ -42,7 +42,8 @@
       </div>
         {% endif %}
     </div>
-      <p>{{ m.message|urlize|spacify|linebreaksbr }}</p>
+      {% load comment_spacify %}
+      <div class="postbody">{{ m.message|spacify|linebreaksbr }}</div>
       <div class="small">
         {{ m.send_time|date:"Y-n-j H:i" }}
         <span class="pull-right">

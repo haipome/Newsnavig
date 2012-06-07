@@ -53,14 +53,14 @@ def post(request):
 			
 			
 			c = post_comment(user, content, obj, parent)
-			if not c:
-				try:
-					from_url = request.META['HTTP_REFERER']
-					return HttpResponseRedirect(from_url)
-				except KeyError:
-					pass
+			if c:
+				return HttpResponseRedirect(reverse(show_comment, args=[c.id]))
 	
-	return HttpResponseRedirect(reverse(show_comment, args=[c.id]))
+	try:
+		from_url = request.META['HTTP_REFERER']
+		return HttpResponseRedirect(from_url)
+	except KeyError:
+		raise Http404
 	
 
 def show_comment(request, comment_id):
@@ -68,7 +68,7 @@ def show_comment(request, comment_id):
 	'''
 	comment = get_object_or_404(Comment, id=atoi(comment_id))
 	
-	comments = comment.content_object.comments.all().prefetch_related(
+	comments = comment.content_object.comments.all().select_related(
 	           'user__userprofile__avatar')
 	comments = comment_sort_common(comment, comments, COMMENT_DEEPS)
 	

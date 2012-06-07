@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="span3">
+    <h4>Hello World</h4>
+    <p>这是一个以话题为中心的网址分享网站，在这里你可以发现更大的互联网世界。</p>
+    <p>登录后你可以关注你感兴趣的话题、人和站点，并在主页上显示他们的动态。还可以发布网址并参与讨论。</p>
+    <div class="pull-right"><a href="/about/">关于 »</a></div>
+  </div>
+</div>
+<hr />
+{% include "accounts/easy_login.html" %}
+<hr />
+{% if topics %}
+<h4>热门话题</h4>
+{% for t in topics %}
+<a href="{{ t.get_absolute_url }}"><h5>{{ t.name }}</h5></a>
+{% endfor %}
+{% endif %}

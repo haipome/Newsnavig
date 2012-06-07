@@ -10,6 +10,11 @@ from columns.utils import create_column
 from django.utils.timezone import now
 from links.models import Link
 from discusses.models import Discuss
+from discusses.models import DiscussIndex
+from dynamic.models import Dynamic
+from django.core.cache import cache
+from nng.settings import HOT_TOPICS_CACHE_AGE
+from topics.models import Topic
 
 def _creat_topic(name, links=0, discusses=0):
 	'''
@@ -45,6 +50,11 @@ def del_link_topic(l, t):
 	'''
 	if not isinstance(l, Link):
 		return False
+	
+	Dynamic.objects.filter(column=t.get_column()
+	                ).filter(object_id=l.id).update(
+	                is_visible=False)
+	
 	if t.topic_links.filter(url__iexact=l.url).count() == 1:
 		t.n_links -= 1
 	
@@ -75,6 +85,14 @@ def del_discuss_topic(d, t):
 	'''
 	if not isinstance(d, Discuss):
 		return False
+	column = t.get_column()
+	
+	Dynamic.objects.filter(column=column
+	                ).filter(object_id=d.id).update(
+	                is_visible=False)
+	DiscussIndex.objects.filter(column=column
+	                     ).filter(discuss_id=d.id).update(
+	                     is_visible=False)
 	
 	t.n_discusses -= 1
 	if d.is_boutique:
@@ -159,5 +177,17 @@ def topic_ship_update(topic, user,
 	else:
 		return False
 	
+
+
+def get_hot_topic(n):
 	
+	key = 'hot_topics%s' % str(n)
+	
+	hot_topics = cache.get(key)
+	if hot_topics:
+		return hot_topics
+	else:
+		topics = Topic.objects.order_by('-n_links')[:n]
+		cache.set(key, topics, HOT_TOPICS_CACHE_AGE)
+		return topics
 	

@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="">
-  
+  <meta name="google-site-verification" content="bjLMf2udPUJ9aTXxoC1cNNVbHT7B1J_wWrUfjtEYxTI" />
+  <meta name="baidu-site-verification" content="uqSHnkNDQzJAuwa2" />
+  {% load static %}
   <!-- style -->
-  <link href="/static/css/bootstrap.2.02.min.css" rel="stylesheet">
+  <link href="{% static 'css/bootstrap.2.02.min.css' %}" rel="stylesheet">
   <style type="text/css">
       html,body {height: 90%;}
       #container {min-height:100%; height: auto !important; height: 100%; position: relative; }
@@ -16,6 +18,7 @@
       body {padding-top:72px;}
       .gray {color:gray; font-size:13px; font-weight:normal;}
       small {color:gray; font-size:12px; font-weight:normal;}
+      asmall {font-size:12px; font-weight:normal;}
       .small {color:gray; font-size:12px; font-weight:normal;}
       .small a {color:gray; font-weight:normal;}
       a.fake:link {color:gray;}
@@ -31,7 +34,8 @@
       .span7-2 {width:552px;}
       .span5-9 {width:455px;}
       .span7-9 {width:617px;}
-      .span1-3 {width:75;}
+      .span1-3 {width:75px;}
+      .span2-5 {width:158px;}
       .btn-follow {width:52px;}
       .offsetc5{margin-left:272px;}
       .offsetc4{margin-left:222px;}
@@ -46,25 +50,37 @@
       .profile {margin:6px 0; color:gray;}
       .postbody {font-size:13px; margin:6px 0;}
       .input-medium{width:188px;}
+      .as {width:24px; height:24px;}
+      .am {width:48px; height:48px;}
+      .al {width:96px; height:96px;}
+      .asl{width:12.5%;display:inline;text-align:center;overflow:hidden;}
+      .asl img{margin-top:6px;width:24px; height:24px;}
+      .obu{margin-left:20px;width:55px;float:left;display:inline;}
+      .obu dd{margin:0;height:32px;overflow:hidden;text-align:center;line-height:16px;word-break:break-all;}
+      .obu dt{margin:0;height:55px;text-align:center;overflow:hidden;}
   </style>
   <!-- javascript -->
-  <script src="/static/js/jquery-1.7.2.min.js"></script>
-  <script src="/static/js/bootstrap.2.02.min.js"></script>
+  <script src="{% static '/js/jquery-1.7.2.min.js' %}"></script>
+  <script src="{% static '/js/bootstrap.2.02.min.js' %}"></script>
   <script type="text/javascript">
     function follow(node) {
         $.get("/follow/", { c: node.id }, function(data) {
-            if (data == 'success') {
-                if (node.innerHTML == "关注") {
-                    node.innerHTML = "取消关注";
-                    $(node).attr("class", "btn btn-follow");
-                }
-                else if (node.innerHTML == "取消关注") {
-                    node.innerHTML = "关注";
-                    $(node).attr("class", "btn btn-primary btn-follow");
-                }
+            if (data == 'follow') {
+                node.innerHTML = "取消关注";
+                $(node).attr("class", "btn btn-follow");
+            }
+            else if (data == 'nofollow') {
+                node.innerHTML = "关注";
+                $(node).attr("class", "btn btn-primary btn-follow");
             }
             else if (data == 'needlogin') {
                 $('#login').modal('show');
+            }
+            else if (data == 'self') {
+                alert('不可以关注自己');
+            }
+            else if (data == 'limit') {
+                alert('你关注的数量已达到上限，请先取消关注一些');
             }
         });
         
@@ -161,9 +177,23 @@
   <![endif]-->
   
   <!-- favicon -->
-  <link rel="shortcut icon" href="/media/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
   
   <title>{% block title %}NNG 新闻导航：每个人都是新闻编辑{% endblock %}</title>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-31634581-1']);
+  _gaq.push(['_setDomainName', 'newsnavig.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 
 <body>
@@ -220,6 +250,9 @@
     {% endspaceless %}
     {% endblock %}
     <span id="top"></span>
+    <!--[if lte IE 6]>
+<div>你正在使用的浏览器版本太低，可能无法正常浏览本站。请升级 <a href="http://windows.microsoft.com/zh-CN/internet-explorer/downloads/ie">Internet Explorer</a> 或使用 <a href="http://www.google.com/chrome/">Google Chrome</a> 浏览器。</div>
+    <![endif]-->
     <div class="row">
       <div class="span12">
       {% block notice %}
@@ -236,7 +269,6 @@
       {% endblock %}
       </div>
     </div>
-    
     <div class="row" id="page">
       <div class="span12">
       {% block body %}
@@ -246,6 +278,19 @@
       {% block content %}{% endblock %}
       
       {% endblock %}
+      
+      {% block debug %}
+        {% if debug %}
+        <hr />
+        {% if sql_queries %}
+          <p><strong>{{ sql_queries|length }}</strong> 次数据库查询</p>
+           {% for query in sql_queries %}
+             <p><strong>{{ forloop.counter }}</strong>&nbsp;<code>{{ query.sql }}</code></p>
+             <p>执行时间: {{ query.time|floatformat:6}} s</p>
+           {% endfor %}
+        {% endif %}
+        {% endif %}
+      {% endblock %}
       </div>
     </div>
     
@@ -253,37 +298,19 @@
       <div class="span12">
       {% block fotter %}
         {% if not user.is_authenticated %}
-          {% include 'quick_login.html' %}
+          {% include 'accounts/quick_login.html' %}
         {% endif %}
-        <a class="fake small" href="#top" id="backtop">Top</a>
+        <!-- <a class="fake small" href="#top" id="backtop">Top</a> -->
         <hr />
         <span class="pull-left small">&copy; 2012 newsnavig.com, all rights reserved.</span>
         <span class="pull-right small">
           <a href="/about/">关于</a>
         · <a href="/contact/">联系</a>
         · <a href="/post/?type=discuss&topic=newsnavig">反馈</a>
-        
       {% endblock %}
       </div>
     </div>
-  
-    {% if not debug %}
-    <div class="row">
-      <div class="span12">
-      <hr />
-      {% block debug %}
-        {% if sql_queries %}
-          <p><strong>{{ sql_queries|length }}</strong> 次数据库查询</p>
-           <!-- debug: show the sql excute in this request -->
-           {% for query in sql_queries %}
-             <p><strong>{{ forloop.counter }}</strong>&nbsp;<code>{{ query.sql }}</code></p>
-             <p>执行时间: {{ query.time|floatformat:6}} s</p>
-           {% endfor %}<!-- debug ends here -->
-        {% endif %}
-      {% endblock %}
-      </div>
-    </div>
-    {% endif %}
+    
   </div>
 <body>
 

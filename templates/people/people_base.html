@@ -13,14 +13,14 @@
       <span class="small">
         {{ p.signature|urlizetrunc:20 }}
         {% if p.website %}
-          <a class="fake" href="{{ p.website }}" target="_blank">{{ p.website }}</a>
+          {{ p.website|urlize }}
         {% endif %}
       </span>
     </h3>
     <hr />
     {% load comment_spacify %}
     <div>
-      {{ p.detail|urlizetrunc:20|spacify|linebreaksbr }}
+      {{ p.detail|spacify|urlize|linebreaksbr }}
       {% if user == people %}
         <a href="{% url settings.views.edit_profile %}"><i class="icon-edit"></i> 编辑</a>
       {% endif %}
@@ -42,33 +42,33 @@
 {% else %}
   <br />
 {% endif %}
+<p><a href="{% url profiles.views.people people.username 'topics' %}">关注 {{ d.n_follows_topic }} 话题</a></p>
+{% for t in follows.2|slice:":8" %}
+{% with topic=t.0 %}
+<div class="asl"><a href="{{ topic.get_absolute_url }}" rel="tooltip" title="{{ topic.get_name }}"><img src="{{ topic.avatar.get_small_url }}" /></a></div>
+{% endwith %}
+{% endfor %}
+<hr />
 
 <p><a href="{% url profiles.views.people people.username 'followees' %}"> 关注 {{ d.n_follows_user }} 人</a></p>
-{% for u in follows.1|slice:":7" %}
+{% for u in follows.1|slice:":8" %}
 {% with profile=u.0 %}
-<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
+<div class="asl"><a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a></div>
 {% endwith %}
 {% endfor %}
 <hr />
 <p><a href="{% url profiles.views.people people.username 'followers' %}">关注者 {{ c.n_followers }} 人</a></p>
-{% for t in follows.6|slice:":7" %}
+{% for t in follows.6|slice:":8" %}
 {% with f=t.user.userprofile %}
-<a href="{{ f.get_absolute_url }}" rel="tooltip" title="{{ f.get_name }}"><img src="{{ f.avatar.get_small_url }}" /></a>
-{% endwith %}
-{% endfor %}
-<hr />
-<p><a href="{% url profiles.views.people people.username 'topics' %}">关注 {{ d.n_follows_topic }} 话题</a></p>
-{% for t in follows.2|slice:":7" %}
-{% with topic=t.0 %}
-<a href="{{ topic.get_absolute_url }}" rel="tooltip" title="{{ topic.get_name }}"><img src="{{ topic.avatar.get_small_url }}" /></a>
+<div class="asl"><a href="{{ f.get_absolute_url }}" rel="tooltip" title="{{ f.get_name }}"><img src="{{ f.avatar.get_small_url }}" /></a></div>
 {% endwith %}
 {% endfor %}
 <hr />
 
 <p><a href="{% url profiles.views.people people.username 'domains' %}">关注 {{ d.n_follows_domain }} 站点</a></p>
-{% for s in follows.3|slice:":7" %}
+{% for s in follows.3|slice:":8" %}
 {% with domain=s.0 %}
-<a href="{{ domain.get_absolute_url }}" rel="tooltip" title="{{ domain.get_name }}"><img src="{{ domain.avatar.get_small_url }}" /></a>
+<div class="asl"><a href="{{ domain.get_absolute_url }}" rel="tooltip" title="{{ domain.get_name }}"><img src="{{ domain.avatar.get_small_url }}" /></a></div>
 {% endwith %}
 {% endfor %}
 <hr />

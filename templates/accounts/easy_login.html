@@ -1,0 +1,16 @@
+<div class="row">
+<div class="span3">
+  <form action="/login/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="way" value="quick">
+    <input type="text" class="span3" name="name_or_email" placeholder="用户名或邮箱">
+    <input type="password" class="span2-5" name="password" placeholder="密码" style="display:inline;margin:0;">
+    <button type="submit" class="btn btn-primary">登录</button>
+    <label class="checkbox">
+      <input type="checkbox" name="remember_me"> 记住我
+      <a href="/accounts/password/reset/">忘记密码了</a>
+      <a href="/regist/">注册</a>
+    </label>
+  </form>
+</div>
+</div>

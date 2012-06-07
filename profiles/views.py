@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 from data.utils import get_follows
 from explore.views import process_pager
 from nng.settings import MESSAGES_PER_PAGE
+from django.core.cache import cache
+from nng.settings import FOLLOWS_CACHE_AGE
 
 
 def people_follows(request, people):
@@ -24,9 +26,16 @@ def people_follows(request, people):
 	
 	follows.append(has_followed)
 	
-	followers = follows[4].column_followers.all(
-	            )[:MESSAGES_PER_PAGE].prefetch_related(
-	            'user__userprofile__avatar')
+	key = str(people.id) + 'bf'
+	cache_bf = cache.get(key)
+	if cache_bf:
+		followers = cache_bf
+	else:
+		followers = follows[4].column_followers.all(
+		            )[:MESSAGES_PER_PAGE].select_related(
+		            'user__userprofile__avatar')
+		cache.set(key, followers, FOLLOWS_CACHE_AGE)
+	
 	follows.append(followers)
 	
 	return follows
@@ -84,7 +93,7 @@ def people(request, username, t='links'):
 	elif t == 'comments':
 		datas = people.user_comments.filter(is_visible=True).all(
 		        )[s:e].prefetch_related(
-		        'content_object', 'parent_comment')
+		        'content_object__domain', 'parent_comment')
 	elif t == 'shares':
 		datas = people.user_shares.all()[s:e].prefetch_related(
 		        'content_object__domain',

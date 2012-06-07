@@ -3,7 +3,7 @@
   <div class="span8">
     <div id="{{ link.id }}">
     {% if link.is_visible %}
-      <h3><a href="{{ link.url }}" target="_blank">{{ link.title }}</a>&nbsp;<span class="small">(<a class="fake" href="{{ link.domain.get_absolute_url }}">{{ link.domain.domain }}</a>)</span></h3>
+      <h3><a rel="nofollow" href="{{ link.url }}" target="_blank">{{ link.title }}</a>&nbsp;<span class="small">(<a class="fake" rel="nofollow" href="{{ link.domain.get_absolute_url }}">{{ link.domain.domain }}</a>)</span></h3>
       <div class="small">
         <a cless="fake" href="{{ link.get_absolute_url }}">{{ link.time|date:"Y-n-j" }}</a>
         &nbsp;<a cless="fake" href="{{ link.get_absolute_url }}">{{ link.n_comment }} 回复</a>

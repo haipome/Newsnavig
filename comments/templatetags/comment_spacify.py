@@ -16,6 +16,6 @@ def spacify(value, autoescape=None):
 		esc = conditional_escape
 	else:
 		esc = lambda x: x
-	return mark_safe(re.sub(' ', '&'+'nbsp;', esc(value)))
+	return mark_safe(re.sub('  ', '&'+'nbsp; ', esc(value)))
 spacify.needs_autoescape = True
 register.filter(spacify)

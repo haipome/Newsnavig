@@ -13,7 +13,7 @@
     <hr />
     {% load comment_spacify %}
     <div>
-      {{ topic.detail|urlizetrunc:20|spacify|linebreaksbr }}
+      {{ topic.detail|spacify|urlize|linebreaksbr }}
       <a data-toggle="modal" href="#topic_edit"><i class="icon-edit"></i>编辑</a>
     </div>
   </div>
@@ -47,6 +47,6 @@
 <hr />
 <p><a href="{% url topics.views.topic topic.name %}followers/">{{ column.n_followers }} 人关注了该话题</a></p>
 {% for profile in followers %}
-<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
+<div class="asl"><a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a></div>
 {% endfor %}
 {% endblock %}

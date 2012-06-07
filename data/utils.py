@@ -1,9 +1,22 @@
 from django.contrib.contenttypes.models import ContentType
 from models import FollowShip
+from django.core.cache import cache
+from nng.settings import FOLLOWS_CACHE_AGE
+
+def clear_follows_cache(user):
+	'''
+	'''
+	cache.delete(str(user.id) + 'f')
+	cache.delete(str(user.id) + 'bf')
 
 def get_follows(user):
 	'''
 	'''
+	key = str(user.id) + 'f'
+	cache_f = cache.get(key)
+	if cache_f:
+		return cache_f
+	
 	user_type   = ContentType.objects.get(app_label='profiles', model='userprofile')
 	topic_type  = ContentType.objects.get(app_label='topics',   model='topic')
 	domain_type = ContentType.objects.get(app_label='domains',  model='domain')
@@ -35,6 +48,9 @@ def get_follows(user):
 	if user_self not in follows:
 		follows.append(user.userprofile.get_column())
 	
-	return [follows, follows_user, follows_topic, follows_domain, user_self]
+	follows_data = [follows, follows_user, follows_topic, follows_domain, user_self]
+	cache.set(key, follows_data, FOLLOWS_CACHE_AGE)
+	
+	return follows_data
 
 

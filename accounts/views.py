@@ -149,6 +149,8 @@ def regist(request):
 	form = RegistForm()
 	if request.user.is_authenticated():
 		logout(request)
+	
+	regist_success = False
 	if request.method == "POST":
 		form = RegistForm(request.POST)
 		if form.is_valid():
@@ -165,17 +167,24 @@ def regist(request):
 				username, email, password = (data['username'],
 				                             data['email'],
 				                             data['password1'])
-				new_user = UserAccount.objects.create_user(username, email, password)
-				return render_to_response('accounts/regist_complete.html',
-				                         {'email': data['email']},
-	                          context_instance=RequestContext(request))
+				new_user = UserAccount.objects.create_user(
+				              username, email, password)
+				if new_user:
+					regist_success = True
+				else:
+					messages.error(request, u'这个用户名已经注册了')
 		else:
 			messages.error(request, u'你的输入不完整或有误')
 	
-	return render_to_response('accounts/regist_form.html', {'form': form},
-	                          context_instance=RequestContext(request))
+	if regist_success:
+		return render_to_response('accounts/regist_complete.html',
+		                         {'email': data['email']},
+		                          context_instance=RequestContext(request))
+	else:
+		return render_to_response('accounts/regist_form.html', {'form': form},
+		                          context_instance=RequestContext(request))
 
-@login_required
+
 def email_resend(request):
 	'''
 	'''

@@ -3,7 +3,7 @@
   <div class="row">
     <div class="span8">
       <h4><a href="{% if t == 'l' %}{{ obj.url }}{% else %}{{ obj.get_absolute_url }}{% endif %}"{% if t == 'l' %} target="_blank"{% endif %}>{{ obj.title|truncatechars:70 }}</a>{% if t == 'l' %}&nbsp;<span class="small">(<a class="fake" href="{{ obj.domain.get_absolute_url }}">{{ obj.domain.domain }}</a>)</span>{% endif %}</h4>
-      {% include 'comment.html' with content=c.content %}
+      {% include 'more.html' with content=c.content %}
       <div class="small">
         <a class="fake" href="{{ c.get_absolute_url }}">{{ c.time|date:"Y-n-j" }}</a>
         <a class="fake" href="{{ c.get_absolute_url }}">{% firstof c.n_comment '' %} 回复</a>

@@ -1,0 +1,44 @@
+<p><a data-toggle="modal" href="#post">快速发布</a></p>
+{% include 'quick_post.html' with user_topics=user_topics %}
+<p><a href="/explore/link/new/">所有网址</a></p>
+<p><a href="/explore/discuss/new/">所有讨论</a></p>
+<p><a href="{% url profiles.views.people user.username 'collections' %}">我的收藏</a></p>
+{% with p=user.userprofile d=user.userdata %}
+<hr>
+<p><a href="{{ p.get_absolute_url }}">{{ p.get_name }}的主页</a><small>&nbsp;({{ d.honor }})</small></p>
+<hr>
+<p>我关注的话题 ... （<a href="{% url profiles.views.people user.username 'topics' %}">全部 {{ d.n_follows_topic }}</a>）</p>
+<div>
+{% for t in follow.2|slice:":24" %}
+{% with topic=t.0 %}
+<div class="asl"><a href="{{ topic.get_absolute_url }}" rel="tooltip" title="{{ topic.get_name }}"><img src="{{ topic.avatar.get_small_url }}" /></a></div>
+{% endwith %}
+{% endfor %}
+</div>
+<br />
+<p><a href="{% url explore.views.topic %}">热门话题</a></p>
+<hr>
+<p>我关注的人 ... （<a href="{% url profiles.views.people user.username 'followees' %}">全部 {{ d.n_follows_user }}</a>）</p>
+<div>
+{% for u in follow.1|slice:":16" %}
+{% with profile=u.0 %}
+<div class="asl"><a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a></div>
+{% endwith %}
+{% endfor %}
+</div>
+<br />
+<p><a href="{% url explore.views.user %}">月度星级用户</a></p>
+<hr>
+<p>我关注的站点 ... （<a href="{% url profiles.views.people user.username 'domains' %}">全部 {{ d.n_follows_domain }}</a>）</p>
+<div>
+{% for s in follow.3|slice:":8" %}
+{% with domain=s.0 %}
+<div class="asl"><a href="{{ domain.get_absolute_url }}" rel="tooltip" title="{{ domain.get_name }}"><img src="{{ domain.avatar.get_small_url }}" /></a></div>
+{% endwith %}
+{% endfor %}
+</div>
+<br />
+<p><a href="{% url explore.views.domain %}">热门站点</a></p>
+<hr>
+<p><a href="{% url profiles.views.people user.username 'followers' %}"> 我被 {{ follow.4.n_followers }} 人关注</a></p>
+{% endwith %}

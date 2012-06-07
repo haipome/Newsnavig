@@ -67,9 +67,12 @@ class AccountManager(UserManager):
 		if user:
 			return False
 		
-		new_user = User.objects.create_user(username=username, password=password)
-		new_user.is_active = False
-		new_user.save()
+		try:
+			new_user = User.objects.create_user(username=username, password=password)
+			new_user.is_active = False
+			new_user.save()
+		except:
+			return False
 		
 		confirm_key = generate_sha1()
 		account = self.create(user=new_user, \

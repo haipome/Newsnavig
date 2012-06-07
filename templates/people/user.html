@@ -6,9 +6,9 @@
     <div class="span5-9">
       <strong><a href="{{ profile.get_absolute_url }}">{{ profile.get_name }}</a></strong>
       <div class="profile">
-        {{ profile.signature|urlizetrunc:20 }}
+        {{ profile.signature|urlizetrunc:70 }}
         {% if profile.website %}
-          <a class="fake" href="{{ profile.website }}" target="_blank">{{ profile.website|truncatechars:20 }}</a>
+          {{ p.website|urlize }}
         {% endif %}
       </div>
     </div>

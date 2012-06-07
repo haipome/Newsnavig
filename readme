@@ -1,3 +1,19 @@
+2012 5 13 母亲节 上线
+
+
+sudo apt-get install apache2
+sudo apt-get install mysql-server
+sudo apt-get install python-mysqldb
+sudo apt-get install libapache2-mod-wsgi
+sudo apt-get install phpmyadmin (need restart apache2)
+sudo apt-get install python-dateutil
+sudo apt-get install python-imaging
+sudo apt-get install sendmail
+
+sudo apt-get install python-pip
+sudo pip install django
+
+
 crontab -e
 0 3 * * * python ~/nng/nng/crontab.py
 
@@ -6,9 +22,12 @@ find -name "*.py" -exec wc -l {} \;|awk '{a+=$1}END{print a}'
 修改 bootstrap 文件中 modal width=530
 
 sudo apt-get install memcached
+/etc/rc.local
 memcached -d -m 64 -u root -l 127.0.0.1 -p 11211 -c 1024 -P /tmp/memcached.log
 ftp://ftp.tummy.com/pub/python-memcached/python-memcached-1.48.tar.gz
 sudo python setup.py install
+or 
+sudo apt-get install python-memcache
 
 tar czf nng.tar.gz nng
 
@@ -18,7 +37,7 @@ sudo a2enmod deflate
 
 设置 media 文件夹为所有用户和读写
 
-sudo a2ensite nng.com
+sudo a2ensite newsnavig.com
 sudo service apache2 reload
 
 sudo pip install pytz

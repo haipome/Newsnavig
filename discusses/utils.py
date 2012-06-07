@@ -21,23 +21,27 @@ def post_discuss(user, title, detail, topic_names):
 	                  user=user,
 	                  title=title,
 	                  detail=detail)
+	discuss.last_active_time = now()
+	discuss.last_active_user = user
+	discuss.save()
 	
 	for topic_name in topic_names:
 		topic = add_discuss_topic(topic_name, user)
 		discuss.topics.add(topic)
-	
-	discuss.last_active_time = now()
-	discuss.last_active_user = user
-	
-	discuss.save()
-	user.userdata.discusses.add(discuss)
-	
-	for topic in discuss.topics.all():
 		
-		DiscussIndex.objects.create(column=topic.get_column(),
+		column = topic.get_column()
+		
+		DiscussIndex.objects.create(column=column,
 		                            way=WAY_DISCUSS_TOPIC_POST,
 		                            discuss=discuss,
 		                            last_active_time=timezone.now())
+		
+		if not FILTER:
+			Dynamic.objects.create(column=column,
+			                       way=WAY_DISCUSS_TOPIC_POST,
+			                       content_object=discuss)
+	
+	user.userdata.discusses.add(discuss)
 	
 	DiscussIndex.objects.create(column=user.userprofile.get_column(),
 	                            way=WAY_DISCUSS_USER_POST,

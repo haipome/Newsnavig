@@ -6,7 +6,7 @@ from topics.utils import topic_ship_update
 from django.utils import timezone
 from nng.settings import HOT_RATE, BOUTIQUE_RATE
 from dynamic.models import Dynamic
-from nng.settings import WAY_LINK_TOPIC_POST, WAY_DISCUSS_TOPIC_POST
+from nng.settings import *
 from globalvars.utils import get_averages
 from data.models import UserData
 from django.db.models import F
@@ -37,6 +37,17 @@ def is_last2_month(now, time):
 		return True
 	return False
 
+def hot_filter(obj, topic, average, way):
+	if obj.n_supporter >= int(HOT_RATE * average) + 1:
+		column = topic.get_column()
+		if not Dynamic.objects.filter(
+		       column=column).filter(
+		       object_id=obj.id).count():
+			Dynamic.objects.create(column=column,
+			                       way=way,
+			                       content_object=obj)
+
+
 def vote_obj(user, obj):
 	'''
 	'''
@@ -61,7 +72,7 @@ def vote_obj(user, obj):
 	elif is_last_month(now, data.this_month_start_time):
 		if not is_last2_month(now, data.last_month_start_time):
 			data.last_month_half_votes = 0
-		data.this_month_vote = (data.this_month_vote - last_month_half_votes) / 2
+		data.this_month_vote = (data.this_month_vote - data.last_month_half_votes) / 2
 		data.last_month_half_votes = data.this_month_vote
 		data.last_month_start_time = data.this_month_start_time
 		data.this_month_start_time = now
@@ -86,15 +97,10 @@ def vote_obj(user, obj):
 		average_sum = 0
 		
 		for topic in obj.topics.all():
-			if obj.n_supporter >= int(HOT_RATE * \
-			                          topic.link_average_votes) + 1:
-				column = topic.get_column()
-				if not Dynamic.objects.filter(
-				       column=column).filter(
-				       object_id=obj.id).count():
-					Dynamic.objects.create(column=column,
-					                       way=WAY_LINK_TOPIC_POST,
-					                       content_object=obj)
+			if FILTER:
+				hot_filter(obj, topic,
+				           topic.link_average_votes,
+				           WAY_LINK_TOPIC_POST)
 			
 			average_sum += topic.link_average_votes
 		
@@ -114,15 +120,10 @@ def vote_obj(user, obj):
 		average_sum = 0
 		
 		for topic in obj.topics.all():
-			if obj.n_supporter >= int(HOT_RATE * \
-			                          topic.discuss_average_votes) + 1:
-				column = topic.get_column()
-				if not Dynamic.objects.filter(
-				       column=column).filter(
-				       object_id=obj.id).count():
-					Dynamic.objects.create(column=column,
-					                       way=WAY_DISCUSS_TOPIC_POST,
-					                       content_object=obj)
+			if filter:
+				hot_filter(obj, topic,
+				           topic.discuss_average_votes,
+				           WAY_DISCUSS_TOPIC_POST)
 			
 			average_sum += topic.discuss_average_votes
 		

@@ -49,8 +49,9 @@ def post(request):
 			        url__iexact=url).filter(
 			        is_visible=True).all()
 			if links:
-				link = links[0]
-				HttpResponseRedirect(reverse('show_link', args=[link.id]))
+				l = links[0]
+				messages.error(request, u'你已发布过该网址')
+				return HttpResponseRedirect(reverse('show_link', args=[l.id]))
 			else:
 				l = post_link(user, url, title, topics)
 				

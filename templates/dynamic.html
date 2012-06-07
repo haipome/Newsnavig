@@ -1,8 +1,8 @@
 {% extends 'index.html' %}
 {% block nav_home %}active{% endblock %}
-{% block title %}动态 - NNG{% endblock %}
-{% block index_nav_dynamic %}active{% endblock %}
+{% block title %}动态 - Newsnavig{% endblock %}
 {% block content %}
+<h4 style="color:gray">最新动态</h4><hr />
 {% if dynamics %}
 {% for d in dynamics %}
 {% with o=d.column.content_object c=d.content_object w=d.way time=d.time p=d.content_object.user.userprofile %}
@@ -11,8 +11,8 @@
     <div class="span7-5">
       {% if w in 'abcd' %}
       <h4>
-        <a href="{{ c.url }}" target="_blank">{{ c.title }}</a>
-        <span class="small">(<a href="{{ c.domain.get_absolute_url }}" class="fake">{{ c.domain.domain }}</a>)</span>
+        <a rel="nofollow" href="{{ c.url }}" target="_blank">{{ c.title }}</a>
+        <span class="small">(<a rel="nofollow" href="{{ c.domain.get_absolute_url }}" class="fake">{{ c.domain.domain }}</a>)</span>
       </h4>
       {% elif w in 'efg' %}
       <h4>
@@ -21,8 +21,8 @@
       {% elif w in 'hijk' %}
         {% if w in 'hj' %}
         <h4>
-          <a href="{{ d.comment_object.url }}" target="_blank">{{ d.comment_object.title|truncatechars:70 }}</a>
-          <span class="small">(<a href="{{ d.comment_object.domain.get_absolute_url }}" class="fake">{{ d.comment_object.domain.domain }}</a>)</span>
+          <a rel="nofollow" href="{{ d.comment_object.url }}" target="_blank">{{ d.comment_object.title|truncatechars:70 }}</a>
+          <span class="small">(<a rel="nofollow" href="{{ d.comment_object.domain.get_absolute_url }}" class="fake">{{ d.comment_object.domain.domain }}</a>)</span>
         </h4>
          <span class="small"><a class="fake" href="{{ p.get_absolute_url }}">{{ p.get_name }}</a> 回复该网址说：</span>
         {% elif w in 'ik' %}
@@ -34,15 +34,15 @@
       {% endif %}
     </div>
     <div class="span0-5">
-      <a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a>
+      <span class="avatars"><a href="{{ p.get_absolute_url }}" rel="tooltip" title="{{ p.get_name }}"><img src="{{ p.avatar.get_small_url }}" /></a></span>
     </div>
   </div>
   <div class="row">
     <div class="span8">
       {% if w in 'efg' and c.detail %}
-      {% include 'comment.html' with content=c.detail %}
+      {% include 'more.html' with content=c.detail %}
       {% elif w in 'hijk' %}
-      {% include 'comment.html' with content=c.content %}
+      {% include 'more.html' with content=c.content %}
       {% endif %}
       <div class="small">
         {% include 'dynamic_op.html' %}
@@ -62,7 +62,7 @@
         {% if w == 'a' %}
           发布了该网址
         {% elif w == 'b' %}
-          添加了一个热门网址
+          添加了一个新的网址
         {% elif w == 'c' %}
           添加了一个新的网址
         {% elif w == 'd' %}
@@ -70,7 +70,7 @@
         {% elif w == 'e' %}
           发起了该讨论
         {% elif w == 'f' %}
-          添加了一个热门讨论
+          添加了一个新的讨论
         {% elif w == 'g' %}
           分享了该讨论
         {% elif w in 'jk' %}
@@ -86,7 +86,7 @@
 
 {% else %}
 <br />
-<p>你还没有关注任何人和话题，到<a href="/explore/">探索</a>里发现一些感兴趣的用户和话题吧</p>
+<p>你还没有关注任何人和话题，到 <a href="{% url explore.views.user %}">月度星级用户</a> 里发现一有意思的用户，或者到 <a href="{% url explore.views.topic %}">热门话题</a> 里发现一些感兴趣的话题吧。</p>
 
 {% endif %}
 {% include "pager.html" %}

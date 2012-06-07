@@ -1,8 +1,9 @@
 {% extends 'index.html' %}
 {% block nav_discuss %}active{% endblock %}
-{% block title %}讨论 - NNG{% endblock %}
-{% block index_nav_discuss %}active{% endblock %}
+{% block title %}讨论 - Newsnavig{% endblock %}
 {% block content %}
+<h4 style="color:gray">话题讨论</h4><hr />
+{% if user.is_authenticated %}
 <div class="row">
   <div class="pull-right">
     {% if t == 'follow' %}我关注的 /{% else %}<a href="/discuss/">我关注的</a> /{% endif %}
@@ -11,6 +12,7 @@
   </div>
 </div>
 <hr />
+{% endif %}
 {% if discusses %}
 {% if t == 'follow' %}
 {% for d in discusses %}

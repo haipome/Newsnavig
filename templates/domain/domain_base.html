@@ -13,8 +13,9 @@
       <a class="small fake" href="{{ domain.get_domain_url }}" target="_blank">{{ domain.domain }}</a>
     </h3>
     <hr />
+    {% load comment_spacify %}
     <div>
-      {{ domain.detail|urlizetrunc:20|linebreaksbr }}
+      {{ domain.detail|spacify|urlize|linebreaksbr }}
       <a data-toggle="modal" href="#domain_edit"><i class="icon-edit"></i><small>编辑</small></a>
     </div>
   </div>
@@ -51,6 +52,6 @@
 <hr />
 <p><a href="{% url domains.views.domain domain.domain %}followers/">{{ column.n_followers }} 人关注了该站点</a></p>
 {% for profile in followers %}
-<a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a>
+<div class="asl"><a href="{{ profile.get_absolute_url }}" rel="tooltip" title="{{ profile.get_name }}"><img src="{{ profile.avatar.get_small_url }}" /></a></div>
 {% endfor %}
 {% endblock %}

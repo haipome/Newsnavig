@@ -4,8 +4,13 @@
     <div id="{{ d.id }}">
     {% if d.is_visible %}
       <h3><a href="{{ d.get_absolute_url }}">{{ d.title }}</a></h3>
-      {% load comment_spacify %}
-      <div class="postbody">{{ d.detail|urlizetrunc:20|spacify|linebreaksbr }}</div>
+      <div class="postbody">
+      {% if not less %}
+        {% include "content.html" with content=d.detail %}
+      {% else %}
+        {% include "more.html" with content=d.detail %}
+      {% endif %}
+      </div>
       <div class="small">
         <a class="fake" href="{{ d.get_absolute_url }}">{{ d.time|date:"Y-n-j" }}</a>
         &nbsp;<a cless="fake" href="{{ d.get_absolute_url }}">{{ d.n_comment }} 回复</a>

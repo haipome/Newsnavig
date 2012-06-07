@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'nng_db',
+        'NAME': 'nng',
         'USER': 'nng',
         'PASSWORD': 'nng',
         'HOST': '',                      # Set to empty string for localhost.
@@ -178,10 +178,12 @@ CACHES = {
     }
 }
 D_CACHE_AGE = 21600
+HOT_TOPICS_CACHE_AGE = 21600
+FOLLOWS_CACHE_AGE = 600
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-FOLLOWS_MAX = 100
+FOLLOWS_MAX = 200
 
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
@@ -201,11 +203,12 @@ USERNAME_RE = r'^[A-Za-z0-9]+$'
 NAME_MAX_LEN = 30
 SIGNATURE_MAX_LEN = 70
 TITLE_MAX_LEN = 300
-URL_MAX_LEN = 300
+URL_MAX_LEN = 200
 
+FILTER = False
 AVERAGE_TIME = 7
 HOT_RATE = 0.8
-BOUTIQUE_RATE = 1.6
+BOUTIQUE_RATE = 2.0
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 ANONYMOUS_ID = -1
@@ -221,14 +224,13 @@ PROFILE_NAME_CHANGE_DAYS = 30
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = '25'
-EMAIL_HOST_USER = 'haipo'
-EMAIL_HOST_PASSWORD = 'shit'
 
 PASSWORD_LEN_LIMIT = 6
 
 REMEMBER_ME_WEEKS = 2
 
 MESSAGES_PER_PAGE = 30
+TAG_FOLLOWS_NUM = 40
 COMMENTS_PER_PAGE = 100
 MAX_PAGE_NUMBER = 10
 COMMENT_DEEPS = 5

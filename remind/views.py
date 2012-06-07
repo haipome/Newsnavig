@@ -19,7 +19,9 @@ def get_unread_remind(user, number=MESSAGES_PER_PAGE):
 	          to_user=user).filter(
 	          is_read=False).all(
 	          )[:number].prefetch_related(
-	          'from_user__userprofile', 'comment')
+	          'from_user__userprofile',
+	          'comment__content_object',
+	          'comment__parent_comment')
 	
 	last_id = -1
 	for remind in reminds:
@@ -80,11 +82,13 @@ def remind_all(request):
 	reminds = Remind.objects.filter(
 	          to_user = user).all(
 	          )[s:e].prefetch_related(
-	          'from_user__userprofile', 'comment')
+	          'from_user__userprofile',
+	          'comment__content_object',
+	          'comment__parent_comment')
 	
 	
 	return render_to_response('remind/all.html',
-		                     {'reminds': reminds,
-		                      'pre': pre_page,
-		                      'next': next_page,},
-		                       context_instance=RequestContext(request))
+		                 {'reminds': reminds,
+		                  'pre': pre_page,
+		                  'next': next_page,},
+		                   context_instance=RequestContext(request))

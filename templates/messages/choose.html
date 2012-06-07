@@ -9,10 +9,10 @@
 {% if follows_user %}
 {% for pc in follows_user %}
 {% with p=pc.0 %}
-<div class="span1">
-  <p><a href="{% url messages.views.send %}?to={{ p.username }}"><center><img src="{{ p.avatar.get_medium_url }}" alt="{{ p.get_name }}" /></center></a></p>
-  <p><a href="{% url messages.views.send %}?to={{ p.username }}"><center>{{ p.get_name }}</center></a></p>
-</div>
+<dl class="obu">
+  <dt><a href="{% url messages.views.send %}?to={{ p.username }}"><img src="{{ p.avatar.get_medium_url }}" alt="{{ p.get_name }}" /></a></dt>
+  <dd><a href="{% url messages.views.send %}?to={{ p.username }}">{{ p.get_name }}</a></dd>
+</dl>
 {% endwith %}
 {% endfor %}
 {% else %}

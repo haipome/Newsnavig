@@ -32,16 +32,23 @@ def post_link(user, url, title, topic_names):
 		else:
 			url = result['id']
 			link.url = url
+	link.save()
 	
 	for topic_name in topic_names:
 		topic = add_link_topic(topic_name, user, url, domain)
 		link.topics.add(topic)
+		
+		if not FILTER:
+			if topic.topic_links.filter(url__iexact=url).count() == 1:
+				Dynamic.objects.create(column=topic.get_column(),
+				                       way=WAY_LINK_TOPIC_POST,
+				                       content_object=link)
 	
-	link.save()
 	if not domain_post:
 		Dynamic.objects.create(column=domain.get_column(),
 		                       way=WAY_LINK_DOMAIN_POST,
 		                       content_object=link)
+	
 	
 	Dynamic.objects.create(column=user.userprofile.get_column(),
 	                       way=WAY_LINK_USER_POST,

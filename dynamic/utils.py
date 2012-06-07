@@ -9,7 +9,7 @@ def get_objs(follows, offset, n, s=None, e=None):
 	if offset and n:
 		dynamics = Dynamic.objects.filter(
 		           is_visible=True).filter(
-		           id__lt=offset).filter( 
+		           id__lt=offset).filter(
 		           column__in=follows).order_by(
 		           '-id').all(
 		           )[:n].prefetch_related(
