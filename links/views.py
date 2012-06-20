@@ -25,7 +25,7 @@ def topics_get(topic_names):
 				if len(topics) == MAX_TOPICS_NUMBER:
 					return topics
 	
-	return topics
+	return topics[::-1]
 
 
 @login_required

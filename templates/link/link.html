@@ -12,16 +12,21 @@
           <a href="{% url nng.views.delete %}?c=l-{{ link.id }}">删除</a>
         {% endif %}
         {% with topics=link.topics.all %}
-        {% if topics %}
         <span>
           <span class="topic">
+          {% if topics %}
             话题
             {% for topic in topics %}
               <a cless="fake" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
             {% endfor %}
             {% if user == link.user %}
-            <a onclick="return show_form(this)" href="#"><i class="icon-pencil"></i>修改</a>
+              <a onclick="return show_form(this)" href="#"><i class="icon-pencil"></i>修改</a>
             {% endif %}
+          {% else %}
+            {% if user == link.user %}
+              <a onclick="return show_form(this)" href="#"><i class="icon-pencil"></i>添加话题</a>
+            {% endif %}
+           {% endif %}
           </span>
           {% if user == link.user %}
           <span class="hide" style="display: none;">
@@ -29,13 +34,12 @@
               {% csrf_token %}
               <input type="hidden" name="c" value="l-{{ link.id }}">
               <input style="display:inline; height:12px; font-size:12px; margin:0;" type="text" class="span2" name="topics" value="{% for topic in topics %}{{ topic.name }} {% endfor %}">
-              <button type="submit" class="btn btn-primary btn-mini">修改</button>
+              <button type="submit" class="btn btn-primary btn-mini">保存</button>
             </form>
             <a class="fake btn btn-mini" onclick="return hide_form(this)" href="#" style="margin: 0;">取消</a>
           </span>
           {% endif %}
         </span>
-        {% endif %}
         {% endwith %}
       </div> <!-- end operate -->
     {% else %}

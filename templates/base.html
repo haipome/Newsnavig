@@ -112,7 +112,7 @@
         d = $(node).parent().parent().parent();
         p = $(d).find("input").eq(0);
         v = node.innerHTML;
-        $(p).val($(p).val() + v + ' ');
+        $(p).val($(p).val() + ' ' + v + ' ');
         s = $(node).parent();
         $(node).remove();
         $(s).append(v);

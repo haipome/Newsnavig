@@ -56,13 +56,24 @@ def user_login(request):
 							return HttpResponseRedirect(from_url)
 						except:
 							pass
+					
+					if data['next']:
+						return HttpResponseRedirect(data['next'])
 					return HttpResponseRedirect(reverse('homepage'))
 				else:
 					messages.error(request, error_messages)
 		else:
 			messages.error(request, u'你的输入有误')
-	return render_to_response('accounts/login_form.html', {'form': form},
-	                          context_instance=RequestContext(request))
+	
+	next = ''
+	if request.method == "GET":
+		if 'next' in request.GET and request.GET['next']:
+			next = request.GET['next']
+	
+	return render_to_response('accounts/login_form.html',
+	                         {'form': form,
+	                          'next': next,},
+	                           context_instance=RequestContext(request))
 
 def user_logout(request):
 	'''

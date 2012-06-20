@@ -26,6 +26,7 @@ class UserLoginForm(forms.Form):
 	password = forms.CharField(required=True)
 	remember_me = forms.BooleanField(required=False)
 	way = forms.CharField(required=False)
+	next = forms.CharField(required=False)
 
 class RegistForm(forms.Form):
 	'''

@@ -11,6 +11,7 @@ from explore.views import process_pager
 from nng.settings import MESSAGES_PER_PAGE
 from django.core.cache import cache
 from nng.settings import FOLLOWS_CACHE_AGE
+from data.models import FollowShip
 
 
 def people_follows(request, people):
@@ -31,9 +32,12 @@ def people_follows(request, people):
 	if cache_bf:
 		followers = cache_bf
 	else:
-		followers = follows[4].column_followers.all(
-		            )[:MESSAGES_PER_PAGE].select_related(
-		            'user__userprofile__avatar')
+		followers_ship = FollowShip.objects.filter(
+		            column=follows[4]).order_by(
+		            '-time').all(
+		            )[:MESSAGES_PER_PAGE].prefetch_related(
+		            'userdata__user__userprofile__avatar')
+		followers = [f.userdata for f in followers_ship]
 		cache.set(key, followers, FOLLOWS_CACHE_AGE)
 	
 	follows.append(followers)
@@ -53,10 +57,13 @@ def people(request, username, t='links'):
 	if t == 'followees':
 		datas = follows[1][s:e]
 	elif t == 'followers':
-		followers_d = follows[4].column_followers.all(
-		              )[s:e].prefetch_related(
-		              'user__userprofile__avatar',
-		              'user__userprofile__columns',)
+		followers_ship = FollowShip.objects.filter(
+		                 column=follows[4]).order_by(
+		                 '-time').all(
+		                 )[s:e].prefetch_related(
+		                 'userdata__user__userprofile__avatar',
+		                 'userdata__user__userprofile__columns',)
+		followers_d = [f.userdata for f in followers_ship]
 		datas =[]
 		for d in followers_d:
 			datas.append((d.user.userprofile,
